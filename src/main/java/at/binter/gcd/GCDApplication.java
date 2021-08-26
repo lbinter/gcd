@@ -38,6 +38,7 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderConstraintEditor;
     public FXMLLoader loaderVariableEditor;
     public FXMLLoader loaderParameterEditor;
+    public FXMLLoader loaderChangeMuEditor;
     public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
@@ -48,6 +49,7 @@ public class GCDApplication extends Application {
     public Scene constraintEditorScene;
     public Scene variableEditorScene;
     public Scene parameterEditorScene;
+    public Scene changeMuEditorScene;
     public Scene helpScene;
 
     public GCDController gcdController;
@@ -56,6 +58,7 @@ public class GCDApplication extends Application {
     public ConstraintEditorController constraintEditorController;
     public VariableEditorController variableEditorController;
     public ParameterEditorController parameterEditorController;
+    public ChangeMuEditorController changeMuEditorController;
     public HelpController helpController;
 
     public static void main(String[] args) {
@@ -121,6 +124,13 @@ public class GCDApplication extends Application {
         parameterEditorScene = new Scene(loaderParameterEditor.load());
         parameterEditorController = loaderParameterEditor.getController();
         parameterEditorController.setApplication(this);
+
+        loaderChangeMuEditor = new FXMLLoader();
+        loaderChangeMuEditor.setLocation(getClass().getResource("editor/ChangeMuEditor.fxml"));
+        loaderChangeMuEditor.setResources(resources);
+        changeMuEditorScene = new Scene(loaderChangeMuEditor.load());
+        changeMuEditorController = loaderChangeMuEditor.getController();
+        changeMuEditorController.setApplication(this);
 
         primaryStage.show();
     }

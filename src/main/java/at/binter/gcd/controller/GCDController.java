@@ -161,7 +161,7 @@ public class GCDController extends BaseController implements Initializable {
         });
 
         changeMuButtonEdit.setOnAction(event -> {
-            gcd.constraintEditorController.createEditor(event);
+            gcd.changeMuEditorController.createEditor(event);
             // TODO: fill with data from selected value
         });
     }
