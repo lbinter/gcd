@@ -104,7 +104,12 @@ public class GCDController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        genItems();
+        fillListWithItems(algVarList, 30);
+        fillListWithItems(agentList, 30);
+        fillListWithItems(constraintList, 30);
+        fillListWithItems(variableList, 30);
+        fillListWithItems(parameterList, 30);
+        fillListWithItems(changeMuList, 30);
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         algVarListView.setItems(algVarList);
         agentListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -143,13 +148,28 @@ public class GCDController extends BaseController implements Initializable {
             // TODO: fill with data from selected value
         });
         constraintButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(constraintListView, constraintList, "constraint.name"));
+
+
+        variableButtonEdit.setOnAction(event -> {
+            gcd.variableEditorController.createEditor(event);
+            // TODO: fill with data from selected value
+        });
+
+        parameterButtonEdit.setOnAction(event -> {
+            gcd.constraintEditorController.createEditor(event);
+            // TODO: fill with data from selected value
+        });
+
+        changeMuButtonEdit.setOnAction(event -> {
+            gcd.constraintEditorController.createEditor(event);
+            // TODO: fill with data from selected value
+        });
     }
 
-    private void genItems() {
-        for (int i = 0; i < 30; i++) {
-            algVarList.add("Item_" + i);
+    private void fillListWithItems(ObservableList<String> list, int count) {
+        for (int i = 0; i < count; i++) {
+            list.add("Item_" + i);
         }
-        algVarList.add("Item_öouiafhdgüoahdgfoüäadhfgüäadohfgad+üpfhgpädafjgpd+a#fojgpda+#jfgp+#adfjgp+#");
     }
 
     @FXML
