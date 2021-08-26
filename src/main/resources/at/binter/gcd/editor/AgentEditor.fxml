@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <TitledPane fx:id="editorTitle" animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="480.0"
-            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.add.title.algebraicVariable"
+            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.add.title.agent"
             xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="at.binter.gcd.controller.AlgebraicVariableEditorController">
+            fx:controller="at.binter.gcd.controller.AgentEditorController">
     <content>
         <AnchorPane>
             <children>
@@ -47,7 +47,7 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label minWidth="360" text="%editor.example.algebraicVariable" GridPane.columnIndex="1">
+                                <Label minWidth="360" text="%editor.example.agent" GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
@@ -57,7 +57,7 @@
                                            GridPane.rowIndex="1"/>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="2"/>
-                                <Label text="%editor.label.name" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                <Label text="%editor.label.agent" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>

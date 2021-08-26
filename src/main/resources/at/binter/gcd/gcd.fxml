@@ -107,7 +107,7 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="algVarList" maxHeight="250.0" maxWidth="260.0"
+                                        <ListView fx:id="algVarListView" maxHeight="250.0" maxWidth="260.0"
                                                   minHeight="250.0" minWidth="260.0" prefHeight="250.0"
                                                   prefWidth="260.0"/>
                                     </children>
@@ -135,8 +135,9 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="agentList" maxHeight="250.0" maxWidth="260.0" minHeight="250.0"
-                                                  minWidth="260.0" prefHeight="250.0" prefWidth="260.0"/>
+                                        <ListView fx:id="agentListView" maxHeight="250.0" maxWidth="260.0"
+                                                  minHeight="250.0" minWidth="260.0" prefHeight="250.0"
+                                                  prefWidth="260.0"/>
                                     </children>
                                 </HBox>
                             </content>
@@ -162,7 +163,7 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="constraintList" maxHeight="250.0" maxWidth="260.0"
+                                        <ListView fx:id="constraintListView" maxHeight="250.0" maxWidth="260.0"
                                                   minHeight="250.0" minWidth="260.0" prefHeight="250.0"
                                                   prefWidth="260.0"/>
                                     </children>
@@ -193,7 +194,7 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="variableList" maxHeight="250.0" maxWidth="130.0"
+                                        <ListView fx:id="variableListView" maxHeight="250.0" maxWidth="130.0"
                                                   minHeight="250.0" minWidth="130.0" prefHeight="250.0"
                                                   prefWidth="130.0"/>
                                     </children>
@@ -217,7 +218,7 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="parameterList" maxHeight="250.0" maxWidth="130.0"
+                                        <ListView fx:id="parameterListView" maxHeight="250.0" maxWidth="130.0"
                                                   minHeight="250.0" minWidth="130.0" prefHeight="250.0"
                                                   prefWidth="130.0"/>
                                     </children>
@@ -241,7 +242,7 @@
                                                 <Insets right="10.0"/>
                                             </padding>
                                         </VBox>
-                                        <ListView fx:id="changeMuList" maxHeight="250.0" maxWidth="130.0"
+                                        <ListView fx:id="changeMuListView" maxHeight="250.0" maxWidth="130.0"
                                                   minHeight="250.0" minWidth="130.0" prefHeight="250.0"
                                                   prefWidth="130.0"/>
                                     </children>

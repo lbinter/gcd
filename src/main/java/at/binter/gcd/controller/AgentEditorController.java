@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
-public class AlgebraicVariableEditorController extends BaseController implements Initializable {
+public class AgentEditorController extends BaseController implements Initializable {
     private Stage popup;
     @FXML
     private TitledPane editorTitle;
@@ -91,14 +91,14 @@ public class AlgebraicVariableEditorController extends BaseController implements
     public void createEditor(Object dataObject) {
         popup = new Stage();
         popup.initStyle(StageStyle.UNDECORATED);
-        popup.setScene(gcd.algebraicVariableEditorScene);
+        popup.setScene(gcd.agentEditorScene);
         String i18nTitle;
         String i18nConfirm;
         if (dataObject == null) {
-            i18nTitle = "editor.add.title.algebraicVariable";
+            i18nTitle = "editor.add.title.agent";
             i18nConfirm = "editor.button.add";
         } else {
-            i18nTitle = "editor.edit.title.algebraicVariable";
+            i18nTitle = "editor.edit.title.agent";
             i18nConfirm = "editor.button.edit";
         }
         editorTitle.setText(resources.getString(i18nTitle));
@@ -109,7 +109,7 @@ public class AlgebraicVariableEditorController extends BaseController implements
         if (dataObject != null) {
             // TODO: fillData();
         }
-        addStageCloseOnEscapeKey(popup, gcd.algebraicVariableEditorScene);
+        addStageCloseOnEscapeKey(popup, gcd.agentEditorScene);
         popup.showAndWait();
     }
 }

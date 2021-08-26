@@ -1,6 +1,7 @@
 package at.binter.gcd;
 
 
+import at.binter.gcd.controller.AgentEditorController;
 import at.binter.gcd.controller.AlgebraicVariableEditorController;
 import at.binter.gcd.controller.GCDController;
 import at.binter.gcd.controller.HelpController;
@@ -35,16 +36,19 @@ public class GCDApplication extends Application {
 
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
+    public FXMLLoader loaderAgentEditor;
     public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
 
     public Scene primaryScene;
     public Scene algebraicVariableEditorScene;
+    public Scene agentEditorScene;
     public Scene helpScene;
 
     public GCDController gcdController;
     public AlgebraicVariableEditorController algebraicVariableEditorController;
+    public AgentEditorController agentEditorController;
     public HelpController helpController;
 
     public static void main(String[] args) {
@@ -75,6 +79,13 @@ public class GCDApplication extends Application {
         algebraicVariableEditorController = loaderAlgVarEditor.getController();
         algebraicVariableEditorController.setApplication(this);
 
+        loaderAgentEditor = new FXMLLoader();
+        loaderAgentEditor.setLocation(getClass().getResource("editor/AgentEditor.fxml"));
+        loaderAgentEditor.setResources(resources);
+        agentEditorScene = new Scene(loaderAgentEditor.load());
+        agentEditorController = loaderAgentEditor.getController();
+        agentEditorController.setApplication(this);
+
         loaderHelp = new FXMLLoader();
         loaderHelp.setLocation(getClass().getResource("help.fxml"));
         loaderHelp.setResources(resources);
@@ -82,7 +93,6 @@ public class GCDApplication extends Application {
         helpScene.getStylesheets().add(statusCss);
         helpController = loaderHelp.getController();
         helpController.setApplication(this);
-
 
         primaryStage.show();
     }

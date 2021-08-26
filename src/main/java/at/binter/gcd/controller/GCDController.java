@@ -25,24 +25,98 @@ public class GCDController extends BaseController implements Initializable {
     public static FileChooser.ExtensionFilter gcdFileExt = new FileChooser.ExtensionFilter("GCD", "*.gcd");
 
     @FXML
+    private Button buttonSave;
+
+    @FXML
+    private Button buttonUndo;
+
+    @FXML
+    private Button buttonRedo;
+
+    @FXML
+    private Button buttonGCD;
+
+    @FXML
+    private Button buttonHelp;
+
+    @FXML
     private Button algVarButtonAdd;
+
     @FXML
     private Button algVarButtonRemove;
+
     @FXML
     private Button algVarButtonEdit;
+
     @FXML
-    private ListView<String> algVarList;
+    private ListView<String> algVarListView;
+
+    @FXML
+    private Button agentButtonAdd;
+
+    @FXML
+    private Button agentButtonRemove;
+
+    @FXML
+    private Button agentButtonEdit;
+
+    @FXML
+    private ListView<String> agentListView;
+
+    @FXML
+    private Button constraintButtonAdd;
+
+    @FXML
+    private Button constraintButtonRemove;
+
+    @FXML
+    private Button constraintButtonEdit;
+
+    @FXML
+    private ListView<String> constraintListView;
+
+    @FXML
+    private Button variableButtonEdit;
+
+    @FXML
+    private ListView<String> variableListView;
+
+    @FXML
+    private Button parameterButtonEdit;
+
+    @FXML
+    private ListView<String> parameterListView;
+
+    @FXML
+    private Button changeMuButtonEdit;
+
+    @FXML
+    private ListView<String> changeMuListView;
 
 
-    private ObservableList<String> list;
+    private final ObservableList<String> algVarList = FXCollections.observableArrayList();
+    private final ObservableList<String> agentList = FXCollections.observableArrayList();
+    private final ObservableList<String> constraintList = FXCollections.observableArrayList();
+    private final ObservableList<String> variableList = FXCollections.observableArrayList();
+    private final ObservableList<String> parameterList = FXCollections.observableArrayList();
+    private final ObservableList<String> changeMuList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        list = FXCollections.observableArrayList();
         genItems();
-        algVarList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        algVarList.setItems(list);
+        algVarListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        algVarListView.setItems(algVarList);
+        agentListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        agentListView.setItems(agentList);
+        constraintListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        constraintListView.setItems(constraintList);
+        variableListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        variableListView.setItems(variableList);
+        parameterListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        parameterListView.setItems(parameterList);
+        changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        changeMuListView.setItems(changeMuList);
 
         registerEventHandlers();
 
@@ -54,14 +128,21 @@ public class GCDController extends BaseController implements Initializable {
             gcd.algebraicVariableEditorController.createEditor(event);
             // TODO: fill with data from selected value
         });
-        algVarButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(algVarList, list, "algebraicVariables.name"));
+        algVarButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(algVarListView, algVarList, "algebraicVariables.name"));
+
+        agentButtonAdd.setOnAction(event -> gcd.agentEditorController.createEditor());
+        agentButtonEdit.setOnAction(event -> {
+            gcd.agentEditorController.createEditor(event);
+            // TODO: fill with data from selected value
+        });
+        agentButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(agentListView, agentList, "agent.name"));
     }
 
     private void genItems() {
         for (int i = 0; i < 30; i++) {
-            list.add("Item_" + i);
+            algVarList.add("Item_" + i);
         }
-        list.add("Item_öouiafhdgüoahdgfoüäadhfgüäadohfgad+üpfhgpädafjgpd+a#fojgpda+#jfgp+#adfjgp+#");
+        algVarList.add("Item_öouiafhdgüoahdgfoüäadhfgüäadohfgad+üpfhgpädafjgpd+a#fojgpda+#jfgp+#adfjgp+#");
     }
 
     @FXML
