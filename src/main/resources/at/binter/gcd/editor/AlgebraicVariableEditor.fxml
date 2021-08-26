@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<TitledPane fx:id="algebraicVariableEditorTitle" animated="false" collapsible="false" maxHeight="-Infinity"
+            maxWidth="480.0" minHeight="-Infinity" minWidth="480.0" prefWidth="480.0"
+            text="%editor.algebraicVariable.add.title" xmlns="http://javafx.com/javafx/16"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.binter.gcd.controller.AlgebraicVariableEditorController">
+    <content>
+        <AnchorPane>
+            <children>
+                <VBox>
+                    <children>
+                        <GridPane>
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="NEVER" minWidth="360.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints/>
+                            </rowConstraints>
+                            <children>
+                                <Label text="%editor.label.example" GridPane.halignment="RIGHT">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.definition" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.description" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label minWidth="360" text="%editor.algebraicVariable.example" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorAlgVarDefinition" minWidth="360"
+                                           onInputMethodTextChanged="#definitionChanged" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="1"/>
+                                <TextField fx:id="editorAlgVarDescription" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="2"/>
+                                <Label text="%editor.label.name" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.function" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.parameters" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.plot.color" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="7">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.plot.thickness" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="8">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.plot.line.style" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="9">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorAlgVarLabelName" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="3">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorAlgVarLabelFunction" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorAlgVarLabelVariables" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorAlgVarLabelParameter" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorAlgVarPlotColor" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="7"/>
+                                <TextField fx:id="editorAlgVarPlotThickness" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="8"/>
+                                <TextField fx:id="editorAlgVarLineArt" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="9"/>
+                            </children>
+                        </GridPane>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Button fx:id="editorAlgVarButtonConfirm" minWidth="100.0" mnemonicParsing="false"
+                                        text="%editor.button.add"/>
+                                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="0.0">
+                                    <HBox.margin>
+                                        <Insets left="5.0" right="5.0"/>
+                                    </HBox.margin>
+                                </Separator>
+                                <Button fx:id="editorAlgVarButtonCancel" minWidth="100.0" mnemonicParsing="false"
+                                        text="%editor.button.cancel"/>
+                            </children>
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </content>
+</TitledPane>

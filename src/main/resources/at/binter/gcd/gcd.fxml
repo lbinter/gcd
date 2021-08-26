@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="at.binter.gcd.controller.GCDController">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New"/>
+                        <MenuItem mnemonicParsing="false" text="Open…"/>
+                        <Menu mnemonicParsing="false" text="Open Recent"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Close"/>
+                        <MenuItem mnemonicParsing="false" text="Save"/>
+                        <MenuItem mnemonicParsing="false" text="Save As…"/>
+                        <MenuItem mnemonicParsing="false" text="Revert"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Preferences…"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Quit"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Undo"/>
+                        <MenuItem mnemonicParsing="false" text="Redo"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Cut"/>
+                        <MenuItem mnemonicParsing="false" text="Copy"/>
+                        <MenuItem mnemonicParsing="false" text="Paste"/>
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Select All"/>
+                        <MenuItem mnemonicParsing="false" text="Unselect All"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <ToolBar prefHeight="40.0" prefWidth="200.0">
+            <items>
+                <Button fx:id="buttonLoad" minHeight="38.0" minWidth="34.0" mnemonicParsing="false"
+                        onAction="#openFileChooser" prefHeight="38.0" prefWidth="34.0" text="%symbols.load"
+                        textAlignment="CENTER">
+                    <font>
+                        <Font name="Lucida Sans Unicode" size="12.0"/>
+                    </font>
+                </Button>
+                <Button fx:id="buttonSave" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#save"
+                        prefHeight="38.0" prefWidth="34.0" text="%symbols.save" textAlignment="CENTER">
+                    <font>
+                        <Font name="Lucida Sans Unicode" size="14.0"/>
+                    </font>
+                </Button>
+                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
+                <Button fx:id="buttonUndo" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#undo"
+                        prefHeight="38.0" prefWidth="34.0" text="%symbols.undo" textAlignment="CENTER">
+                    <font>
+                        <Font name="Lucida Sans Unicode" size="14.0"/>
+                    </font>
+                </Button>
+                <Button fx:id="buttonRedo" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#redo"
+                        prefHeight="38.0" prefWidth="34.0" text="%symbols.redo" textAlignment="CENTER">
+                    <font>
+                        <Font name="Lucida Sans Unicode" size="14.0"/>
+                    </font>
+                </Button>
+                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
+                <Button fx:id="buttonGCD" minHeight="38.0" minWidth="42.0" mnemonicParsing="false"
+                        onAction="#openGCDOutput" prefHeight="38.0" prefWidth="42.0" text="%symbols.gcd"
+                        textAlignment="CENTER"/>
+                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
+                <Button fx:id="buttonHelp" minHeight="38.0" minWidth="34.0" mnemonicParsing="false"
+                        onAction="#showHelpWindow" prefHeight="38.0" prefWidth="34.0" text="%symbols.help"
+                        textAlignment="CENTER"/>
+            </items>
+        </ToolBar>
+        <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+            <children>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <TitledPane collapsible="false" text="%list.title.algebraicVariables" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="algVarButtonAdd" minWidth="75.0" mnemonicParsing="false"
+                                                        text="%button.add"/>
+                                                <Button fx:id="algVarButtonRemove" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.remove"/>
+                                                <Button fx:id="algVarButtonEdit" minWidth="75.0" mnemonicParsing="false"
+                                                        text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="algVarList" maxHeight="250.0" maxWidth="260.0"
+                                                  minHeight="250.0" minWidth="260.0" prefHeight="250.0"
+                                                  prefWidth="260.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                        <TitledPane collapsible="false" text="%list.title.agents" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="agentButtonAdd" minWidth="75.0" mnemonicParsing="false"
+                                                        text="%button.add"/>
+                                                <Button fx:id="agentButtonRemove" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.remove"/>
+                                                <Button fx:id="agentButtonEdit" minWidth="75.0" mnemonicParsing="false"
+                                                        text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="agentList" maxHeight="250.0" maxWidth="260.0" minHeight="250.0"
+                                                  minWidth="260.0" prefHeight="250.0" prefWidth="260.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                        <TitledPane collapsible="false" text="%list.title.constraints" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="constraintButtonAdd" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.add"/>
+                                                <Button fx:id="constraintButtonRemove" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.remove"/>
+                                                <Button fx:id="constraintButtonEdit" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="constraintList" maxHeight="250.0" maxWidth="260.0"
+                                                  minHeight="250.0" minWidth="260.0" prefHeight="250.0"
+                                                  prefWidth="260.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets left="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="variableButtonEdit" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="variableList" maxHeight="250.0" maxWidth="130.0"
+                                                  minHeight="250.0" minWidth="130.0" prefHeight="250.0"
+                                                  prefWidth="130.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets right="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                        <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="parameterButtonEdit" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="parameterList" maxHeight="250.0" maxWidth="130.0"
+                                                  minHeight="250.0" minWidth="130.0" prefHeight="250.0"
+                                                  prefWidth="130.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                        <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
+                            <content>
+                                <HBox>
+                                    <children>
+                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
+                                              spacing="15.0">
+                                            <children>
+                                                <Button fx:id="changeMuButtonEdit" minWidth="75.0"
+                                                        mnemonicParsing="false" text="%button.edit"/>
+                                            </children>
+                                            <padding>
+                                                <Insets right="10.0"/>
+                                            </padding>
+                                        </VBox>
+                                        <ListView fx:id="changeMuList" maxHeight="250.0" maxWidth="130.0"
+                                                  minHeight="250.0" minWidth="130.0" prefHeight="250.0"
+                                                  prefWidth="130.0"/>
+                                    </children>
+                                </HBox>
+                            </content>
+                            <HBox.margin>
+                                <Insets left="5.0"/>
+                            </HBox.margin>
+                        </TitledPane>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0"/>
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+        <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+            <children>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="11.0" fx:id="x3"/>
+                    </font>
+                    <textFill>
+                        <Color red="0.625" green="0.625" blue="0.625" fx:id="x4"/>
+                    </textFill>
+                </Label>
+                <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
+                <Label font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER"/>
+            </children>
+            <padding>
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+            </padding>
+        </HBox>
+    </children>
+</VBox>
