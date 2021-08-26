@@ -7,14 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
 public class AlgebraicVariableEditorController extends BaseController implements Initializable {
     private Stage popup;
@@ -57,6 +57,7 @@ public class AlgebraicVariableEditorController extends BaseController implements
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         registerEventHandlers();
     }
 
@@ -100,19 +101,15 @@ public class AlgebraicVariableEditorController extends BaseController implements
             i18nTitle = "editor.algebraicVariable.edit.title";
             i18nConfirm = "editor.button.edit";
         }
-        algebraicVariableEditorTitle.setText(gcd.resources.getString(i18nTitle));
-        editorAlgVarButtonConfirm.setText(gcd.resources.getString(i18nConfirm));
+        algebraicVariableEditorTitle.setText(resources.getString(i18nTitle));
+        editorAlgVarButtonConfirm.setText(resources.getString(i18nConfirm));
         popup.initOwner(gcd.primaryStage);
         popup.initModality(Modality.WINDOW_MODAL);
         clearData();
         if (dataObject != null) {
             // TODO: fillData();
         }
-        gcd.algebraicVariableEditorScene.setOnKeyPressed((KeyEvent event) -> {
-            if (KeyCode.ESCAPE == event.getCode()) {
-                popup.close();
-            }
-        });
+        addStageCloseOnEscapeKey(popup, gcd.algebraicVariableEditorScene);
         popup.showAndWait();
     }
 }

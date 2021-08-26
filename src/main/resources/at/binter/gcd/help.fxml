@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="at.binter.gcd.controller.HelpController">
+    <children>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <TitledPane animated="false" collapsible="false" text="%help.text.element.status.title">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <VBox layoutX="5.0" spacing="5.0">
+                                    <children>
+                                        <Label text="%help.text.element.status.legend.algVar.agent">
+                                            <VBox.margin>
+                                                <Insets/>
+                                            </VBox.margin>
+                                            <opaqueInsets>
+                                                <Insets/>
+                                            </opaqueInsets>
+                                        </Label>
+                                        <Label text="%help.text.element.status.legend.parameter.changemu"/>
+                                        <GridPane hgap="5.0">
+                                            <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"
+                                                                   maxWidth="100.0" minWidth="100.0" prefWidth="100.0"/>
+                                                <ColumnConstraints fillWidth="false" halignment="CENTER"
+                                                                   hgrow="SOMETIMES" maxWidth="100.0" minWidth="100.0"
+                                                                   prefWidth="100.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="450.0"/>
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                                vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                                vgrow="SOMETIMES"/>
+                                            </rowConstraints>
+                                            <children>
+                                                <Label fx:id="correct" alignment="CENTER" maxWidth="75.0"
+                                                       minWidth="75.0" prefWidth="75.0" styleClass="valid"
+                                                       text="%help.text.element.colored.text"
+                                                       GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                                <Label fx:id="correctSelected" alignment="CENTER" maxWidth="100.0"
+                                                       minWidth="100.0" prefWidth="100.0" styleClass="valid"
+                                                       text="%help.text.element.colored.selected"
+                                                       GridPane.columnIndex="1"/>
+                                                <Label text="%help.text.element.status.VALID" GridPane.columnIndex="2"/>
+                                                <Label fx:id="error" alignment="CENTER" maxWidth="75.0" minWidth="75.0"
+                                                       prefWidth="75.0" styleClass="invalid"
+                                                       text="%help.text.element.colored.text" GridPane.rowIndex="1"/>
+                                                <Label fx:id="errorSelected" alignment="CENTER" maxWidth="100.0"
+                                                       minWidth="100.0" prefWidth="100.0" styleClass="invalid"
+                                                       text="%help.text.element.colored.selected"
+                                                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                                <Label text="%help.text.element.status.INVALID" GridPane.columnIndex="2"
+                                                       GridPane.rowIndex="1"/>
+                                            </children>
+                                        </GridPane>
+                                    </children>
+                                    <opaqueInsets>
+                                        <Insets/>
+                                    </opaqueInsets>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" collapsible="false" text="%help.text.variable.status.title">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <GridPane hgap="5.0" layoutX="5.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0"
+                                                           minWidth="100.0" prefWidth="100.0"/>
+                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES"
+                                                           maxWidth="100.0" minWidth="100.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="450.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                                        vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Label fx:id="textValidDefValues" alignment="CENTER" maxWidth="75.0"
+                                               minWidth="75.0" prefWidth="75.0" styleClass="valid-with-default-values"
+                                               text="%help.text.element.colored.text" GridPane.halignment="CENTER"
+                                               GridPane.valignment="CENTER"/>
+                                        <Label fx:id="selectedValidDefValues" alignment="CENTER" maxWidth="100.0"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-with-default-values"
+                                               text="%help.text.element.colored.selected" GridPane.columnIndex="1"/>
+                                        <Label text="%help.text.variable.status.VALID_DEFAULT_WITH_VALUES"
+                                               GridPane.columnIndex="2">
+                                            <GridPane.margin>
+                                                <Insets/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="textValidFunction" alignment="CENTER" maxWidth="75.0"
+                                               minWidth="75.0" prefWidth="75.0" styleClass="valid-has-function"
+                                               text="%help.text.element.colored.text" GridPane.rowIndex="1"/>
+                                        <Label fx:id="selectedValidFunction" alignment="CENTER" maxWidth="100.0"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-has-function"
+                                               text="%help.text.element.colored.selected" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="1"/>
+                                        <Label text="%help.text.variable.status.VALID_HAS_FUNCTION"
+                                               GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                        <Label fx:id="textAutoPlot" alignment="CENTER" maxWidth="75.0" minWidth="75.0"
+                                               prefWidth="75.0" styleClass="valid-auto-plot"
+                                               text="%help.text.element.colored.text" GridPane.rowIndex="2"/>
+                                        <Label fx:id="selectedAutoPlot" alignment="CENTER" maxWidth="100.0"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-auto-plot"
+                                               text="%help.text.element.colored.selected" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2"/>
+                                        <Label text="%help.text.variable.status.VALID_AUTOMATIC"
+                                               GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                                        <Label fx:id="textInvalid" alignment="CENTER" maxWidth="75.0" minWidth="75.0"
+                                               prefWidth="75.0" styleClass="invalid"
+                                               text="%help.text.element.colored.text" GridPane.rowIndex="3"/>
+                                        <Label fx:id="selectedInvalid" alignment="CENTER" maxWidth="100.0"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="invalid"
+                                               text="%help.text.element.colored.selected" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="3"/>
+                                        <Label text="%help.text.variable.status.INVALID" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="3"/>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+            </children>
+        </VBox>
+    </children>
+</Pane>

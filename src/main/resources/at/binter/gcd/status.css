@@ -1,0 +1,43 @@
+.valid {
+    -fx-background-color: #ffffff;
+}
+
+.valid:selected {
+    -fx-background-color: #b8cfe5;
+}
+
+.valid-with-default-values {
+    -fx-background-color: #26c0ffff;
+}
+
+.valid-with-default-values:selected {
+    -fx-background-color: #0000ff;
+    -fx-text-fill: #ffffff;
+}
+
+.valid-has-function {
+    -fx-background-color: #ffc800;
+}
+
+.valid-has-function:selected {
+    -fx-background-color: #b1682f;
+    -fx-text-fill: #ffffff;
+}
+
+.valid-auto-plot {
+    -fx-background-color: #00ff00;
+}
+
+.valid-auto-plot:selected {
+    -fx-background-color: #179319;
+    -fx-text-fill: #ffffff;
+}
+
+.invalid {
+    -fx-background-color: #ffafaf;
+}
+
+.invalid:selected {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: #ffffff;
+}

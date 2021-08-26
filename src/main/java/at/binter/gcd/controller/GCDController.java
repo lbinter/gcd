@@ -38,6 +38,7 @@ public class GCDController extends BaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         list = FXCollections.observableArrayList();
         genItems();
         algVarList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -120,5 +121,6 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     protected void showHelpWindow() {
         System.out.println("showHelpWindow called");
+        gcd.helpController.showHelpWindow();
     }
 }

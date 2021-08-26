@@ -3,6 +3,7 @@ package at.binter.gcd;
 
 import at.binter.gcd.controller.AlgebraicVariableEditorController;
 import at.binter.gcd.controller.GCDController;
+import at.binter.gcd.controller.HelpController;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -30,16 +31,21 @@ public class GCDApplication extends Application {
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
-    public FXMLLoader gcdLoader;
+    public String statusCss;
+
+    public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
+    public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
 
     public Scene primaryScene;
     public Scene algebraicVariableEditorScene;
+    public Scene helpScene;
 
     public GCDController gcdController;
     public AlgebraicVariableEditorController algebraicVariableEditorController;
+    public HelpController helpController;
 
     public static void main(String[] args) {
         launch(args);
@@ -49,15 +55,17 @@ public class GCDApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
 
-        gcdLoader = new FXMLLoader();
-        gcdLoader.setLocation(getClass().getResource("gcd.fxml"));
-        gcdLoader.setResources(resources);
+        statusCss = getClass().getResource("status.css").toExternalForm();
 
-        primaryScene = new Scene(gcdLoader.load());
+        loaderGCD = new FXMLLoader();
+        loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
+        loaderGCD.setResources(resources);
+
+        primaryScene = new Scene(loaderGCD.load());
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle(resources.getString("main.title"));
 
-        gcdController = gcdLoader.getController();
+        gcdController = loaderGCD.getController();
         gcdController.setApplication(this);
 
         loaderAlgVarEditor = new FXMLLoader();
@@ -66,6 +74,14 @@ public class GCDApplication extends Application {
         algebraicVariableEditorScene = new Scene(loaderAlgVarEditor.load());
         algebraicVariableEditorController = loaderAlgVarEditor.getController();
         algebraicVariableEditorController.setApplication(this);
+
+        loaderHelp = new FXMLLoader();
+        loaderHelp.setLocation(getClass().getResource("help.fxml"));
+        loaderHelp.setResources(resources);
+        helpScene = new Scene(loaderHelp.load());
+        helpScene.getStylesheets().add(statusCss);
+        helpController = loaderHelp.getController();
+        helpController.setApplication(this);
 
 
         primaryStage.show();
