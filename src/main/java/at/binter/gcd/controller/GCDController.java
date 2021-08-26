@@ -156,7 +156,7 @@ public class GCDController extends BaseController implements Initializable {
         });
 
         parameterButtonEdit.setOnAction(event -> {
-            gcd.constraintEditorController.createEditor(event);
+            gcd.parameterEditorController.createEditor(event);
             // TODO: fill with data from selected value
         });
 

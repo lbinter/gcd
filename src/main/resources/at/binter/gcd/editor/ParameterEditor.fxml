@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<TitledPane fx:id="editorTitle" animated="false" collapsible="false" minHeight="-Infinity"
+            text="%editor.parameter.edit.title" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.binter.gcd.controller.ParameterEditorController">
+    <content>
+        <AnchorPane>
+            <children>
+                <VBox>
+                    <children>
+                        <GridPane>
+                            <columnConstraints>
+                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="145.0"/>
+                                <ColumnConstraints hgrow="NEVER" minWidth="360.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                            </rowConstraints>
+                            <children>
+                                <Label text="%editor.label.name">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelName" minWidth="360" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.description" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="1"/>
+                                <Label text="%editor.label.value.start" GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorValueStart" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="2"/>
+                                <Label text="%editor.label.value.minimum" GridPane.rowIndex="3">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorValueMinimum" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="3"/>
+                                <Label text="%editor.label.value.maximum" GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorValueMaximum" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="4"/>
+                                <Label text="%editor.label.algebraicVariables" GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelAlgebraicVariables" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.agents" GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelAgents" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.constraints" GridPane.rowIndex="7">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelConstraints" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="7">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                            </children>
+                        </GridPane>
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Button fx:id="editorButtonConfirm" minWidth="100.0" mnemonicParsing="false"
+                                        text="%editor.button.edit"/>
+                                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="0.0">
+                                    <HBox.margin>
+                                        <Insets left="5.0" right="5.0"/>
+                                    </HBox.margin>
+                                </Separator>
+                                <Button fx:id="editorButtonCancel" minWidth="100.0" mnemonicParsing="false"
+                                        text="%editor.button.cancel"/>
+                            </children>
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </content>
+</TitledPane>

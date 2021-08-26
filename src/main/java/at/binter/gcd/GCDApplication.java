@@ -37,6 +37,7 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderAgentEditor;
     public FXMLLoader loaderConstraintEditor;
     public FXMLLoader loaderVariableEditor;
+    public FXMLLoader loaderParameterEditor;
     public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
@@ -46,6 +47,7 @@ public class GCDApplication extends Application {
     public Scene agentEditorScene;
     public Scene constraintEditorScene;
     public Scene variableEditorScene;
+    public Scene parameterEditorScene;
     public Scene helpScene;
 
     public GCDController gcdController;
@@ -53,6 +55,7 @@ public class GCDApplication extends Application {
     public AgentEditorController agentEditorController;
     public ConstraintEditorController constraintEditorController;
     public VariableEditorController variableEditorController;
+    public ParameterEditorController parameterEditorController;
     public HelpController helpController;
 
     public static void main(String[] args) {
@@ -111,6 +114,13 @@ public class GCDApplication extends Application {
         variableEditorScene = new Scene(loaderVariableEditor.load());
         variableEditorController = loaderVariableEditor.getController();
         variableEditorController.setApplication(this);
+
+        loaderParameterEditor = new FXMLLoader();
+        loaderParameterEditor.setLocation(getClass().getResource("editor/ParameterEditor.fxml"));
+        loaderParameterEditor.setResources(resources);
+        parameterEditorScene = new Scene(loaderParameterEditor.load());
+        parameterEditorController = loaderParameterEditor.getController();
+        parameterEditorController.setApplication(this);
 
         primaryStage.show();
     }
