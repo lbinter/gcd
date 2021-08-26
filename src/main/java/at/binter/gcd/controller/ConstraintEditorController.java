@@ -18,14 +18,9 @@ import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
 public class ConstraintEditorController extends BaseController implements Initializable {
     private Stage popup;
+
     @FXML
     private TitledPane editorTitle;
-
-    @FXML
-    private Button editorButtonConfirm;
-
-    @FXML
-    private Button editorButtonCancel;
 
     @FXML
     private TextField editorDefinition;
@@ -44,6 +39,12 @@ public class ConstraintEditorController extends BaseController implements Initia
 
     @FXML
     private Label editorLabelParameter;
+
+    @FXML
+    private Button editorButtonConfirm;
+
+    @FXML
+    private Button editorButtonCancel;
 
 
     @Override

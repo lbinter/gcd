@@ -18,19 +18,10 @@ public class ParameterEditorController extends BaseController implements Initial
     private Stage popup;
 
     @FXML
-    private TextField editorDescription;
-
-    @FXML
     private Label editorLabelName;
 
     @FXML
-    private Label editorLabelAlgebraicVariables;
-
-    @FXML
-    private Label editorLabelAgents;
-
-    @FXML
-    private Label editorLabelConstraints;
+    private TextField editorDescription;
 
     @FXML
     private TextField editorValueStart;
@@ -40,6 +31,15 @@ public class ParameterEditorController extends BaseController implements Initial
 
     @FXML
     private TextField editorValueMaximum;
+
+    @FXML
+    private Label editorLabelAlgebraicVariables;
+
+    @FXML
+    private Label editorLabelAgents;
+
+    @FXML
+    private Label editorLabelConstraints;
 
     @FXML
     private Button editorButtonConfirm;

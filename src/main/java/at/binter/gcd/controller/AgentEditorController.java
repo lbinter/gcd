@@ -18,14 +18,9 @@ import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
 public class AgentEditorController extends BaseController implements Initializable {
     private Stage popup;
+
     @FXML
     private TitledPane editorTitle;
-
-    @FXML
-    private Button editorButtonConfirm;
-
-    @FXML
-    private Button editorButtonCancel;
 
     @FXML
     private TextField editorDefinition;
@@ -53,6 +48,12 @@ public class AgentEditorController extends BaseController implements Initializab
 
     @FXML
     private TextField editorLineArt;
+
+    @FXML
+    private Button editorButtonConfirm;
+
+    @FXML
+    private Button editorButtonCancel;
 
 
     @Override

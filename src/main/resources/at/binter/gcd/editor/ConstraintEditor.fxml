@@ -3,9 +3,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<TitledPane fx:id="editorTitle" animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="480.0"
-            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.constraint.add.title"
-            xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+<TitledPane fx:id="editorTitle" animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity"
+            text="%editor.constraint.add.title" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.binter.gcd.controller.ConstraintEditorController">
     <content>
         <AnchorPane>
@@ -14,8 +13,8 @@
                     <children>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="NEVER" minWidth="360.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="NEVER" minWidth="110.0" prefWidth="110.0"/>
+                                <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
@@ -33,45 +32,29 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
+                                <Label minWidth="360" text="%editor.constraint.example" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
                                 <Label text="%editor.label.definition" GridPane.halignment="RIGHT"
                                        GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
+                                <TextField fx:id="editorDefinition" minWidth="360"
+                                           onInputMethodTextChanged="#definitionChanged" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="1"/>
                                 <Label text="%editor.label.description" GridPane.halignment="RIGHT"
                                        GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label minWidth="360" text="%editor.constraint.example" GridPane.columnIndex="1">
-                                    <GridPane.margin>
-                                        <Insets left="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <TextField fx:id="editorDefinition" minWidth="360"
-                                           onInputMethodTextChanged="#definitionChanged" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="1"/>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="2"/>
                                 <Label text="%editor.label.number" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.condition" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.parameters" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="6">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
@@ -82,16 +65,32 @@
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
+                                <Label text="%editor.label.condition" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
                                 <Label fx:id="editorLabelCondition" minWidth="360" GridPane.columnIndex="1"
                                        GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
+                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
                                 <Label fx:id="editorLabelVariables" minWidth="360" GridPane.columnIndex="1"
                                        GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.parameters" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="6">
+                                    <GridPane.margin>
+                                        <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelParameter" minWidth="360" GridPane.columnIndex="1"

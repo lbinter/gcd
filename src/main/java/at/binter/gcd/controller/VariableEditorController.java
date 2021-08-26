@@ -18,10 +18,22 @@ public class VariableEditorController extends BaseController implements Initiali
     private Stage popup;
 
     @FXML
+    private Label editorLabelName;
+
+    @FXML
     private TextField editorDescription;
 
     @FXML
-    private Label editorLabelName;
+    private TextField editorInitialCondition;
+
+    @FXML
+    private TextField editorValueStart;
+
+    @FXML
+    private TextField editorValueMinimum;
+
+    @FXML
+    private TextField editorValueMaximum;
 
     @FXML
     private Label editorLabelAlgebraicVariables;
@@ -40,18 +52,6 @@ public class VariableEditorController extends BaseController implements Initiali
 
     @FXML
     private TextField editorLineArt;
-
-    @FXML
-    private TextField editorInitialCondition;
-
-    @FXML
-    private TextField editorValueStart;
-
-    @FXML
-    private TextField editorValueMinimum;
-
-    @FXML
-    private TextField editorValueMaximum;
 
     @FXML
     private Button editorButtonConfirm;
@@ -75,18 +75,18 @@ public class VariableEditorController extends BaseController implements Initiali
     }
 
     private void clearData() {
-        editorDescription.setText("");
         editorLabelName.setText("");
+        editorDescription.setText("");
+        editorInitialCondition.setText("");
+        editorValueStart.setText("");
+        editorValueMinimum.setText("");
+        editorValueMaximum.setText("");
         editorLabelAlgebraicVariables.setText("");
         editorLabelAgents.setText("");
         editorLabelConstraints.setText("");
         editorPlotColor.setText("");
         editorPlotThickness.setText("");
         editorLineArt.setText("");
-        editorInitialCondition.setText("");
-        editorValueStart.setText("");
-        editorValueMinimum.setText("");
-        editorValueMaximum.setText("");
     }
 
     public void createEditor(Object dataObject) {

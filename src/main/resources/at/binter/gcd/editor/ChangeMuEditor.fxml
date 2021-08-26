@@ -3,8 +3,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<TitledPane fx:id="editorTitle" animated="false" collapsible="false" minHeight="-Infinity"
-            text="%editor.changemu.edit.title" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+<TitledPane fx:id="editorTitle" animated="false" collapsible="false" text="%editor.changemu.edit.title"
+            xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.binter.gcd.controller.ChangeMuEditorController">
     <content>
         <AnchorPane>
