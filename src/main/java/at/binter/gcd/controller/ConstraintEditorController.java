@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
-public class AgentEditorController extends BaseController implements Initializable {
+public class ConstraintEditorController extends BaseController implements Initializable {
     private Stage popup;
     @FXML
     private TitledPane editorTitle;
@@ -34,25 +34,16 @@ public class AgentEditorController extends BaseController implements Initializab
     private TextField editorDescription;
 
     @FXML
-    private Label editorLabelName;
+    private Label editorLabelNumber;
 
     @FXML
-    private Label editorLabelFunction;
+    private Label editorLabelCondition;
 
     @FXML
     private Label editorLabelVariables;
 
     @FXML
     private Label editorLabelParameter;
-
-    @FXML
-    private TextField editorPlotColor;
-
-    @FXML
-    private TextField editorPlotThickness;
-
-    @FXML
-    private TextField editorLineArt;
 
 
     @Override
@@ -79,26 +70,23 @@ public class AgentEditorController extends BaseController implements Initializab
     private void clearData() {
         editorDefinition.setText("");
         editorDescription.setText("");
-        editorLabelName.setText("");
-        editorLabelFunction.setText("");
+        editorLabelNumber.setText("");
+        editorLabelCondition.setText("");
         editorLabelVariables.setText("");
         editorLabelParameter.setText("");
-        editorPlotColor.setText("");
-        editorPlotThickness.setText("");
-        editorLineArt.setText("");
     }
 
     public void createEditor(Object dataObject) {
         popup = new Stage();
         popup.initStyle(StageStyle.UNDECORATED);
-        popup.setScene(gcd.agentEditorScene);
+        popup.setScene(gcd.constraintEditorScene);
         String i18nTitle;
         String i18nConfirm;
         if (dataObject == null) {
-            i18nTitle = "editor.agent.add.title";
+            i18nTitle = "editor.constraint.add.title";
             i18nConfirm = "editor.button.add";
         } else {
-            i18nTitle = "editor.agent.edit.title";
+            i18nTitle = "editor.constraint.edit.title";
             i18nConfirm = "editor.button.edit";
         }
         editorTitle.setText(resources.getString(i18nTitle));
@@ -109,7 +97,7 @@ public class AgentEditorController extends BaseController implements Initializab
         if (dataObject != null) {
             // TODO: fillData();
         }
-        addStageCloseOnEscapeKey(popup, gcd.agentEditorScene);
+        addStageCloseOnEscapeKey(popup, gcd.constraintEditorScene);
         popup.showAndWait();
     }
 }

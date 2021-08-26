@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <TitledPane fx:id="editorTitle" animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="480.0"
-            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.algebraicVariable.add.title"
+            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.constraint.add.title"
             xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="at.binter.gcd.controller.AlgebraicVariableEditorController">
+            fx:controller="at.binter.gcd.controller.ConstraintEditorController">
     <content>
         <AnchorPane>
             <children>
@@ -18,8 +18,6 @@
                                 <ColumnConstraints hgrow="NEVER" minWidth="360.0" prefWidth="100.0"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
@@ -47,7 +45,7 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label minWidth="360" text="%editor.algebraicVariable.example" GridPane.columnIndex="1">
+                                <Label minWidth="360" text="%editor.constraint.example" GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
@@ -57,12 +55,13 @@
                                            GridPane.rowIndex="1"/>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="2"/>
-                                <Label text="%editor.label.name" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                <Label text="%editor.label.number" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label text="%editor.label.function" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                <Label text="%editor.label.utility.function" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
@@ -78,31 +77,13 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label text="%editor.label.plot.color" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="7">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.plot.thickness" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="8">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.plot.line.style" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="9">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label fx:id="editorLabelName" minWidth="360" GridPane.columnIndex="1"
+                                <Label fx:id="editorLabelNumber" minWidth="360" GridPane.columnIndex="1"
                                        GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="editorLabelFunction" minWidth="360" GridPane.columnIndex="1"
+                                <Label fx:id="editorLabelCondition" minWidth="360" GridPane.columnIndex="1"
                                        GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
@@ -120,12 +101,6 @@
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorPlotColor" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="7"/>
-                                <TextField fx:id="editorPlotThickness" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="8"/>
-                                <TextField fx:id="editorLineArt" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="9"/>
                             </children>
                         </GridPane>
                         <HBox alignment="CENTER">

@@ -95,10 +95,10 @@ public class AlgebraicVariableEditorController extends BaseController implements
         String i18nTitle;
         String i18nConfirm;
         if (dataObject == null) {
-            i18nTitle = "editor.add.title.algebraicVariable";
+            i18nTitle = "editor.algebraicVariable.add.title";
             i18nConfirm = "editor.button.add";
         } else {
-            i18nTitle = "editor.edit.title.algebraicVariable";
+            i18nTitle = "editor.algebraicVariable.edit.title";
             i18nConfirm = "editor.button.edit";
         }
         editorTitle.setText(resources.getString(i18nTitle));

@@ -1,10 +1,7 @@
 package at.binter.gcd;
 
 
-import at.binter.gcd.controller.AgentEditorController;
-import at.binter.gcd.controller.AlgebraicVariableEditorController;
-import at.binter.gcd.controller.GCDController;
-import at.binter.gcd.controller.HelpController;
+import at.binter.gcd.controller.*;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -37,6 +35,7 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
     public FXMLLoader loaderAgentEditor;
+    public FXMLLoader loaderConstraintEditor;
     public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
@@ -44,11 +43,13 @@ public class GCDApplication extends Application {
     public Scene primaryScene;
     public Scene algebraicVariableEditorScene;
     public Scene agentEditorScene;
+    public Scene constraintEditorScene;
     public Scene helpScene;
 
     public GCDController gcdController;
     public AlgebraicVariableEditorController algebraicVariableEditorController;
     public AgentEditorController agentEditorController;
+    public ConstraintEditorController constraintEditorController;
     public HelpController helpController;
 
     public static void main(String[] args) {
@@ -59,7 +60,7 @@ public class GCDApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
 
-        statusCss = getClass().getResource("status.css").toExternalForm();
+        statusCss = Objects.requireNonNull(getClass().getResource("status.css")).toExternalForm();
 
         loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
@@ -71,6 +72,14 @@ public class GCDApplication extends Application {
 
         gcdController = loaderGCD.getController();
         gcdController.setApplication(this);
+
+        loaderHelp = new FXMLLoader();
+        loaderHelp.setLocation(getClass().getResource("help.fxml"));
+        loaderHelp.setResources(resources);
+        helpScene = new Scene(loaderHelp.load());
+        helpScene.getStylesheets().add(statusCss);
+        helpController = loaderHelp.getController();
+        helpController.setApplication(this);
 
         loaderAlgVarEditor = new FXMLLoader();
         loaderAlgVarEditor.setLocation(getClass().getResource("editor/AlgebraicVariableEditor.fxml"));
@@ -86,13 +95,12 @@ public class GCDApplication extends Application {
         agentEditorController = loaderAgentEditor.getController();
         agentEditorController.setApplication(this);
 
-        loaderHelp = new FXMLLoader();
-        loaderHelp.setLocation(getClass().getResource("help.fxml"));
-        loaderHelp.setResources(resources);
-        helpScene = new Scene(loaderHelp.load());
-        helpScene.getStylesheets().add(statusCss);
-        helpController = loaderHelp.getController();
-        helpController.setApplication(this);
+        loaderConstraintEditor = new FXMLLoader();
+        loaderConstraintEditor.setLocation(getClass().getResource("editor/ConstraintEditor.fxml"));
+        loaderConstraintEditor.setResources(resources);
+        constraintEditorScene = new Scene(loaderConstraintEditor.load());
+        constraintEditorController = loaderConstraintEditor.getController();
+        constraintEditorController.setApplication(this);
 
         primaryStage.show();
     }

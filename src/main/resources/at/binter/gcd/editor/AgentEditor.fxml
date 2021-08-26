@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <TitledPane fx:id="editorTitle" animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="480.0"
-            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.add.title.agent"
+            minHeight="-Infinity" minWidth="480.0" prefWidth="480.0" text="%editor.agent.add.title"
             xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.binter.gcd.controller.AgentEditorController">
     <content>
@@ -47,7 +47,7 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label minWidth="360" text="%editor.example.agent" GridPane.columnIndex="1">
+                                <Label minWidth="360" text="%editor.agent.example" GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
@@ -62,7 +62,8 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label text="%editor.label.function" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                <Label text="%editor.label.utility.function" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>

@@ -136,6 +136,13 @@ public class GCDController extends BaseController implements Initializable {
             // TODO: fill with data from selected value
         });
         agentButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(agentListView, agentList, "agent.name"));
+
+        constraintButtonAdd.setOnAction(event -> gcd.constraintEditorController.createEditor());
+        constraintButtonEdit.setOnAction(event -> {
+            gcd.constraintEditorController.createEditor(event);
+            // TODO: fill with data from selected value
+        });
+        constraintButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(constraintListView, constraintList, "constraint.name"));
     }
 
     private void genItems() {
