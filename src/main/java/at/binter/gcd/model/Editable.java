@@ -1,5 +1,5 @@
 package at.binter.gcd.model;
 
-public interface Updatable<T> {
+public interface Editable<T> {
     void update(T modified);
 }

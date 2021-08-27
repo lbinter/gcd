@@ -42,8 +42,8 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderHelp;
 
     public Stage primaryStage;
-
     public Scene primaryScene;
+
     public Scene algebraicVariableEditorScene;
     public Scene agentEditorScene;
     public Scene constraintEditorScene;
@@ -79,9 +79,6 @@ public class GCDApplication extends Application {
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle(resources.getString("main.title"));
 
-        gcdController = loaderGCD.getController();
-        gcdController.setApplication(this);
-
         loaderHelp = new FXMLLoader();
         loaderHelp.setLocation(getClass().getResource("help.fxml"));
         loaderHelp.setResources(resources);
@@ -96,6 +93,7 @@ public class GCDApplication extends Application {
         algebraicVariableEditorScene = new Scene(loaderAlgVarEditor.load());
         algebraicVariableEditorController = loaderAlgVarEditor.getController();
         algebraicVariableEditorController.setApplication(this);
+        algebraicVariableEditorController.setScene(algebraicVariableEditorScene);
 
         loaderAgentEditor = new FXMLLoader();
         loaderAgentEditor.setLocation(getClass().getResource("editor/AgentEditor.fxml"));
@@ -103,6 +101,7 @@ public class GCDApplication extends Application {
         agentEditorScene = new Scene(loaderAgentEditor.load());
         agentEditorController = loaderAgentEditor.getController();
         agentEditorController.setApplication(this);
+        agentEditorController.setScene(agentEditorScene);
 
         loaderConstraintEditor = new FXMLLoader();
         loaderConstraintEditor.setLocation(getClass().getResource("editor/ConstraintEditor.fxml"));
@@ -132,6 +131,10 @@ public class GCDApplication extends Application {
         changeMuEditorController = loaderChangeMuEditor.getController();
         changeMuEditorController.setApplication(this);
 
+        gcdController = loaderGCD.getController();
+        gcdController.setApplication(this);
+        gcdController.initializeGcdDepended();
+
         primaryStage.show();
     }
 
@@ -154,7 +157,7 @@ public class GCDApplication extends Application {
         }
     }
 
-    public void askUserRemoveAlert(ListView list, ObservableList observableList, String i18nName) {
+    public void askUserRemoveAlert(ListView<?> list, ObservableList<?> observableList, String i18nName) {
         int selectedIndex = list.getSelectionModel().getSelectedIndex();
         if (selectedIndex == -1) {
             return;

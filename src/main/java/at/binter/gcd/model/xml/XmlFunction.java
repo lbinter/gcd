@@ -9,10 +9,10 @@ import jakarta.xml.bind.annotation.XmlElement;
  */
 public class XmlFunction implements HasPlotStyle {
     @XmlElement
-    String function;
+    public String function;
 
     @XmlElement
-    String description;
+    public String description;
 
     private PlotStyle plotStyle = new PlotStyle();
 

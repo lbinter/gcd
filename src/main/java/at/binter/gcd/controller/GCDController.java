@@ -1,14 +1,18 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.elements.Agent;
+import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +53,7 @@ public class GCDController extends BaseController implements Initializable {
     private Button algVarButtonEdit;
 
     @FXML
-    private ListView<String> algVarListView;
+    private ListView<AlgebraicVariable> algVarListView;
 
     @FXML
     private Button agentButtonAdd;
@@ -61,7 +65,7 @@ public class GCDController extends BaseController implements Initializable {
     private Button agentButtonEdit;
 
     @FXML
-    private ListView<String> agentListView;
+    private ListView<Agent> agentListView;
 
     @FXML
     private Button constraintButtonAdd;
@@ -94,60 +98,44 @@ public class GCDController extends BaseController implements Initializable {
     private ListView<String> changeMuListView;
 
 
-    private final ObservableList<String> algVarList = FXCollections.observableArrayList();
-    private final ObservableList<String> agentList = FXCollections.observableArrayList();
-    private final ObservableList<String> constraintList = FXCollections.observableArrayList();
-    private final ObservableList<String> variableList = FXCollections.observableArrayList();
-    private final ObservableList<String> parameterList = FXCollections.observableArrayList();
-    private final ObservableList<String> changeMuList = FXCollections.observableArrayList();
+    private GCDModel model = new GCDModel();
+
+    private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
+    private EditDialog<Agent> agentEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        fillListWithItems(algVarList, 30);
-        fillListWithItems(agentList, 30);
-        fillListWithItems(constraintList, 30);
-        fillListWithItems(variableList, 30);
-        fillListWithItems(parameterList, 30);
-        fillListWithItems(changeMuList, 30);
+        this.model = new GCDModel();
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        algVarListView.setItems(algVarList);
+        algVarListView.setItems(model.getAlgebraicVariables().sorted());
         agentListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        agentListView.setItems(agentList);
+        agentListView.setItems(model.getAgents().sorted());
         constraintListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        constraintListView.setItems(constraintList);
+        constraintListView.setItems(model.getConstraints().sorted());
         variableListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        variableListView.setItems(variableList);
+        variableListView.setItems(model.getVariables().sorted());
         parameterListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        parameterListView.setItems(parameterList);
+        parameterListView.setItems(model.getParameters().sorted());
         changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        changeMuListView.setItems(changeMuList);
+        changeMuListView.setItems(model.getChangeMus().sorted());
 
         registerEventHandlers();
+    }
 
+    public void initializeGcdDepended() {
+        algebraicVariableEditDialog = new EditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
+        agentEditDialog = new EditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
     }
 
     private void registerEventHandlers() {
-        algVarButtonAdd.setOnAction(event -> gcd.algebraicVariableEditorController.createEditor());
-        algVarButtonEdit.setOnAction(event -> {
-            gcd.algebraicVariableEditorController.createEditor(event);
-            // TODO: fill with data from selected value
-        });
-        algVarButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(algVarListView, algVarList, "algebraicVariables.name"));
-
-        agentButtonAdd.setOnAction(event -> gcd.agentEditorController.createEditor());
-        agentButtonEdit.setOnAction(event -> {
-            gcd.agentEditorController.createEditor(event);
-            // TODO: fill with data from selected value
-        });
-        agentButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(agentListView, agentList, "agent.name"));
 
         constraintButtonAdd.setOnAction(event -> gcd.constraintEditorController.createEditor());
         constraintButtonEdit.setOnAction(event -> {
             gcd.constraintEditorController.createEditor(event);
             // TODO: fill with data from selected value
         });
-        constraintButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(constraintListView, constraintList, "constraint.name"));
+        constraintButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(constraintListView, model.getConstraints(), "constraint.name"));
 
 
         variableButtonEdit.setOnAction(event -> {
@@ -164,13 +152,48 @@ public class GCDController extends BaseController implements Initializable {
             gcd.changeMuEditorController.createEditor(event);
             // TODO: fill with data from selected value
         });
+
+        algVarListView.setOnMouseClicked(this::editSelectedAlgebraicVariable);
     }
 
-    private void fillListWithItems(ObservableList<String> list, int count) {
-        for (int i = 0; i < count; i++) {
-            list.add("Item_" + i);
+    @FXML
+    protected void addNewAlgebraicVariable() {
+        algebraicVariableEditDialog.addNewItem();
+    }
+
+    @FXML
+    protected void removeSelectedAlgebraicVariable() {
+        algebraicVariableEditDialog.askUserRemoveAlert("algebraicVariables.name");
+    }
+
+    @FXML
+    protected void editSelectedAlgebraicVariable() {
+        algebraicVariableEditDialog.editSelectedValue();
+    }
+
+    @FXML
+    protected void editSelectedAlgebraicVariable(MouseEvent event) {
+        if (event != null && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            editSelectedAlgebraicVariable();
         }
     }
+
+    @FXML
+    protected void addNewAgent() {
+        agentEditDialog.addNewItem();
+    }
+
+
+    @FXML
+    protected void removeSelectedAgent() {
+        agentEditDialog.askUserRemoveAlert("agent.name");
+    }
+
+    @FXML
+    protected void editSelectedAgent() {
+        agentEditDialog.editSelectedValue();
+    }
+
 
     @FXML
     protected void openFileChooser() {
@@ -190,6 +213,16 @@ public class GCDController extends BaseController implements Initializable {
             }
             XmlModel xmlModel = XmlReader.read(file);
             if (xmlModel != null) {
+                for (XmlFunction algVar : xmlModel.algebraicVariables) {
+                    AlgebraicVariable newAlgVar = new AlgebraicVariable();
+                    newAlgVar.setFunction(algVar.function);
+                    model.getAlgebraicVariables().add(newAlgVar);
+                }
+                for (XmlFunction agent : xmlModel.agents) {
+                    Agent newAgent = new Agent();
+                    newAgent.setFunction(agent.function);
+                    model.getAgents().add(newAgent);
+                }
                 // TODO load xml to gcd model
                 // model.loadXMLModel(xmlModel);
             }

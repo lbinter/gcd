@@ -1,87 +1,68 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.util.ParsedFunction;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.input.InputMethodEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
+import static at.binter.gcd.util.Tools.readDoubleValueFrom;
+import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
-public class AlgebraicVariableEditorController extends BaseController implements Initializable {
-    private Stage popup;
-
+public class AlgebraicVariableEditorController extends BaseEditorController<AlgebraicVariable> implements Initializable {
     @FXML
-    private TitledPane editorTitle;
-
+    private Label editorLabelDefinition;
     @FXML
-    private TextField editorDefinition;
-
+    private TextField editorName;
+    @FXML
+    private TextField editorFunction;
     @FXML
     private TextField editorDescription;
-
-    @FXML
-    private Label editorLabelName;
-
-    @FXML
-    private Label editorLabelFunction;
-
     @FXML
     private Label editorLabelVariables;
-
     @FXML
     private Label editorLabelParameter;
-
     @FXML
     private TextField editorPlotColor;
-
     @FXML
     private TextField editorPlotThickness;
-
     @FXML
     private TextField editorLineArt;
-
-    @FXML
-    private Button editorButtonConfirm;
-
-    @FXML
-    private Button editorButtonCancel;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        i18nAddTitle = "editor.algebraicVariable.add.title";
+        i18nEditTitle = "editor.algebraicVariable.edit.title";
         registerEventHandlers();
     }
 
-    public void definitionChanged(InputMethodEvent inputMethodEvent) {
-        System.out.println("test: " + inputMethodEvent.getCommitted());
-    }
-
     private void registerEventHandlers() {
-        editorButtonCancel.setOnAction(event -> popup.close());
-        editorDefinition.textProperty().addListener((observable, oldValue, newValue) -> {
-            // TODO: parse and fill other fields from input
-        });
+        editorName.textProperty().addListener(this::nameChanged);
+        editorFunction.textProperty().addListener(this::functionChanged);
     }
 
-    public void createEditor() {
-        createEditor(null);
+    private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        setLabelTextFormatted(editorLabelDefinition, newValue + AlgebraicVariable.assignmentSymbol + editorFunction.getText());
     }
 
-    private void clearData() {
-        editorDefinition.setText("");
+    private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        ParsedFunction f = new ParsedFunction(editorName.getText(), newValue, AlgebraicVariable.assignmentSymbol);
+        setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
+        setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
+        setLabelTextFormatted(editorLabelDefinition, editorName.getText() + AlgebraicVariable.assignmentSymbol + newValue);
+    }
+
+    @Override
+    protected void clearData() {
+        editorName.setText("");
+        editorFunction.setText("");
         editorDescription.setText("");
-        editorLabelName.setText("");
-        editorLabelFunction.setText("");
         editorLabelVariables.setText("");
         editorLabelParameter.setText("");
         editorPlotColor.setText("");
@@ -89,28 +70,29 @@ public class AlgebraicVariableEditorController extends BaseController implements
         editorLineArt.setText("");
     }
 
-    public void createEditor(Object dataObject) {
-        popup = new Stage();
-        popup.initStyle(StageStyle.UNDECORATED);
-        popup.setScene(gcd.algebraicVariableEditorScene);
-        String i18nTitle;
-        String i18nConfirm;
-        if (dataObject == null) {
-            i18nTitle = "editor.algebraicVariable.add.title";
-            i18nConfirm = "editor.button.add";
-        } else {
-            i18nTitle = "editor.algebraicVariable.edit.title";
-            i18nConfirm = "editor.button.edit";
+    @Override
+    public AlgebraicVariable createDataObject() {
+        AlgebraicVariable algVar = new AlgebraicVariable();
+        algVar.setName(editorName.getText());
+        algVar.setFunction(editorFunction.getText());
+        algVar.setDescription(editorDescription.getText());
+        algVar.setPlotColor(editorPlotColor.getText());
+        algVar.setPlotThickness(readDoubleValueFrom(editorPlotThickness));
+        algVar.setPlotLineStyle(editorLineArt.getText());
+        return algVar;
+    }
+
+    @Override
+    protected void fillDataFrom(AlgebraicVariable data) {
+        editorLabelVariables.setText("");
+        editorLabelParameter.setText("");
+        editorName.setText(data.getName());
+        editorFunction.setText(data.getFunction());
+        editorDescription.setText(data.getDescription());
+        editorPlotColor.setText(data.getPlotColor());
+        if (data.getPlotThickness() != null) {
+            editorPlotThickness.setText(Double.toString(data.getPlotThickness()));
         }
-        editorTitle.setText(resources.getString(i18nTitle));
-        editorButtonConfirm.setText(resources.getString(i18nConfirm));
-        popup.initOwner(gcd.primaryStage);
-        popup.initModality(Modality.WINDOW_MODAL);
-        clearData();
-        if (dataObject != null) {
-            // TODO: fillData();
-        }
-        addStageCloseOnEscapeKey(popup, gcd.algebraicVariableEditorScene);
-        popup.showAndWait();
+        editorLineArt.setText(data.getPlotLineStyle());
     }
 }

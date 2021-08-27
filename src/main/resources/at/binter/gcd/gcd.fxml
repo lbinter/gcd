@@ -93,15 +93,16 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="algVarButtonAdd" minWidth="75.0" mnemonicParsing="false"
-                                                        text="%button.add"/>
-                                                <Button fx:id="algVarButtonRemove" minWidth="75.0"
-                                                        mnemonicParsing="false" text="%button.remove"/>
-                                                <Button fx:id="algVarButtonEdit" minWidth="75.0" mnemonicParsing="false"
-                                                        text="%button.edit"/>
+                                                <Button fx:id="algVarButtonAdd" minWidth="80.0" mnemonicParsing="false"
+                                                        onAction="#addNewAlgebraicVariable" text="%button.add"/>
+                                                <Button fx:id="algVarButtonRemove" minWidth="80.0"
+                                                        mnemonicParsing="false"
+                                                        onAction="#removeSelectedAlgebraicVariable"
+                                                        text="%button.remove"/>
+                                                <Button fx:id="algVarButtonEdit" minWidth="80.0" mnemonicParsing="false"
+                                                        onAction="#editSelectedAlgebraicVariable" text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>
@@ -121,15 +122,15 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="agentButtonAdd" minWidth="75.0" mnemonicParsing="false"
-                                                        text="%button.add"/>
-                                                <Button fx:id="agentButtonRemove" minWidth="75.0"
-                                                        mnemonicParsing="false" text="%button.remove"/>
-                                                <Button fx:id="agentButtonEdit" minWidth="75.0" mnemonicParsing="false"
-                                                        text="%button.edit"/>
+                                                <Button fx:id="agentButtonAdd" minWidth="80.0" mnemonicParsing="false"
+                                                        onAction="#addNewAgent" text="%button.add"/>
+                                                <Button fx:id="agentButtonRemove" minWidth="80.0"
+                                                        mnemonicParsing="false" onAction="#removeSelectedAgent"
+                                                        text="%button.remove"/>
+                                                <Button fx:id="agentButtonEdit" minWidth="80.0" mnemonicParsing="false"
+                                                        onAction="#editSelectedAgent" text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>
@@ -149,14 +150,13 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="constraintButtonAdd" minWidth="75.0"
+                                                <Button fx:id="constraintButtonAdd" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.add"/>
-                                                <Button fx:id="constraintButtonRemove" minWidth="75.0"
+                                                <Button fx:id="constraintButtonRemove" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.remove"/>
-                                                <Button fx:id="constraintButtonEdit" minWidth="75.0"
+                                                <Button fx:id="constraintButtonEdit" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.edit"/>
                                             </children>
                                             <padding>
@@ -184,10 +184,9 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="variableButtonEdit" minWidth="75.0"
+                                                <Button fx:id="variableButtonEdit" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.edit"/>
                                             </children>
                                             <padding>
@@ -208,10 +207,9 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="parameterButtonEdit" minWidth="75.0"
+                                                <Button fx:id="parameterButtonEdit" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.edit"/>
                                             </children>
                                             <padding>
@@ -232,10 +230,9 @@
                             <content>
                                 <HBox>
                                     <children>
-                                        <VBox alignment="CENTER" maxWidth="75.0" minWidth="75.0" prefWidth="100.0"
-                                              spacing="15.0">
+                                        <VBox alignment="CENTER" spacing="15.0">
                                             <children>
-                                                <Button fx:id="changeMuButtonEdit" minWidth="75.0"
+                                                <Button fx:id="changeMuButtonEdit" minWidth="80.0"
                                                         mnemonicParsing="false" text="%button.edit"/>
                                             </children>
                                             <padding>

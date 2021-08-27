@@ -13,7 +13,7 @@
                     <children>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints hgrow="NEVER" minWidth="110.0" prefWidth="110.0"/>
+                                <ColumnConstraints hgrow="NEVER"/>
                                 <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
                             </columnConstraints>
                             <rowConstraints>
@@ -29,103 +29,87 @@
                                 <RowConstraints/>
                             </rowConstraints>
                             <children>
-                                <Label text="%editor.label.example" GridPane.halignment="RIGHT">
+                                <Label text="%editor.label.definition" GridPane.halignment="RIGHT">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label minWidth="360" text="%editor.agent.example" GridPane.columnIndex="1">
-                                    <GridPane.margin>
-                                        <Insets left="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.definition" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="1">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <TextField fx:id="editorDefinition" minWidth="360"
-                                           onInputMethodTextChanged="#definitionChanged" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="1"/>
-                                <Label text="%editor.label.description" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="2">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="2"/>
-                                <Label text="%editor.label.agent" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label fx:id="editorLabelName" minWidth="360" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="3"/>
+                                <Label text="%editor.label.description" GridPane.halignment="RIGHT"
                                        GridPane.rowIndex="3">
                                     <GridPane.margin>
+                                        <Insets left="10.0" right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelDefinition" minWidth="360" GridPane.columnIndex="1">
+                                    <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
+                                <Label text="%editor.label.agent" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextField fx:id="editorName" maxWidth="100.0" promptText="%editor.agent.example.name"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                 <Label text="%editor.label.utility.function" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="4">
+                                       GridPane.rowIndex="2">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="editorLabelFunction" minWidth="360" GridPane.columnIndex="1"
-                                       GridPane.rowIndex="4">
+                                <TextField fx:id="editorFunction" minWidth="360"
+                                           promptText="%editor.agent.example.function" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="2"/>
+                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                     <GridPane.margin>
-                                        <Insets left="5.0"/>
-                                    </GridPane.margin>
-                                </Label>
-                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
-                                    <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelVariables" minWidth="360" GridPane.columnIndex="1"
-                                       GridPane.rowIndex="5">
+                                       GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label text="%editor.label.parameters" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="6">
+                                       GridPane.rowIndex="5">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelParameter" minWidth="360" GridPane.columnIndex="1"
-                                       GridPane.rowIndex="6">
+                                       GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label text="%editor.label.plot.color" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="7">
+                                       GridPane.rowIndex="6">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorPlotColor" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="7"/>
+                                           GridPane.rowIndex="6"/>
                                 <Label text="%editor.label.plot.thickness" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="8">
+                                       GridPane.rowIndex="7">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorPlotThickness" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="8"/>
+                                           GridPane.rowIndex="7"/>
                                 <Label text="%editor.label.plot.line.style" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="9">
+                                       GridPane.rowIndex="8">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorLineArt" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="9"/>
+                                           GridPane.rowIndex="8"/>
                             </children>
                         </GridPane>
                         <HBox alignment="CENTER">
