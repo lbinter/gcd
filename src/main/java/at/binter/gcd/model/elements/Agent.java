@@ -1,11 +1,11 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.Editable;
 import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.PlotStyle;
+import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
 
-public class Agent extends Function implements HasPlotStyle, Editable<Agent>, Comparable<Agent> {
+public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, Comparable<Agent> {
     public static String assignmentSymbol = ":=";
     private String description;
 
@@ -30,11 +30,6 @@ public class Agent extends Function implements HasPlotStyle, Editable<Agent>, Co
         setFunction(modified.getFunction());
         setDescription(modified.getDescription());
         plotStyle.update(modified);
-    }
-
-    @Override
-    public int compareTo(Agent o) {
-        return name.compareTo(o.getName());
     }
 
     @Override
@@ -75,5 +70,18 @@ public class Agent extends Function implements HasPlotStyle, Editable<Agent>, Co
     @Override
     public String toString() {
         return Tools.transformMathematicaGreekToUnicodeLetters(name + assignmentSymbol + function);
+    }
+
+    @Override
+    public int compareTo(Agent o) {
+        return name.compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Agent) {
+            return compareTo((Agent) obj) == 0;
+        }
+        return false;
     }
 }

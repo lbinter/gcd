@@ -40,11 +40,16 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         i18nAddTitle = "editor.algebraicVariable.add.title";
         i18nEditTitle = "editor.algebraicVariable.edit.title";
         registerEventHandlers();
+        registerValidators();
     }
 
     private void registerEventHandlers() {
         editorName.textProperty().addListener(this::nameChanged);
         editorFunction.textProperty().addListener(this::functionChanged);
+    }
+
+    private void registerValidators() {
+
     }
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {

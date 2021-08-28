@@ -1,7 +1,7 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.GCDApplication;
-import at.binter.gcd.model.Editable;
+import at.binter.gcd.model.Updatable;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Alert;
@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 
-public record EditDialog<T extends Editable<T>>(ListView<T> listView,
-                                                ObservableList<T> list,
-                                                Editor<T> editor, GCDApplication gcd) {
+public record EditDialog<T extends Updatable<T>>(ListView<T> listView,
+                                                 ObservableList<T> list,
+                                                 Editor<T> editor, GCDApplication gcd) {
 
     public void editSelectedValue() {
         final int selectedIndex = getGCDModelSelectedIndex();

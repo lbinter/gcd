@@ -57,7 +57,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         ParsedFunction f = new ParsedFunction(editorName.getText(), newValue, AlgebraicVariable.assignmentSymbol);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
-        setLabelTextFormatted(editorLabelDefinition, editorName.getText() + AlgebraicVariable.assignmentSymbol + newValue);
+        setLabelTextFormatted(editorLabelDefinition, editorName.getText() + Agent.assignmentSymbol + newValue);
     }
 
     @Override

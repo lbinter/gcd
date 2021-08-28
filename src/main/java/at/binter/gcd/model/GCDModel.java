@@ -1,27 +1,94 @@
 package at.binter.gcd.model;
 
-import at.binter.gcd.model.elements.Agent;
-import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GCDModel {
+    private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
+
     private final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList();
+    private final Map<String, AlgebraicVariable> algebraicVariableNameMap = new HashMap<>();
     private final ObservableList<Agent> agents = FXCollections.observableArrayList();
+    private final Map<String, Agent> agentNameMap = new HashMap<>();
     private final ObservableList<String> constraints = FXCollections.observableArrayList();
+    private final Map<String, Constraint> constraintNameMap = new HashMap<>();
     private final ObservableList<String> variables = FXCollections.observableArrayList();
+    private final Map<String, Variable> variableNameMap = new HashMap<>();
     private final ObservableList<String> parameters = FXCollections.observableArrayList();
+    private final Map<String, Parameter> parameterNameMap = new HashMap<>();
     private final ObservableList<String> changeMus = FXCollections.observableArrayList();
+    private final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
 
     public boolean canAddAlgebraicVariable(String name) {
-        return true;
+        // boolean nameExists = algebraicVariables.stream().anyMatch(algVar -> name.equals(algVar.getName()));
+        return !StringUtils.isBlank(name) &&
+                !algebraicVariableNameMap.containsKey(name) &&
+                !agentNameMap.containsKey(name) &&
+                !constraintNameMap.containsKey(name) &&
+                !variableNameMap.containsKey(name) &&
+                !parameterNameMap.containsKey(name);
     }
 
     public boolean canAddAgent(String name) {
-        return true;
+        return !StringUtils.isBlank(name) &&
+                !algebraicVariableNameMap.containsKey(name) &&
+                !agentNameMap.containsKey(name) &&
+                !constraintNameMap.containsKey(name) &&
+                !variableNameMap.containsKey(name) &&
+                !parameterNameMap.containsKey(name);
     }
 
     public boolean canAddConstraint(String name) {
+        return !StringUtils.isBlank(name) &&
+                !algebraicVariableNameMap.containsKey(name) &&
+                !agentNameMap.containsKey(name) &&
+                !constraintNameMap.containsKey(name) &&
+                !variableNameMap.containsKey(name) &&
+                !parameterNameMap.containsKey(name);
+    }
+
+    public boolean addAlgebraicVariable(AlgebraicVariable algebraicVariable) {
+        if (algebraicVariable == null) return false;
+        if (!canAddAlgebraicVariable(algebraicVariable.getName())) {
+            log.info("Can not add Algebraic Variable \"{}\": there already is an (algebraic) variable or parameter with that name", algebraicVariable);
+            return false;
+        }
+        algebraicVariableNameMap.put(algebraicVariable.getName(), algebraicVariable);
+        algebraicVariables.add(algebraicVariable);
+        return true;
+    }
+
+    public boolean addAgent(Agent agent) {
+        if (agent == null) return false;
+        if (!canAddAgent(agent.getName())) {
+            log.info("Can not add Agent \"{}\": there already is an (algebraic) variable or parameter with that name", agent);
+            return false;
+        }
+        agentNameMap.put(agent.getName(), agent);
+        agents.add(agent);
+        return true;
+    }
+
+    public boolean removeAlgebraicVariable(AlgebraicVariable algebraicVariable) {
+        if (algebraicVariable == null) return false;
+        if (!algebraicVariableNameMap.containsKey(algebraicVariable.getName())) return false;
+        algebraicVariableNameMap.remove(algebraicVariable.getName());
+        algebraicVariables.remove(algebraicVariable);
+        return true;
+    }
+
+    public boolean removeAlgebraicVariable(int index) {
+        if (index < 0 || index > algebraicVariables.size()) return false;
+        AlgebraicVariable algebraicVariable = algebraicVariables.get(index);
+        algebraicVariableNameMap.remove(algebraicVariable.getName());
+        algebraicVariables.remove(index);
         return true;
     }
 

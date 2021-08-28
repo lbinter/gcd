@@ -1,11 +1,12 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.Editable;
 import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.PlotStyle;
+import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
+import org.apache.commons.lang3.Validate;
 
-public class AlgebraicVariable extends Function implements HasPlotStyle, Editable<AlgebraicVariable>, Comparable<AlgebraicVariable> {
+public class AlgebraicVariable extends Function implements HasPlotStyle, Updatable<AlgebraicVariable>, Comparable<AlgebraicVariable> {
     public static final String assignmentSymbol = "->";
     private final PlotStyle plotStyle = new PlotStyle();
     private String description;
@@ -68,11 +69,24 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Editabl
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(name + assignmentSymbol + function);
+        return Tools.transformMathematicaGreekToUnicodeLetters(name + parameter + assignmentSymbol + function);
+    }
+
+    public boolean isValid() {
+        Validate.notBlank(getName());
+        return false;
     }
 
     @Override
     public int compareTo(AlgebraicVariable o) {
         return name.compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AlgebraicVariable) {
+            return compareTo((AlgebraicVariable) obj) == 0;
+        }
+        return false;
     }
 }

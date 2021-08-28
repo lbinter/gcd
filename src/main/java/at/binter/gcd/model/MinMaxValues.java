@@ -1,6 +1,6 @@
 package at.binter.gcd.model;
 
-public class MinMaxValues implements HasMinMaxValues, Editable<MinMaxValues> {
+public class MinMaxValues implements HasMinMaxValues, Updatable<MinMaxValues> {
     private Double startValue;
     private Double minValue;
     private Double maxValue;

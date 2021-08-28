@@ -2,7 +2,7 @@ package at.binter.gcd.model;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class PlotStyle implements HasPlotStyle, Editable<HasPlotStyle> {
+public class PlotStyle implements HasPlotStyle, Updatable<HasPlotStyle> {
     private String plotColor;
     private Double plotThickness;
     private String plotLineStyle;

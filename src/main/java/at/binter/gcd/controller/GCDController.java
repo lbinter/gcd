@@ -11,8 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +20,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
+import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
 
 
 public class GCDController extends BaseController implements Initializable {
@@ -153,7 +152,17 @@ public class GCDController extends BaseController implements Initializable {
             // TODO: fill with data from selected value
         });
 
-        algVarListView.setOnMouseClicked(this::editSelectedAlgebraicVariable);
+        algVarListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAlgebraicVariable();
+            }
+        });
+
+        agentListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAgent();
+            }
+        });
     }
 
     @FXML
@@ -172,17 +181,9 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void editSelectedAlgebraicVariable(MouseEvent event) {
-        if (event != null && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-            editSelectedAlgebraicVariable();
-        }
-    }
-
-    @FXML
     protected void addNewAgent() {
         agentEditDialog.addNewItem();
     }
-
 
     @FXML
     protected void removeSelectedAgent() {
@@ -193,7 +194,6 @@ public class GCDController extends BaseController implements Initializable {
     protected void editSelectedAgent() {
         agentEditDialog.editSelectedValue();
     }
-
 
     @FXML
     protected void openFileChooser() {

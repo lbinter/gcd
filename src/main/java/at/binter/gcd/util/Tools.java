@@ -2,6 +2,8 @@ package at.binter.gcd.util;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -202,5 +204,9 @@ public class Tools {
 
     public static void setLabelTextFormatted(Label label, String text) {
         label.setText(Tools.transformMathematicaGreekToUnicodeLetters(text));
+    }
+
+    public static boolean isMousePrimaryDoubleClicked(MouseEvent event) {
+        return event != null && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2;
     }
 }

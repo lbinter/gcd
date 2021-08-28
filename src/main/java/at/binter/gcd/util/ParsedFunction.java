@@ -19,8 +19,8 @@ public class ParsedFunction {
 
     public ParsedFunction(String name, String function, String assignmentSymbol) {
         this.assignmentSymbol = assignmentSymbol;
-        this.name = name.replace("\"", "").trim();
-        this.function = function.replace("\"", "").trim();
+        this.name = name.trim().replaceAll(" +", " ").replace("\"", "");
+        this.function = function.trim().replaceAll(" +", " ").replace("\"", "");
         parseFunction();
         sortedVariables.addAll(variables);
         Collections.sort(sortedVariables);
