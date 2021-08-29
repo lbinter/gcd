@@ -69,12 +69,12 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(name + assignmentSymbol + function);
+        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + assignmentSymbol + function);
     }
 
     @Override
     public int compareTo(Agent o) {
-        return name.compareTo(o.getName());
+        return getName().compareTo(o.getName());
     }
 
     @Override

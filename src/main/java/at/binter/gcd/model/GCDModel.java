@@ -1,7 +1,9 @@
 package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +15,7 @@ import java.util.Map;
 public class GCDModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
 
-    private final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList();
+    private final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList(algebraicVariable -> new Observable[]{algebraicVariable.nameProperty()});
     private final Map<String, AlgebraicVariable> algebraicVariableNameMap = new HashMap<>();
     private final ObservableList<Agent> agents = FXCollections.observableArrayList();
     private final Map<String, Agent> agentNameMap = new HashMap<>();
@@ -25,6 +27,45 @@ public class GCDModel {
     private final Map<String, Parameter> parameterNameMap = new HashMap<>();
     private final ObservableList<String> changeMus = FXCollections.observableArrayList();
     private final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
+
+    public GCDModel() {
+        algebraicVariables.addListener((ListChangeListener<AlgebraicVariable>) c -> {
+            while (c.next()) {
+                /* if (c.wasUpdated()) {
+                    // see nameProperty listener
+                }*/
+                if (c.wasAdded()) {
+                    c.getAddedSubList().forEach(algVar -> {
+                        algebraicVariableNameMap.put(algVar.getName(), algVar);
+                        if (log.isTraceEnabled()) {
+                            log.trace("Added to algebraicVariableNameMap entry \"{}\"", algVar.getName());
+                        }
+                        algVar.nameProperty().addListener((observable, oldValue, newValue) -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Algebraic Variable was renamed from \"{}\" to \"{}\"", oldValue, newValue);
+                            }
+                            AlgebraicVariable removed = algebraicVariableNameMap.remove(oldValue);
+                            if (removed != null) {
+                                if (log.isTraceEnabled()) {
+                                    log.trace("Removed from algebraicVariableNameMap entry \"{}\"", oldValue);
+                                }
+                            } else {
+                                log.error("Could not remove \"{}\" from algebraicVariableNameMap", oldValue);
+                            }
+                            algebraicVariableNameMap.put(newValue, algVar);
+                            log.trace("Added to algebraicVariableNameMap entry \"{}\"", newValue);
+                        });
+                    });
+                }
+                if (c.wasRemoved()) {
+                    c.getAddedSubList().forEach(algVar -> {
+                        algebraicVariableNameMap.remove(algVar.getName());
+                        log.trace("Removed from algebraicVariableNameMap entry \"{}\"", algVar.getName());
+                    });
+                }
+            }
+        });
+    }
 
     public boolean canAddAlgebraicVariable(String name) {
         // boolean nameExists = algebraicVariables.stream().anyMatch(algVar -> name.equals(algVar.getName()));

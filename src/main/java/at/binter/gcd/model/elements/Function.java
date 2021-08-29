@@ -2,13 +2,15 @@ package at.binter.gcd.model.elements;
 
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Function {
-    protected String name;
+    protected final StringProperty name = new SimpleStringProperty();
     protected String parameter;
     protected String function;
     protected final List<String> variables = new ArrayList<>();
@@ -16,18 +18,22 @@ public abstract class Function {
 
     public abstract String getAssignmentSymbol();
 
-    public String getName() {
+    public StringProperty nameProperty() {
         return name;
+    }
+
+    public String getName() {
+        return nameProperty().get();
     }
 
     public void setName(String name) {
         name = name.trim().replaceAll(" +", " ");
         if (name.contains("[t]")) {
             name = name.replace("[t]", "");
-            setParameter("[t]");
+            setParameter("t");
             // TODO fix that only last occurence and greek \[greek] works
         }
-        this.name = name;
+        nameProperty().set(name);
     }
 
     public String getFunction() {

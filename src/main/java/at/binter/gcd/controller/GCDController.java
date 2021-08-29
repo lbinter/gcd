@@ -122,7 +122,7 @@ public class GCDController extends BaseController implements Initializable {
         registerEventHandlers();
     }
 
-    public void initializeGcdDepended() {
+    public void initializeGCDDepended() {
         algebraicVariableEditDialog = new EditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
         agentEditDialog = new EditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
     }
@@ -197,7 +197,6 @@ public class GCDController extends BaseController implements Initializable {
 
     @FXML
     protected void openFileChooser() {
-        System.out.println("openFileChooser called");
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
         fc.setSelectedExtensionFilter(gcdFileExt);

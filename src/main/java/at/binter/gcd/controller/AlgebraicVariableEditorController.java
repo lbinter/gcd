@@ -20,6 +20,8 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     @FXML
     private TextField editorName;
     @FXML
+    private TextField editorParameter;
+    @FXML
     private TextField editorFunction;
     @FXML
     private TextField editorDescription;
@@ -45,6 +47,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
 
     private void registerEventHandlers() {
         editorName.textProperty().addListener(this::nameChanged);
+        editorParameter.textProperty().addListener(this::parameterChanged);
         editorFunction.textProperty().addListener(this::functionChanged);
     }
 
@@ -53,19 +56,30 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     }
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        setLabelTextFormatted(editorLabelDefinition, newValue + AlgebraicVariable.assignmentSymbol + editorFunction.getText());
+        setLabelTextFormatted(editorLabelDefinition, newValue + "[" + editorParameter.getText() + "]" + AlgebraicVariable.assignmentSymbol + editorFunction.getText());
+        setDefinition(newValue, editorParameter.getText(), editorFunction.getText());
+    }
+
+
+    private void parameterChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        setDefinition(editorName.getText(), newValue, editorFunction.getText());
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         ParsedFunction f = new ParsedFunction(editorName.getText(), newValue, AlgebraicVariable.assignmentSymbol);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
-        setLabelTextFormatted(editorLabelDefinition, editorName.getText() + AlgebraicVariable.assignmentSymbol + newValue);
+        setDefinition(editorName.getText(), editorParameter.getText(), newValue);
+    }
+
+    private void setDefinition(String name, String parameter, String function) {
+        setLabelTextFormatted(editorLabelDefinition, name + "[" + parameter + "]" + AlgebraicVariable.assignmentSymbol + function);
     }
 
     @Override
     protected void clearData() {
         editorName.setText("");
+        editorParameter.setText("t");
         editorFunction.setText("");
         editorDescription.setText("");
         editorLabelVariables.setText("");
@@ -79,6 +93,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     public AlgebraicVariable createDataObject() {
         AlgebraicVariable algVar = new AlgebraicVariable();
         algVar.setName(editorName.getText());
+        algVar.setParameter(editorParameter.getText());
         algVar.setFunction(editorFunction.getText());
         algVar.setDescription(editorDescription.getText());
         algVar.setPlotColor(editorPlotColor.getText());
@@ -92,6 +107,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         editorLabelVariables.setText("");
         editorLabelParameter.setText("");
         editorName.setText(data.getName());
+        editorParameter.setText(data.getParameter());
         editorFunction.setText(data.getFunction());
         editorDescription.setText(data.getDescription());
         editorPlotColor.setText(data.getPlotColor());

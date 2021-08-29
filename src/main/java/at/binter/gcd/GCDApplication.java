@@ -133,7 +133,7 @@ public class GCDApplication extends Application {
 
         gcdController = loaderGCD.getController();
         gcdController.setApplication(this);
-        gcdController.initializeGcdDepended();
+        gcdController.initializeGCDDepended();
 
         primaryStage.show();
     }

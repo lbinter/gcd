@@ -14,6 +14,7 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
     @Override
     public void update(AlgebraicVariable modified) {
         setName(modified.getName());
+        setParameter(modified.getParameter());
         setFunction(modified.getFunction());
         setDescription(modified.getDescription());
         plotStyle.update(modified);
@@ -69,7 +70,7 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(name + parameter + assignmentSymbol + function);
+        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + "[" + parameter + "]" + assignmentSymbol + function);
     }
 
     public boolean isValid() {
@@ -79,7 +80,7 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
 
     @Override
     public int compareTo(AlgebraicVariable o) {
-        return name.compareTo(o.getName());
+        return getName().compareTo(o.getName());
     }
 
     @Override

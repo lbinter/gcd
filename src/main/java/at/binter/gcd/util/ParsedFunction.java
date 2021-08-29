@@ -26,11 +26,14 @@ public class ParsedFunction {
         Collections.sort(sortedVariables);
         sortedParameters.addAll(parameters);
         Collections.sort(sortedParameters);
+        if (log.isTraceEnabled()) {
+            log.trace("Found variables \"{}\" and parameters \"{}\"", String.join(",", sortedVariables), String.join(",", sortedParameters));
+        }
     }
 
     private void parseFunction() {
         if (log.isTraceEnabled()) {
-            log.trace("parse function from \"{}\"", function);
+            log.trace("Parse function from \"{}\"", function);
         }
         try {
             String[] vars = Tools.split(function, "-", "+", " ", "/", "^");
@@ -52,12 +55,10 @@ public class ParsedFunction {
             }
         } catch (IllegalArgumentException e) {
             // Any invalid variable names should throw an IllegalArgumentException
+            // TODO check for illegal
             variables.clear();
             parameters.clear();
             throw e;
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("Found variables \"{}\" and parameters \"{}\" in function \"{}\"", sortedVariables, sortedParameters, function);
         }
     }
 
