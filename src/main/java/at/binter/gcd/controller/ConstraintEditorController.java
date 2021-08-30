@@ -1,104 +1,79 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.model.elements.Constraint;
+import at.binter.gcd.util.ParsedFunction;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.input.InputMethodEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
+import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
-public class ConstraintEditorController extends BaseController implements Initializable {
-    private Stage popup;
-
-    @FXML
-    private TitledPane editorTitle;
+public class ConstraintEditorController extends BaseEditorController<Constraint> implements Initializable {
 
     @FXML
-    private TextField editorDefinition;
-
+    private Label editorLabelId;
+    @FXML
+    private TextField editorCondition;
     @FXML
     private TextField editorDescription;
-
-    @FXML
-    private Label editorLabelNumber;
-
-    @FXML
-    private Label editorLabelCondition;
-
     @FXML
     private Label editorLabelVariables;
-
     @FXML
     private Label editorLabelParameter;
-
-    @FXML
-    private Button editorButtonConfirm;
-
-    @FXML
-    private Button editorButtonCancel;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        i18nAddTitle = "editor.constraint.add.title";
+        i18nEditTitle = "editor.constraint.edit.title";
         registerEventHandlers();
     }
 
-    public void definitionChanged(InputMethodEvent inputMethodEvent) {
-        System.out.println("test: " + inputMethodEvent.getCommitted());
-    }
-
     private void registerEventHandlers() {
-        editorButtonCancel.setOnAction(event -> popup.close());
-        editorDefinition.textProperty().addListener((observable, oldValue, newValue) -> {
-            // TODO: parse and fill other fields from input
-        });
+        editorCondition.textProperty().addListener(this::conditionChanged);
     }
 
-    public void createEditor() {
-        createEditor(null);
+    private void conditionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        ParsedFunction f = new ParsedFunction(newValue);
+        setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
+        setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
     }
 
-    private void clearData() {
-        editorDefinition.setText("");
+    @Override
+    public Constraint createDataObject() {
+        Constraint constraint = new Constraint();
+        if (StringUtils.isBlank(editorLabelId.getText())) {
+            // id will be set via gcd model constraint observable list listener
+            constraint.setId(-1);
+        } else {
+            constraint.setId(Integer.parseInt(editorLabelId.getText()));
+        }
+        constraint.setCondition(editorCondition.getText());
+        constraint.setDescription(editorDescription.getText());
+        return constraint;
+    }
+
+    public void clearData() {
+        editorLabelId.setText("");
+        editorCondition.setText("");
         editorDescription.setText("");
-        editorLabelNumber.setText("");
-        editorLabelCondition.setText("");
         editorLabelVariables.setText("");
         editorLabelParameter.setText("");
     }
 
-    public void createEditor(Object dataObject) {
-        popup = new Stage();
-        popup.initStyle(StageStyle.UNDECORATED);
-        popup.setScene(gcd.constraintEditorScene);
-        String i18nTitle;
-        String i18nConfirm;
-        if (dataObject == null) {
-            i18nTitle = "editor.constraint.add.title";
-            i18nConfirm = "editor.button.add";
-        } else {
-            i18nTitle = "editor.constraint.edit.title";
-            i18nConfirm = "editor.button.edit";
-        }
-        editorTitle.setText(resources.getString(i18nTitle));
-        editorButtonConfirm.setText(resources.getString(i18nConfirm));
-        popup.initOwner(gcd.primaryStage);
-        popup.initModality(Modality.WINDOW_MODAL);
-        clearData();
-        if (dataObject != null) {
-            // TODO: fillData();
-        }
-        addStageCloseOnEscapeKey(popup, gcd.constraintEditorScene);
-        popup.showAndWait();
+    @Override
+    protected void fillDataFrom(Constraint data) {
+        editorLabelVariables.setText("");
+        editorLabelParameter.setText("");
+        editorLabelId.setText(String.valueOf(data.getId()));
+        editorCondition.setText(data.getCondition());
+        editorDescription.setText(data.getDescription());
     }
 }

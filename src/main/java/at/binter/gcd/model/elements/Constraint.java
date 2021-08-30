@@ -1,28 +1,35 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.HasPlotStyle;
-import at.binter.gcd.model.PlotStyle;
+import at.binter.gcd.model.HasParameterStringList;
+import at.binter.gcd.model.HasVariableStringList;
 import at.binter.gcd.model.Updatable;
+import at.binter.gcd.util.ParsedFunction;
+import at.binter.gcd.util.Tools;
 
-public class Constraint implements HasPlotStyle, Updatable<Constraint>, Comparable<Constraint> {
-    public String id;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Constraint implements Updatable<Constraint>, Comparable<Constraint>, HasVariableStringList, HasParameterStringList {
+    public int id;
     public String condition;
     private String description;
-    private final PlotStyle plotStyle = new PlotStyle();
+    protected final List<String> variables = new ArrayList<>();
+    protected final List<String> parameters = new ArrayList<>();
 
     @Override
     public void update(Constraint modified) {
-        plotStyle.update(modified);
-        setId(modified.getId());
+        if (modified.getId() != -1) {
+            setId(modified.getId());
+        }
         setCondition(modified.getCondition());
         setDescription(modified.getDescription());
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -31,7 +38,16 @@ public class Constraint implements HasPlotStyle, Updatable<Constraint>, Comparab
     }
 
     public void setCondition(String condition) {
-        this.condition = condition;
+        ParsedFunction parsedFunction;
+        if (condition.contains(":=")) {
+            String[] split = Tools.split(condition.replace("\"", "").trim(), ":=");
+            parsedFunction = new ParsedFunction(split[1]);
+        } else {
+            parsedFunction = new ParsedFunction(condition);
+        }
+        this.condition = parsedFunction.function;
+        variables.addAll(parsedFunction.sortedVariables);
+        parameters.addAll(parsedFunction.sortedParameters);
     }
 
     public String getDescription() {
@@ -43,38 +59,19 @@ public class Constraint implements HasPlotStyle, Updatable<Constraint>, Comparab
     }
 
     @Override
-    public String getPlotColor() {
-        return plotStyle.getPlotColor();
+    public List<String> getVariables() {
+        return variables;
     }
 
     @Override
-    public void setPlotColor(String plotColor) {
-        plotStyle.setPlotColor(plotColor);
+    public List<String> getParameters() {
+        return parameters;
     }
 
-    @Override
-    public Double getPlotThickness() {
-        return plotStyle.getPlotThickness();
-    }
 
     @Override
-    public void setPlotThickness(Double plotThickness) {
-        plotStyle.setPlotThickness(plotThickness);
-    }
-
-    @Override
-    public String getPlotLineStyle() {
-        return plotStyle.getPlotLineStyle();
-    }
-
-    @Override
-    public void setPlotLineStyle(String plotLineStyle) {
-        plotStyle.setPlotLineStyle(plotLineStyle);
-    }
-
-    @Override
-    public boolean hasValidPlotStyle() {
-        return plotStyle.hasValidPlotStyle();
+    public String toString() {
+        return String.format("%2d", id) + ": " + condition;
     }
 
     @Override

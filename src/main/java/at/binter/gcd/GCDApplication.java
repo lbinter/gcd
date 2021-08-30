@@ -109,6 +109,7 @@ public class GCDApplication extends Application {
         constraintEditorScene = new Scene(loaderConstraintEditor.load());
         constraintEditorController = loaderConstraintEditor.getController();
         constraintEditorController.setApplication(this);
+        constraintEditorController.setScene(constraintEditorScene);
 
         loaderVariableEditor = new FXMLLoader();
         loaderVariableEditor.setLocation(getClass().getResource("editor/VariableEditor.fxml"));

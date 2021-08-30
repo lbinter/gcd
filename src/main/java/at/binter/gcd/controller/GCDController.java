@@ -1,8 +1,7 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.GCDModel;
-import at.binter.gcd.model.elements.Agent;
-import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
@@ -43,64 +42,36 @@ public class GCDController extends BaseController implements Initializable {
     private Button buttonHelp;
 
     @FXML
-    private Button algVarButtonAdd;
-
-    @FXML
-    private Button algVarButtonRemove;
-
-    @FXML
-    private Button algVarButtonEdit;
-
-    @FXML
     private ListView<AlgebraicVariable> algVarListView;
-
-    @FXML
-    private Button agentButtonAdd;
-
-    @FXML
-    private Button agentButtonRemove;
-
-    @FXML
-    private Button agentButtonEdit;
-
     @FXML
     private ListView<Agent> agentListView;
-
     @FXML
-    private Button constraintButtonAdd;
-
-    @FXML
-    private Button constraintButtonRemove;
-
-    @FXML
-    private Button constraintButtonEdit;
-
-    @FXML
-    private ListView<String> constraintListView;
+    private ListView<Constraint> constraintListView;
 
     @FXML
     private Button variableButtonEdit;
 
     @FXML
-    private ListView<String> variableListView;
+    private ListView<Variable> variableListView;
 
     @FXML
     private Button parameterButtonEdit;
 
     @FXML
-    private ListView<String> parameterListView;
+    private ListView<Parameter> parameterListView;
 
     @FXML
     private Button changeMuButtonEdit;
 
     @FXML
-    private ListView<String> changeMuListView;
+    private ListView<ChangeMu> changeMuListView;
 
 
     private GCDModel model = new GCDModel();
 
     private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
     private EditDialog<Agent> agentEditDialog;
+    private EditDialog<Constraint> constraintEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -111,7 +82,7 @@ public class GCDController extends BaseController implements Initializable {
         agentListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         agentListView.setItems(model.getAgents().sorted());
         constraintListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        constraintListView.setItems(model.getConstraints().sorted());
+        constraintListView.setItems(model.getConstraints());
         variableListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         variableListView.setItems(model.getVariables().sorted());
         parameterListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -125,17 +96,27 @@ public class GCDController extends BaseController implements Initializable {
     public void initializeGCDDepended() {
         algebraicVariableEditDialog = new EditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
         agentEditDialog = new EditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
+        constraintEditDialog = new EditDialog<>(constraintListView, model.getConstraints(), gcd.constraintEditorController, gcd);
     }
 
     private void registerEventHandlers() {
-
-        constraintButtonAdd.setOnAction(event -> gcd.constraintEditorController.createEditor());
-        constraintButtonEdit.setOnAction(event -> {
-            gcd.constraintEditorController.createEditor(event);
-            // TODO: fill with data from selected value
+        algVarListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAlgebraicVariable();
+            }
         });
-        constraintButtonRemove.setOnAction(event -> gcd.askUserRemoveAlert(constraintListView, model.getConstraints(), "constraint.name"));
 
+        agentListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAgent();
+            }
+        });
+
+        constraintListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedConstraint();
+            }
+        });
 
         variableButtonEdit.setOnAction(event -> {
             gcd.variableEditorController.createEditor(event);
@@ -150,18 +131,6 @@ public class GCDController extends BaseController implements Initializable {
         changeMuButtonEdit.setOnAction(event -> {
             gcd.changeMuEditorController.createEditor(event);
             // TODO: fill with data from selected value
-        });
-
-        algVarListView.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedAlgebraicVariable();
-            }
-        });
-
-        agentListView.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedAgent();
-            }
         });
     }
 
@@ -196,6 +165,21 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
+    protected void addNewConstraint() {
+        constraintEditDialog.addNewItem();
+    }
+
+    @FXML
+    protected void removeSelectedConstraint() {
+        constraintEditDialog.askUserRemoveAlert("constraint.name");
+    }
+
+    @FXML
+    protected void editSelectedConstraint() {
+        constraintEditDialog.editSelectedValue();
+    }
+
+    @FXML
     protected void openFileChooser() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
@@ -221,6 +205,11 @@ public class GCDController extends BaseController implements Initializable {
                     Agent newAgent = new Agent();
                     newAgent.setFunction(agent.function);
                     model.getAgents().add(newAgent);
+                }
+                for (XmlFunction constraint : xmlModel.constraints) {
+                    Constraint newConstraint = new Constraint();
+                    newConstraint.setCondition(constraint.function);
+                    model.getConstraints().add(newConstraint);
                 }
                 // TODO load xml to gcd model
                 // model.loadXMLModel(xmlModel);

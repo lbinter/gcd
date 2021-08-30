@@ -9,18 +9,18 @@ import java.util.*;
 
 public class ParsedFunction {
     private static final Logger log = LoggerFactory.getLogger(ParsedFunction.class);
-    public final String assignmentSymbol;
-    public final String name;
     public final String function;
     public final Set<String> variables = new HashSet<>();
     public final Set<String> parameters = new HashSet<>();
     public final List<String> sortedVariables = new ArrayList<>();
     public final List<String> sortedParameters = new ArrayList<>();
 
-    public ParsedFunction(String name, String function, String assignmentSymbol) {
-        this.assignmentSymbol = assignmentSymbol;
-        this.name = name.trim().replaceAll(" +", " ").replace("\"", "");
+    public ParsedFunction(String function) {
+        //this.name = name.trim().replaceAll(" +", " ").replace("\"", "");
         this.function = function.trim().replaceAll(" +", " ").replace("\"", "");
+        if (log.isTraceEnabled()) {
+            log.trace("Parse function: \"{}\"", function);
+        }
         parseFunction();
         sortedVariables.addAll(variables);
         Collections.sort(sortedVariables);
@@ -32,9 +32,6 @@ public class ParsedFunction {
     }
 
     private void parseFunction() {
-        if (log.isTraceEnabled()) {
-            log.trace("Parse function from \"{}\"", function);
-        }
         try {
             String[] vars = Tools.split(function, "-", "+", " ", "/", "^");
             for (int i = 0; i < vars.length; i++) {

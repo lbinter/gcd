@@ -1,5 +1,7 @@
 package at.binter.gcd.model.elements;
 
+import at.binter.gcd.model.HasParameterStringList;
+import at.binter.gcd.model.HasVariableStringList;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Function {
+public abstract class Function implements HasVariableStringList, HasParameterStringList {
     protected final StringProperty name = new SimpleStringProperty();
     protected String parameter;
     protected String function;
@@ -56,9 +58,9 @@ public abstract class Function {
             if (function.contains(getAssignmentSymbol())) {
                 String[] split = Tools.split(function.replace("\"", "").trim(), getAssignmentSymbol());
                 setName(split[0]);
-                parsedFunction = new ParsedFunction(getName(), split[1], getAssignmentSymbol());
+                parsedFunction = new ParsedFunction(split[1]);
             } else {
-                parsedFunction = new ParsedFunction(getName(), function, getAssignmentSymbol());
+                parsedFunction = new ParsedFunction(function);
             }
             this.function = parsedFunction.function;
             variables.addAll(parsedFunction.sortedVariables);
@@ -66,10 +68,12 @@ public abstract class Function {
         }
     }
 
+    @Override
     public List<String> getVariables() {
         return variables;
     }
 
+    @Override
     public List<String> getParameters() {
         return parameters;
     }

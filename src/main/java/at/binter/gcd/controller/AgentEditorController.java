@@ -1,7 +1,6 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Agent;
-import at.binter.gcd.model.elements.AlgebraicVariable;
 import at.binter.gcd.util.ParsedFunction;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -50,11 +49,11 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
     }
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        setLabelTextFormatted(editorLabelDefinition, newValue + AlgebraicVariable.assignmentSymbol + editorFunction.getText());
+        setLabelTextFormatted(editorLabelDefinition, newValue + Agent.assignmentSymbol + editorFunction.getText());
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        ParsedFunction f = new ParsedFunction(editorName.getText(), newValue, AlgebraicVariable.assignmentSymbol);
+        ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
         setLabelTextFormatted(editorLabelDefinition, editorName.getText() + Agent.assignmentSymbol + newValue);

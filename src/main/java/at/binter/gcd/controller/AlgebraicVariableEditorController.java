@@ -66,7 +66,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        ParsedFunction f = new ParsedFunction(editorName.getText(), newValue, AlgebraicVariable.assignmentSymbol);
+        ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
         setDefinition(editorName.getText(), editorParameter.getText(), newValue);

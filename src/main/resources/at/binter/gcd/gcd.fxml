@@ -153,11 +153,14 @@
                                         <VBox alignment="CENTER" spacing="15.0">
                                             <children>
                                                 <Button fx:id="constraintButtonAdd" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.add"/>
+                                                        mnemonicParsing="false" onAction="#addNewConstraint"
+                                                        text="%button.add"/>
                                                 <Button fx:id="constraintButtonRemove" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.remove"/>
+                                                        mnemonicParsing="false" onAction="#removeSelectedConstraint"
+                                                        text="%button.remove"/>
                                                 <Button fx:id="constraintButtonEdit" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.edit"/>
+                                                        mnemonicParsing="false" onAction="#editSelectedConstraint"
+                                                        text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>
