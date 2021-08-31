@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
+
 public class ParsedFunction {
     private static final Logger log = LoggerFactory.getLogger(ParsedFunction.class);
     public final String function;
@@ -16,8 +18,7 @@ public class ParsedFunction {
     public final List<String> sortedParameters = new ArrayList<>();
 
     public ParsedFunction(String function) {
-        //this.name = name.trim().replaceAll(" +", " ").replace("\"", "");
-        this.function = function.trim().replaceAll(" +", " ").replace("\"", "");
+        this.function = sanitizeString(function).replace("\"", "");
         if (log.isTraceEnabled()) {
             log.trace("Parse function: \"{}\"", function);
         }
@@ -35,9 +36,9 @@ public class ParsedFunction {
         try {
             String[] vars = Tools.split(function, "-", "+", " ", "/", "^");
             for (int i = 0; i < vars.length; i++) {
-                vars[i] = vars[i].replace("(", "").replace(")", "");
+                vars[i] = vars[i].replace("(", " ").replace(")", " ");
                 if (vars[i].contains("[t]")) {
-                    String variableName = vars[i].replace("[t]", "").replace("'", "").trim();
+                    String variableName = vars[i].replace("[t]", " ").replace("'", " ").trim();
                     if (StringUtils.isNotBlank(variableName) && !NumberUtils.isParsable(variableName.replace(".", "").replace(",", ""))) {
                         variables.add(variableName);
                     }

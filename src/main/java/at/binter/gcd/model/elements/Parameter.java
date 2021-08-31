@@ -1,26 +1,46 @@
 package at.binter.gcd.model.elements;
 
+import at.binter.gcd.model.FunctionReference;
 import at.binter.gcd.model.HasMinMaxValues;
 import at.binter.gcd.model.MinMaxValues;
 import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
 
+import java.util.Set;
+
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
+
 public class Parameter implements Updatable<Parameter>, HasMinMaxValues {
     private String name;
     private String description;
-    private String initialCondition;
     private final MinMaxValues minMaxValues = new MinMaxValues();
+    private final FunctionReference functionReference = new FunctionReference();
 
     public Parameter(String name) {
-        this.name = name;
+        setName(name);
     }
 
     @Override
     public void update(Parameter modified) {
         setName(modified.getName());
         setDescription(modified.getDescription());
-        setInitialCondition(modified.getInitialCondition());
         minMaxValues.update(modified);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = sanitizeString(name);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = sanitizeString(description);
     }
 
     @Override
@@ -63,28 +83,32 @@ public class Parameter implements Updatable<Parameter>, HasMinMaxValues {
         return minMaxValues.hasNoValues();
     }
 
-    public String getName() {
-        return name;
+    public Set<AlgebraicVariable> getAlgebraicVariables() {
+        return functionReference.getAlgebraicVariables();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Set<Agent> getAgents() {
+        return functionReference.getAgents();
     }
 
-    public String getDescription() {
-        return description;
+    public Set<Constraint> getConstraints() {
+        return functionReference.getConstraints();
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getAlgebraicVariablesAsString() {
+        return functionReference.getAlgebraicVariablesAsString();
     }
 
-    public String getInitialCondition() {
-        return initialCondition;
+    public String getAgentsAsString() {
+        return functionReference.getAgentsAsString();
     }
 
-    public void setInitialCondition(String initialCondition) {
-        this.initialCondition = initialCondition;
+    public String getConstraintsAsString() {
+        return functionReference.getConstraintsAsString();
+    }
+
+    public boolean hasReferences() {
+        return functionReference.hasReferences();
     }
 
     @Override

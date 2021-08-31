@@ -2,21 +2,23 @@ package at.binter.gcd.model.elements;
 
 import at.binter.gcd.model.HasParameterStringList;
 import at.binter.gcd.model.HasVariableStringList;
+import at.binter.gcd.model.VariableParameterList;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public abstract class Function implements HasVariableStringList, HasParameterStringList {
-    protected final StringProperty name = new SimpleStringProperty();
+    private final StringProperty name = new SimpleStringProperty();
+    private final StringProperty function = new SimpleStringProperty();
+    private final VariableParameterList variableParameterList = new VariableParameterList();
     protected String parameter;
-    protected String function;
-    protected final List<String> variables = new ArrayList<>();
-    protected final List<String> parameters = new ArrayList<>();
 
     public abstract String getAssignmentSymbol();
 
@@ -24,22 +26,27 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
         return name;
     }
 
+    public StringProperty functionProperty() {
+        return function;
+    }
+
     public String getName() {
         return nameProperty().get();
     }
 
     public void setName(String name) {
-        name = name.trim().replaceAll(" +", " ");
+        if (name == null) return;
+        name = sanitizeString(name);
         if (name.contains("[t]")) {
             name = name.replace("[t]", "");
             setParameter("t");
-            // TODO fix that only last occurence and greek \[greek] works
+            // TODO fix that only last occurrence and greek \[greek] works
         }
         nameProperty().set(name);
     }
 
     public String getFunction() {
-        return function;
+        return functionProperty().get();
     }
 
     public String getParameter() {
@@ -47,12 +54,12 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
     }
 
     public void setParameter(String parameter) {
-        this.parameter = parameter;
+        this.parameter = sanitizeString(parameter);
     }
 
     public void setFunction(String function) {
         if (StringUtils.isBlank(function)) {
-            this.function = "";
+            functionProperty().set("");
         } else {
             ParsedFunction parsedFunction;
             if (function.contains(getAssignmentSymbol())) {
@@ -62,19 +69,47 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
             } else {
                 parsedFunction = new ParsedFunction(function);
             }
-            this.function = parsedFunction.function;
-            variables.addAll(parsedFunction.sortedVariables);
-            parameters.addAll(parsedFunction.sortedParameters);
+            fillVariables(parsedFunction.variables);
+            fillParameters(parsedFunction.parameters);
+            functionProperty().set(parsedFunction.function);
         }
+    }
+
+    public void fillParameters(Set<String> newParameters) {
+        variableParameterList.fillParameters(newParameters);
+    }
+
+    public void fillVariables(Set<String> newVariables) {
+        variableParameterList.fillVariables(newVariables);
     }
 
     @Override
     public List<String> getVariables() {
-        return variables;
+        return variableParameterList.getVariables();
+    }
+
+    @Override
+    public Set<String> getVariablesRemoved() {
+        return variableParameterList.getVariablesRemoved();
+    }
+
+    @Override
+    public Set<String> getVariablesAdded() {
+        return variableParameterList.getVariablesAdded();
     }
 
     @Override
     public List<String> getParameters() {
-        return parameters;
+        return variableParameterList.getParameters();
+    }
+
+    @Override
+    public Set<String> getParametersRemoved() {
+        return variableParameterList.getParametersRemoved();
+    }
+
+    @Override
+    public Set<String> getParametersAdded() {
+        return variableParameterList.getParametersAdded();
     }
 }

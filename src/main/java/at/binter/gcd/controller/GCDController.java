@@ -4,6 +4,7 @@ import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
+import at.binter.gcd.model.xml.XmlVariable;
 import at.binter.gcd.xml.XmlReader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,16 +29,12 @@ public class GCDController extends BaseController implements Initializable {
 
     @FXML
     private Button buttonSave;
-
     @FXML
     private Button buttonUndo;
-
     @FXML
     private Button buttonRedo;
-
     @FXML
     private Button buttonGCD;
-
     @FXML
     private Button buttonHelp;
 
@@ -47,31 +44,22 @@ public class GCDController extends BaseController implements Initializable {
     private ListView<Agent> agentListView;
     @FXML
     private ListView<Constraint> constraintListView;
-
-    @FXML
-    private Button variableButtonEdit;
-
     @FXML
     private ListView<Variable> variableListView;
-
-    @FXML
-    private Button parameterButtonEdit;
-
     @FXML
     private ListView<Parameter> parameterListView;
-
     @FXML
     private Button changeMuButtonEdit;
-
     @FXML
     private ListView<ChangeMu> changeMuListView;
-
 
     private GCDModel model = new GCDModel();
 
     private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
     private EditDialog<Agent> agentEditDialog;
     private EditDialog<Constraint> constraintEditDialog;
+    private EditDialog<Variable> variableEditDialog;
+    private EditDialog<Parameter> parameterEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -97,6 +85,8 @@ public class GCDController extends BaseController implements Initializable {
         algebraicVariableEditDialog = new EditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
         agentEditDialog = new EditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
         constraintEditDialog = new EditDialog<>(constraintListView, model.getConstraints(), gcd.constraintEditorController, gcd);
+        variableEditDialog = new EditDialog<>(variableListView, model.getVariables(), gcd.variableEditorController, gcd);
+        parameterEditDialog = new EditDialog<>(parameterListView, model.getParameters(), gcd.parameterEditorController, gcd);
     }
 
     private void registerEventHandlers() {
@@ -118,14 +108,16 @@ public class GCDController extends BaseController implements Initializable {
             }
         });
 
-        variableButtonEdit.setOnAction(event -> {
-            gcd.variableEditorController.createEditor(event);
-            // TODO: fill with data from selected value
+        variableListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedVariable();
+            }
         });
 
-        parameterButtonEdit.setOnAction(event -> {
-            gcd.parameterEditorController.createEditor(event);
-            // TODO: fill with data from selected value
+        parameterListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedParameter();
+            }
         });
 
         changeMuButtonEdit.setOnAction(event -> {
@@ -180,6 +172,16 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
+    protected void editSelectedVariable() {
+        variableEditDialog.editSelectedValue();
+    }
+
+    @FXML
+    protected void editSelectedParameter() {
+        parameterEditDialog.editSelectedValue();
+    }
+
+    @FXML
     protected void openFileChooser() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
@@ -210,6 +212,17 @@ public class GCDController extends BaseController implements Initializable {
                     Constraint newConstraint = new Constraint();
                     newConstraint.setCondition(constraint.function);
                     model.getConstraints().add(newConstraint);
+                }
+                for (XmlVariable variable : xmlModel.variables) {
+                    Variable v = model.getVariable(variable.name);
+                    v.setDescription(variable.description);
+                    v.setInitialCondition(variable.initialConditions);
+                    v.setStartValue(variable.startValue);
+                    v.setMinValue(variable.minValue);
+                    v.setMaxValue(variable.maxValue);
+                    v.setPlotColor(variable.getPlotColor());
+                    v.setPlotThickness(variable.getPlotThickness());
+                    v.setPlotLineStyle(variable.getPlotLineStyle());
                 }
                 // TODO load xml to gcd model
                 // model.loadXMLModel(xmlModel);

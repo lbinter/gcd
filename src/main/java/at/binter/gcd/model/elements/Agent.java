@@ -5,6 +5,8 @@ import at.binter.gcd.model.PlotStyle;
 import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
 
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
+
 public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, Comparable<Agent> {
     public static String assignmentSymbol = ":=";
     private String description;
@@ -21,7 +23,7 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = sanitizeString(description);
     }
 
     @Override
@@ -69,7 +71,7 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + assignmentSymbol + function);
+        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + assignmentSymbol + getFunction());
     }
 
     @Override

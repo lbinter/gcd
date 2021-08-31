@@ -11,7 +11,8 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.Tools.readDoubleValueFrom;
+import static at.binter.gcd.util.GuiUtils.doubleToString;
+import static at.binter.gcd.util.GuiUtils.readDoubleValueFrom;
 import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class AgentEditorController extends BaseEditorController<Agent> implements Initializable {
@@ -32,7 +33,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
     @FXML
     private TextField editorPlotThickness;
     @FXML
-    private TextField editorLineArt;
+    private TextField editorPlotLineArt;
 
 
     @Override
@@ -67,7 +68,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         agent.setDescription(editorDescription.getText());
         agent.setPlotColor(editorPlotColor.getText());
         agent.setPlotThickness(readDoubleValueFrom(editorPlotThickness));
-        agent.setPlotLineStyle(editorLineArt.getText());
+        agent.setPlotLineStyle(editorPlotLineArt.getText());
         return agent;
     }
 
@@ -81,7 +82,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         editorLabelParameter.setText("");
         editorPlotColor.setText("");
         editorPlotThickness.setText("");
-        editorLineArt.setText("");
+        editorPlotLineArt.setText("");
     }
 
     @Override
@@ -92,9 +93,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         editorFunction.setText(data.getFunction());
         editorDescription.setText(data.getDescription());
         editorPlotColor.setText(data.getPlotColor());
-        if (data.getPlotThickness() != null) {
-            editorPlotThickness.setText(Double.toString(data.getPlotThickness()));
-        }
-        editorLineArt.setText(data.getPlotLineStyle());
+        editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
+        editorPlotLineArt.setText(data.getPlotLineStyle());
     }
 }

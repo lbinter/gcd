@@ -128,7 +128,7 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorLineArt" minWidth="360" GridPane.columnIndex="1"
+                                <TextField fx:id="editorPlotLineArt" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="11"/>
                             </children>
                         </GridPane>

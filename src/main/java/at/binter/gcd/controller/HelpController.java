@@ -14,7 +14,7 @@ import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
 
 public class HelpController extends BaseController implements Initializable {
-    private static PseudoClass selected = PseudoClass.getPseudoClass("selected");
+    private static final PseudoClass selected = PseudoClass.getPseudoClass("selected");
 
     @FXML
     private Label correct;

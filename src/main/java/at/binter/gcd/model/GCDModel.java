@@ -29,16 +29,13 @@ public class GCDModel {
     public GCDModel() {
         algebraicVariables.addListener((ListChangeListener<AlgebraicVariable>) c -> {
             while (c.next()) {
-                /* if (c.wasUpdated()) {
-                    // see nameProperty listener
-                }*/
                 if (c.wasAdded()) {
                     c.getAddedSubList().forEach(algVar -> {
                         algebraicVariableNameMap.put(algVar.getName(), algVar);
                         addVariables(algVar);
                         addParameters(algVar);
-                        if (log.isTraceEnabled()) {
-                            log.trace("Added to algebraicVariableNameMap entry \"{}\"", algVar.getName());
+                        if (log.isDebugEnabled()) {
+                            log.debug("Added to algebraic variable \"{}\"", algVar.getName());
                         }
                         algVar.nameProperty().addListener((observable, oldValue, newValue) -> {
                             if (log.isDebugEnabled()) {
@@ -53,7 +50,21 @@ public class GCDModel {
                                 log.error("Could not remove \"{}\" from algebraicVariableNameMap", oldValue);
                             }
                             algebraicVariableNameMap.put(newValue, algVar);
-                            log.trace("Added to algebraicVariableNameMap entry \"{}\"", newValue);
+                            if (log.isTraceEnabled()) {
+                                log.trace("Added to algebraicVariableNameMap entry \"{}\"", newValue);
+                            }
+                        });
+                        algVar.functionProperty().addListener((observable, oldValue, newValue) -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Algebraic Variable \"{}\" function was changed from \"{}\" to \"{}\"", algVar.getName(), oldValue, newValue);
+                                log.debug("Function change: Variables added: {} Variables removed: {} Parameters added: {} Parameters removed: {}",
+                                        algVar.getVariablesAdded(),
+                                        algVar.getVariablesRemoved(),
+                                        algVar.getParametersAdded(),
+                                        algVar.getParametersRemoved());
+                            }
+                            updateVariables(algVar);
+                            updateParameters(algVar);
                         });
                     });
                 }
@@ -62,7 +73,7 @@ public class GCDModel {
                         removeVariables(algVar);
                         removeParameters(algVar);
                         algebraicVariableNameMap.remove(algVar.getName());
-                        log.trace("Removed from algebraicVariableNameMap entry \"{}\"", algVar.getName());
+                        log.trace("Removed algebraic variable \"{}\"", algVar);
                     });
                 }
             }
@@ -70,16 +81,13 @@ public class GCDModel {
 
         agents.addListener((ListChangeListener<Agent>) c -> {
             while (c.next()) {
-                /* if (c.wasUpdated()) {
-                    // see nameProperty listener
-                }*/
                 if (c.wasAdded()) {
                     c.getAddedSubList().forEach(agent -> {
                         agentNameMap.put(agent.getName(), agent);
                         addVariables(agent);
                         addParameters(agent);
                         if (log.isTraceEnabled()) {
-                            log.trace("Added to agentNameMap entry \"{}\"", agent.getName());
+                            log.trace("Added agent \"{}\"", agent.getName());
                         }
                         agent.nameProperty().addListener((observable, oldValue, newValue) -> {
                             if (log.isDebugEnabled()) {
@@ -94,7 +102,21 @@ public class GCDModel {
                                 log.error("Could not remove \"{}\" from agentNameMap", oldValue);
                             }
                             agentNameMap.put(newValue, agent);
-                            log.trace("Added to agentNameMap entry \"{}\"", newValue);
+                            if (log.isTraceEnabled()) {
+                                log.trace("Added to agentNameMap entry \"{}\"", newValue);
+                            }
+                        });
+                        agent.functionProperty().addListener((observable, oldValue, newValue) -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Agent \"{}\" function was changed from \"{}\" to \"{}\"", agent.getName(), oldValue, newValue);
+                                log.debug("Function change: Variables added: {} Variables removed: {} Parameters added: {} Parameters removed: {}",
+                                        agent.getVariablesAdded(),
+                                        agent.getVariablesRemoved(),
+                                        agent.getParametersAdded(),
+                                        agent.getParametersRemoved());
+                            }
+                            updateVariables(agent);
+                            updateParameters(agent);
                         });
                     });
                 }
@@ -103,7 +125,7 @@ public class GCDModel {
                         removeVariables(agent);
                         removeParameters(agent);
                         agentNameMap.remove(agent.getName());
-                        log.trace("Removed from agentNameMap entry \"{}\"", agent.getName());
+                        log.trace("Removed agent \"{}\"", agent);
                     });
                 }
             }
@@ -119,6 +141,18 @@ public class GCDModel {
                         if (log.isTraceEnabled()) {
                             log.trace("Added constraint \"{}\"", constraint);
                         }
+                        constraint.conditionProperty().addListener((observable, oldValue, newValue) -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Constraint \"{}\" condition was changed from \"{}\" to \"{}\"", constraint.getId(), oldValue, newValue);
+                                log.debug("Condition change: Variables added: {} Variables removed: {} Parameters added: {} Parameters removed: {}",
+                                        constraint.getVariablesAdded(),
+                                        constraint.getVariablesRemoved(),
+                                        constraint.getParametersAdded(),
+                                        constraint.getParametersRemoved());
+                            }
+                            updateVariables(constraint);
+                            updateParameters(constraint);
+                        });
                     });
                 }
                 if (c.wasRemoved()) {
@@ -140,14 +174,16 @@ public class GCDModel {
                     c.getAddedSubList().forEach(variable -> {
                         variableNameMap.put(variable.getName(), variable);
                         if (log.isTraceEnabled()) {
-                            log.trace("Added to variableNameMap entry \"{}\"", variable.getName());
+                            log.trace("Added variable \"{}\"", variable.getName());
                         }
                     });
                 }
                 if (c.wasRemoved()) {
-                    c.getAddedSubList().forEach(variable -> {
+                    c.getRemoved().forEach(variable -> {
                         variableNameMap.remove(variable.getName());
-                        log.trace("Removed from variableNameMap entry \"{}\"", variable.getName());
+                        if (log.isTraceEnabled()) {
+                            log.trace("Removed variable \"{}\"", variable.getName());
+                        }
                     });
                 }
             }
@@ -159,14 +195,16 @@ public class GCDModel {
                     c.getAddedSubList().forEach(parameter -> {
                         parameterNameMap.put(parameter.getName(), parameter);
                         if (log.isTraceEnabled()) {
-                            log.trace("Added to parameterNameMap entry \"{}\"", parameter.getName());
+                            log.trace("Added parameter \"{}\"", parameter.getName());
                         }
                     });
                 }
                 if (c.wasRemoved()) {
-                    c.getAddedSubList().forEach(parameter -> {
+                    c.getRemoved().forEach(parameter -> {
                         parameterNameMap.remove(parameter.getName());
-                        log.trace("Removed from parameterNameMap entry \"{}\"", parameter.getName());
+                        if (log.isTraceEnabled()) {
+                            log.trace("Removed parameter \"{}\"", parameter.getName());
+                        }
                     });
                 }
             }
@@ -175,6 +213,10 @@ public class GCDModel {
 
     public boolean hasAlgebraicVariable(String name) {
         return algebraicVariableNameMap.containsKey(name);
+    }
+
+    public boolean hasAgent(String name) {
+        return agentNameMap.containsKey(name);
     }
 
     public boolean hasVariable(String name) {
@@ -186,103 +228,135 @@ public class GCDModel {
     }
 
     private void addVariables(HasVariableStringList source) {
-        source.getVariables().forEach(name -> {
-            if (hasAlgebraicVariable(name)) return;
-            if (hasVariable(name)) {
-                // TODO add source to variable parent list
-            } else {
-                Variable v = new Variable(name);
-                // TODO add source to variable parent list
-                variables.add(v);
-            }
-        });
+        source.getVariables().forEach(name -> addVariable(source, name));
+    }
+
+    private void addVariable(HasVariableStringList source, String name) {
+        if (hasAlgebraicVariable(name)) return;
+        Variable v;
+        if (hasVariable(name)) {
+            v = getVariable(name);
+        } else {
+            v = new Variable(name);
+            variables.add(v);
+        }
+        if (source instanceof AlgebraicVariable) {
+            v.getAlgebraicVariables().add((AlgebraicVariable) source);
+        } else if (source instanceof Agent) {
+            v.getAgents().add((Agent) source);
+        } else if (source instanceof Constraint) {
+            v.getConstraints().add((Constraint) source);
+        }
     }
 
     private void removeVariables(HasVariableStringList source) {
-        // TODO
+        source.getVariables().forEach(name -> removeVariable(source, name));
+    }
+
+    private void removeVariable(HasVariableStringList source, String name) {
+        if (hasAlgebraicVariable(name)) return;
+        Variable v;
+        if (hasVariable(name)) {
+            v = getVariable(name);
+        } else {
+            return;
+        }
+        if (source instanceof AlgebraicVariable) {
+            v.getAlgebraicVariables().remove((AlgebraicVariable) source);
+        } else if (source instanceof Agent) {
+            v.getAgents().remove((Agent) source);
+        } else if (source instanceof Constraint) {
+            v.getConstraints().remove((Constraint) source);
+        }
+        if (!v.hasReferences()) {
+            removeVariable(v);
+        }
+    }
+
+    private void removeVariable(Variable variable) {
+        if (variable == null) return;
+        if (!variables.remove(variable)) {
+            log.debug("Could not remove variable \"{}\"", variable.getName());
+        }
+    }
+
+    private void updateVariables(HasVariableStringList source) {
+        source.getVariablesAdded().forEach(name -> addVariable(source, name));
+        source.getVariablesRemoved().forEach(name -> removeVariable(source, name));
     }
 
     private void addParameters(HasParameterStringList source) {
-        source.getParameters().forEach(name -> {
-            if (hasParameter(name)) {
-                // TODO add source to variable parent list
-            } else {
-                Parameter p = new Parameter(name);
-                // TODO add source to variable parent list
-                parameters.add(p);
-            }
-        });
+        source.getParameters().forEach(name -> addParameter(source, name));
+    }
+
+    private void addParameter(HasParameterStringList source, String name) {
+        if (hasAlgebraicVariable(name)) return;
+        Parameter p;
+        if (hasParameter(name)) {
+            p = getParameter(name);
+        } else {
+            p = new Parameter(name);
+            parameters.add(p);
+        }
+        if (source instanceof AlgebraicVariable) {
+            p.getAlgebraicVariables().add((AlgebraicVariable) source);
+        } else if (source instanceof Agent) {
+            p.getAgents().add((Agent) source);
+        } else if (source instanceof Constraint) {
+            p.getConstraints().add((Constraint) source);
+        }
     }
 
     private void removeParameters(HasParameterStringList source) {
-        // TODO
+        source.getParameters().forEach(name -> removeParameter(source, name));
+    }
+
+    private void removeParameter(HasParameterStringList source, String name) {
+        if (hasAlgebraicVariable(name)) return;
+        Parameter p;
+        if (hasParameter(name)) {
+            p = getParameter(name);
+        } else {
+            return;
+        }
+        if (source instanceof AlgebraicVariable) {
+            p.getAlgebraicVariables().remove((AlgebraicVariable) source);
+        } else if (source instanceof Agent) {
+            p.getAgents().remove((Agent) source);
+        } else if (source instanceof Constraint) {
+            p.getConstraints().remove((Constraint) source);
+        }
+        if (!p.hasReferences()) {
+            removeParameter(p);
+        }
+    }
+
+    private void removeParameter(Parameter parameter) {
+        if (parameter == null) return;
+        if (!parameters.remove(parameter)) {
+            log.debug("Could not remove parameter \"{}\"", parameter.getName());
+        }
+    }
+
+    private void updateParameters(HasParameterStringList source) {
+        source.getParametersAdded().forEach(name -> addParameter(source, name));
+        source.getParametersRemoved().forEach(name -> removeParameter(source, name));
     }
 
     public boolean canAddAlgebraicVariable(String name) {
-        // boolean nameExists = algebraicVariables.stream().anyMatch(algVar -> name.equals(algVar.getName()));
         return !StringUtils.isBlank(name) &&
-                !algebraicVariableNameMap.containsKey(name) &&
-                !agentNameMap.containsKey(name) &&
-                !variableNameMap.containsKey(name) &&
-                !parameterNameMap.containsKey(name);
+                !hasAlgebraicVariable(name) &&
+                !hasAgent(name) &&
+                !hasVariable(name) &&
+                !hasParameter(name);
     }
 
     public boolean canAddAgent(String name) {
         return !StringUtils.isBlank(name) &&
-                !algebraicVariableNameMap.containsKey(name) &&
-                !agentNameMap.containsKey(name) &&
-                !variableNameMap.containsKey(name) &&
-                !parameterNameMap.containsKey(name);
-    }
-
-    public boolean canAddConstraint(String name) {
-        return !StringUtils.isBlank(name) &&
-                !algebraicVariableNameMap.containsKey(name) &&
-                !agentNameMap.containsKey(name) &&
-                !variableNameMap.containsKey(name) &&
-                !parameterNameMap.containsKey(name);
-    }
-
-    public boolean addAlgebraicVariable(AlgebraicVariable algebraicVariable) {
-        if (algebraicVariable == null) return false;
-        if (!canAddAlgebraicVariable(algebraicVariable.getName())) {
-            log.info("Can not add Algebraic Variable \"{}\": there already is an (algebraic) variable or parameter with that name", algebraicVariable);
-            return false;
-        }
-        algebraicVariableNameMap.put(algebraicVariable.getName(), algebraicVariable);
-        algebraicVariables.add(algebraicVariable);
-        return true;
-    }
-
-    public boolean addAgent(Agent agent) {
-        if (agent == null) return false;
-        if (!canAddAgent(agent.getName())) {
-            log.info("Can not add Agent \"{}\": there already is an (algebraic) variable or parameter with that name", agent);
-            return false;
-        }
-        agentNameMap.put(agent.getName(), agent);
-        agents.add(agent);
-        return true;
-    }
-
-    public boolean removeAlgebraicVariable(AlgebraicVariable algebraicVariable) {
-        if (algebraicVariable == null) return false;
-        if (!algebraicVariableNameMap.containsKey(algebraicVariable.getName())) return false;
-        algebraicVariableNameMap.remove(algebraicVariable.getName());
-        algebraicVariables.remove(algebraicVariable);
-        return true;
-    }
-
-    public boolean removeAlgebraicVariable(int index) {
-        if (index < 0 || index > algebraicVariables.size()) return false;
-        AlgebraicVariable algebraicVariable = algebraicVariables.get(index);
-        algebraicVariableNameMap.remove(algebraicVariable.getName());
-        algebraicVariables.remove(index);
-        return true;
-    }
-
-    public int getNextConstraintId() {
-        return 1; // todo count constraints
+                !hasAlgebraicVariable(name) &&
+                !hasAgent(name) &&
+                !hasVariable(name) &&
+                !hasParameter(name);
     }
 
     public ObservableList<AlgebraicVariable> getAlgebraicVariables() {
@@ -301,9 +375,20 @@ public class GCDModel {
         return variables;
     }
 
+    public Variable getVariable(String name) {
+        if (StringUtils.isBlank(name)) return null;
+        return variableNameMap.get(name);
+    }
+
     public ObservableList<Parameter> getParameters() {
         return parameters;
     }
+
+    public Parameter getParameter(String name) {
+        if (StringUtils.isBlank(name)) return null;
+        return parameterNameMap.get(name);
+    }
+
 
     public ObservableList<ChangeMu> getChangeMus() {
         return changeMus;

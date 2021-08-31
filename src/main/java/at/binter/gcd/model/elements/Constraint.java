@@ -3,18 +3,23 @@ package at.binter.gcd.model.elements;
 import at.binter.gcd.model.HasParameterStringList;
 import at.binter.gcd.model.HasVariableStringList;
 import at.binter.gcd.model.Updatable;
+import at.binter.gcd.model.VariableParameterList;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class Constraint implements Updatable<Constraint>, Comparable<Constraint>, HasVariableStringList, HasParameterStringList {
-    public int id;
-    public String condition;
+    private int id;
+    private final StringProperty condition = new SimpleStringProperty();
     private String description;
-    protected final List<String> variables = new ArrayList<>();
-    protected final List<String> parameters = new ArrayList<>();
+
+    private final VariableParameterList variableParameterList = new VariableParameterList();
 
     @Override
     public void update(Constraint modified) {
@@ -33,8 +38,12 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
         this.id = id;
     }
 
-    public String getCondition() {
+    public StringProperty conditionProperty() {
         return condition;
+    }
+
+    public String getCondition() {
+        return conditionProperty().get();
     }
 
     public void setCondition(String condition) {
@@ -45,9 +54,9 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
         } else {
             parsedFunction = new ParsedFunction(condition);
         }
-        this.condition = parsedFunction.function;
-        variables.addAll(parsedFunction.sortedVariables);
-        parameters.addAll(parsedFunction.sortedParameters);
+        fillVariables(parsedFunction.variables);
+        fillParameters(parsedFunction.parameters);
+        conditionProperty().set(parsedFunction.function);
     }
 
     public String getDescription() {
@@ -55,28 +64,55 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = sanitizeString(description);
+    }
+
+    public void fillParameters(Set<String> newParameters) {
+        variableParameterList.fillParameters(newParameters);
+    }
+
+    public void fillVariables(Set<String> newVariables) {
+        variableParameterList.fillVariables(newVariables);
     }
 
     @Override
     public List<String> getVariables() {
-        return variables;
+        return variableParameterList.getVariables();
+    }
+
+    @Override
+    public Set<String> getVariablesRemoved() {
+        return variableParameterList.getVariablesRemoved();
+    }
+
+    @Override
+    public Set<String> getVariablesAdded() {
+        return variableParameterList.getVariablesAdded();
     }
 
     @Override
     public List<String> getParameters() {
-        return parameters;
+        return variableParameterList.getParameters();
     }
 
+    @Override
+    public Set<String> getParametersRemoved() {
+        return variableParameterList.getParametersRemoved();
+    }
+
+    @Override
+    public Set<String> getParametersAdded() {
+        return variableParameterList.getParametersAdded();
+    }
 
     @Override
     public String toString() {
-        return String.format("%2d", id) + ": " + condition;
+        return String.format("%2d", id) + ": " + getCondition();
     }
 
     @Override
     public int compareTo(Constraint o) {
-        return condition.compareTo(o.getCondition());
+        return getCondition().compareTo(o.getCondition());
     }
 
     @Override

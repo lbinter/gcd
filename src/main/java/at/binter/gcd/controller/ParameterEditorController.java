@@ -1,68 +1,59 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.model.elements.Parameter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
+import static at.binter.gcd.util.GuiUtils.doubleToString;
+import static at.binter.gcd.util.GuiUtils.readDoubleValueFrom;
 
-public class ParameterEditorController extends BaseController implements Initializable {
-    private Stage popup;
-
+public class ParameterEditorController extends BaseEditorController<Parameter> implements Initializable {
     @FXML
     private Label editorLabelName;
-
     @FXML
     private TextField editorDescription;
-
     @FXML
     private TextField editorValueStart;
-
     @FXML
     private TextField editorValueMinimum;
-
     @FXML
     private TextField editorValueMaximum;
-
     @FXML
     private Label editorLabelAlgebraicVariables;
-
     @FXML
     private Label editorLabelAgents;
-
     @FXML
     private Label editorLabelConstraints;
-
-    @FXML
-    private Button editorButtonConfirm;
-
-    @FXML
-    private Button editorButtonCancel;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        i18nAddTitle = "editor.parameter.edit.title";
+        i18nEditTitle = "editor.parameter.edit.title";
         registerEventHandlers();
     }
 
     private void registerEventHandlers() {
-        editorButtonCancel.setOnAction(event -> popup.close());
     }
 
-    public void createEditor() {
-        createEditor(null);
+    @Override
+    public Parameter createDataObject() {
+        Parameter parameter = new Parameter(editorLabelName.getText());
+        parameter.setDescription(editorDescription.getText());
+        parameter.setStartValue(readDoubleValueFrom(editorValueStart));
+        parameter.setMinValue(readDoubleValueFrom(editorValueMinimum));
+        parameter.setMaxValue(readDoubleValueFrom(editorValueMaximum));
+        return parameter;
     }
 
-    private void clearData() {
+    @Override
+    protected void clearData() {
         editorLabelName.setText("");
         editorDescription.setText("");
         editorValueStart.setText("");
@@ -73,17 +64,15 @@ public class ParameterEditorController extends BaseController implements Initial
         editorLabelConstraints.setText("");
     }
 
-    public void createEditor(Object dataObject) {
-        popup = new Stage();
-        popup.initStyle(StageStyle.UNDECORATED);
-        popup.setScene(gcd.parameterEditorScene);
-        popup.initOwner(gcd.primaryStage);
-        popup.initModality(Modality.WINDOW_MODAL);
-        clearData();
-        if (dataObject != null) {
-            // TODO: fillData();
-        }
-        addStageCloseOnEscapeKey(popup, gcd.parameterEditorScene);
-        popup.showAndWait();
+    @Override
+    protected void fillDataFrom(Parameter data) {
+        editorLabelName.setText(data.getName());
+        editorDescription.setText(data.getDescription());
+        editorValueStart.setText(doubleToString(data.getStartValue()));
+        editorValueMinimum.setText(doubleToString(data.getMinValue()));
+        editorValueMaximum.setText(doubleToString(data.getMaxValue()));
+        editorLabelAlgebraicVariables.setText(data.getAlgebraicVariablesAsString());
+        editorLabelAgents.setText(data.getAgentsAsString());
+        editorLabelConstraints.setText(data.getConstraintsAsString());
     }
 }

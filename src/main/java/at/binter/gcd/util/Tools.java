@@ -1,7 +1,6 @@
 package at.binter.gcd.util;
 
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -182,20 +181,6 @@ public class Tools {
             array[i] = Integer.toString(i + 1);
         }
         return array;
-    }
-
-
-    public static Double readDoubleValueFrom(TextField textField) {
-        String text = textField.getText().trim();
-        if (StringUtils.isBlank(text)) {
-            return null;
-        } else {
-            try {
-                return Double.valueOf(text);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
     }
 
     public static void setLabelTextFormatted(Label label, List<String> list) {

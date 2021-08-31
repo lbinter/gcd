@@ -4,7 +4,8 @@ import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.PlotStyle;
 import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
-import org.apache.commons.lang3.Validate;
+
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class AlgebraicVariable extends Function implements HasPlotStyle, Updatable<AlgebraicVariable>, Comparable<AlgebraicVariable> {
     public static final String assignmentSymbol = "->";
@@ -30,7 +31,7 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = sanitizeString(description);
     }
 
     @Override
@@ -70,12 +71,7 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + "[" + parameter + "]" + assignmentSymbol + function);
-    }
-
-    public boolean isValid() {
-        Validate.notBlank(getName());
-        return false;
+        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + "[" + parameter + "]" + assignmentSymbol + getFunction());
     }
 
     @Override

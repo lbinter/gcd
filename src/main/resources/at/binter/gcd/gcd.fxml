@@ -190,7 +190,8 @@
                                         <VBox alignment="CENTER" spacing="15.0">
                                             <children>
                                                 <Button fx:id="variableButtonEdit" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.edit"/>
+                                                        mnemonicParsing="false" onAction="#editSelectedVariable"
+                                                        text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>
@@ -213,7 +214,8 @@
                                         <VBox alignment="CENTER" spacing="15.0">
                                             <children>
                                                 <Button fx:id="parameterButtonEdit" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.edit"/>
+                                                        mnemonicParsing="false" onAction="#editSelectedParameter"
+                                                        text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>

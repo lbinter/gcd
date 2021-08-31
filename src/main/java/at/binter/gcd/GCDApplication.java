@@ -117,6 +117,7 @@ public class GCDApplication extends Application {
         variableEditorScene = new Scene(loaderVariableEditor.load());
         variableEditorController = loaderVariableEditor.getController();
         variableEditorController.setApplication(this);
+        variableEditorController.setScene(variableEditorScene);
 
         loaderParameterEditor = new FXMLLoader();
         loaderParameterEditor.setLocation(getClass().getResource("editor/ParameterEditor.fxml"));
@@ -124,6 +125,7 @@ public class GCDApplication extends Application {
         parameterEditorScene = new Scene(loaderParameterEditor.load());
         parameterEditorController = loaderParameterEditor.getController();
         parameterEditorController.setApplication(this);
+        parameterEditorController.setScene(parameterEditorScene);
 
         loaderChangeMuEditor = new FXMLLoader();
         loaderChangeMuEditor.setLocation(getClass().getResource("editor/ChangeMuEditor.fxml"));
@@ -131,6 +133,7 @@ public class GCDApplication extends Application {
         changeMuEditorScene = new Scene(loaderChangeMuEditor.load());
         changeMuEditorController = loaderChangeMuEditor.getController();
         changeMuEditorController.setApplication(this);
+        //changeMuEditorController.setScene(changeMuEditorScene); TODO
 
         gcdController = loaderGCD.getController();
         gcdController.setApplication(this);
