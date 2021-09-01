@@ -238,7 +238,8 @@
                                         <VBox alignment="CENTER" spacing="15.0">
                                             <children>
                                                 <Button fx:id="changeMuButtonEdit" minWidth="80.0"
-                                                        mnemonicParsing="false" text="%button.edit"/>
+                                                        mnemonicParsing="false" onAction="#editSelectedChangeMu"
+                                                        text="%button.edit"/>
                                             </children>
                                             <padding>
                                                 <Insets right="10.0"/>

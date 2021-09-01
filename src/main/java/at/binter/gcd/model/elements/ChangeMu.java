@@ -1,16 +1,34 @@
 package at.binter.gcd.model.elements;
 
-public class ChangeMu {
-    private Agent agent;
-    private Variable variable;
-    private int index;
-    private Double startValue;
-    private Double minValue;
-    private Double maxValue;
+import at.binter.gcd.model.HasMinMaxValues;
+import at.binter.gcd.model.MinMaxValues;
+import at.binter.gcd.model.Updatable;
+import at.binter.gcd.util.Tools;
+import javafx.collections.ObservableList;
+
+public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
+    private final Agent agent;
+    private final Variable variable;
+    private final int index;
+    private final String identifier;
+    private final MinMaxValues minMaxValues = new MinMaxValues();
+
+    public ChangeMu(Agent agent, Variable variable, int index) {
+        this.agent = agent;
+        this.variable = variable;
+        this.index = index;
+        identifier = "\\[Mu]" + agent.getName() + variable.getName();
+
+    }
+
+    @Override
+    public void update(ChangeMu modified) {
+        minMaxValues.update(modified);
+    }
 
     @Override
     public String toString() {
-        return "\\[Mu][" + agent.getName() + "," + index + "]";
+        return Tools.transformMathematicaGreekToUnicodeLetters(getIndexName() + " -> " + getIdentifier());
     }
 
     @Override
@@ -19,7 +37,8 @@ public class ChangeMu {
             return false;
         }
         if (obj instanceof ChangeMu) {
-            return agent.getName().equalsIgnoreCase(((ChangeMu) obj).getAgent().getName());
+            return agent.getName().equalsIgnoreCase(((ChangeMu) obj).getAgent().getName())
+                    && variable.getName().equalsIgnoreCase(((ChangeMu) obj).getVariable().getName());
         }
         if (obj instanceof String) {
             return toString().equalsIgnoreCase((String) obj);
@@ -31,47 +50,74 @@ public class ChangeMu {
         return agent;
     }
 
-    public void setAgent(Agent agent) {
-        this.agent = agent;
-    }
-
     public Variable getVariable() {
         return variable;
-    }
-
-    public void setVariable(Variable variable) {
-        this.variable = variable;
     }
 
     public int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public String getIndexName() {
+        return "\\[Mu][" + agent.getName() + "," + getIndex() + "]";
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
     public Double getStartValue() {
-        return startValue;
+        return minMaxValues.getStartValue();
     }
 
+    @Override
     public void setStartValue(Double startValue) {
-        this.startValue = startValue;
+        minMaxValues.setStartValue(startValue);
     }
 
+    @Override
     public Double getMinValue() {
-        return minValue;
+        return minMaxValues.getMinValue();
     }
 
+    @Override
     public void setMinValue(Double minValue) {
-        this.minValue = minValue;
+        minMaxValues.setMinValue(minValue);
     }
 
+    @Override
     public Double getMaxValue() {
-        return maxValue;
+        return minMaxValues.getMaxValue();
     }
 
+    @Override
     public void setMaxValue(Double maxValue) {
-        this.maxValue = maxValue;
+        minMaxValues.setMaxValue(maxValue);
+    }
+
+    @Override
+    public boolean hasAllValues() {
+        return minMaxValues.hasAllValues();
+    }
+
+    @Override
+    public boolean hasNoValues() {
+        return minMaxValues.hasNoValues();
+    }
+
+    public boolean requireDoubleValues(ObservableList<AlgebraicVariable> algebraicVariables) {
+        if (agent.getName().equalsIgnoreCase("B") && variable.getName().equalsIgnoreCase("dG")) {
+            System.out.println();
+        }
+        if (agent.getVariables().contains(variable.getName())) {
+            return true;
+        }
+        for (AlgebraicVariable algVar : algebraicVariables) {
+            if (agent.getVariables().contains(algVar.getName()) && algVar.getVariables().contains(variable.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

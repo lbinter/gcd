@@ -30,7 +30,7 @@ public class GCDApplication extends Application {
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
-    public String statusCss;
+    public String gcdCss;
 
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
@@ -69,7 +69,7 @@ public class GCDApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
 
-        statusCss = Objects.requireNonNull(getClass().getResource("status.css")).toExternalForm();
+        gcdCss = Objects.requireNonNull(getClass().getResource("gcd.css")).toExternalForm();
 
         loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
@@ -83,7 +83,7 @@ public class GCDApplication extends Application {
         loaderHelp.setLocation(getClass().getResource("help.fxml"));
         loaderHelp.setResources(resources);
         helpScene = new Scene(loaderHelp.load());
-        helpScene.getStylesheets().add(statusCss);
+        helpScene.getStylesheets().add(gcdCss);
         helpController = loaderHelp.getController();
         helpController.setApplication(this);
 
@@ -91,6 +91,7 @@ public class GCDApplication extends Application {
         loaderAlgVarEditor.setLocation(getClass().getResource("editor/AlgebraicVariableEditor.fxml"));
         loaderAlgVarEditor.setResources(resources);
         algebraicVariableEditorScene = new Scene(loaderAlgVarEditor.load());
+        algebraicVariableEditorScene.getStylesheets().add(gcdCss);
         algebraicVariableEditorController = loaderAlgVarEditor.getController();
         algebraicVariableEditorController.setApplication(this);
         algebraicVariableEditorController.setScene(algebraicVariableEditorScene);
@@ -99,6 +100,7 @@ public class GCDApplication extends Application {
         loaderAgentEditor.setLocation(getClass().getResource("editor/AgentEditor.fxml"));
         loaderAgentEditor.setResources(resources);
         agentEditorScene = new Scene(loaderAgentEditor.load());
+        agentEditorScene.getStylesheets().add(gcdCss);
         agentEditorController = loaderAgentEditor.getController();
         agentEditorController.setApplication(this);
         agentEditorController.setScene(agentEditorScene);
@@ -107,6 +109,7 @@ public class GCDApplication extends Application {
         loaderConstraintEditor.setLocation(getClass().getResource("editor/ConstraintEditor.fxml"));
         loaderConstraintEditor.setResources(resources);
         constraintEditorScene = new Scene(loaderConstraintEditor.load());
+        constraintEditorScene.getStylesheets().add(gcdCss);
         constraintEditorController = loaderConstraintEditor.getController();
         constraintEditorController.setApplication(this);
         constraintEditorController.setScene(constraintEditorScene);
@@ -115,6 +118,7 @@ public class GCDApplication extends Application {
         loaderVariableEditor.setLocation(getClass().getResource("editor/VariableEditor.fxml"));
         loaderVariableEditor.setResources(resources);
         variableEditorScene = new Scene(loaderVariableEditor.load());
+        variableEditorScene.getStylesheets().add(gcdCss);
         variableEditorController = loaderVariableEditor.getController();
         variableEditorController.setApplication(this);
         variableEditorController.setScene(variableEditorScene);
@@ -123,6 +127,7 @@ public class GCDApplication extends Application {
         loaderParameterEditor.setLocation(getClass().getResource("editor/ParameterEditor.fxml"));
         loaderParameterEditor.setResources(resources);
         parameterEditorScene = new Scene(loaderParameterEditor.load());
+        parameterEditorScene.getStylesheets().add(gcdCss);
         parameterEditorController = loaderParameterEditor.getController();
         parameterEditorController.setApplication(this);
         parameterEditorController.setScene(parameterEditorScene);
@@ -131,9 +136,10 @@ public class GCDApplication extends Application {
         loaderChangeMuEditor.setLocation(getClass().getResource("editor/ChangeMuEditor.fxml"));
         loaderChangeMuEditor.setResources(resources);
         changeMuEditorScene = new Scene(loaderChangeMuEditor.load());
+        changeMuEditorScene.getStylesheets().add(gcdCss);
         changeMuEditorController = loaderChangeMuEditor.getController();
         changeMuEditorController.setApplication(this);
-        //changeMuEditorController.setScene(changeMuEditorScene); TODO
+        changeMuEditorController.setScene(changeMuEditorScene);
 
         gcdController = loaderGCD.getController();
         gcdController.setApplication(this);

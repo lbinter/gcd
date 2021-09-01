@@ -13,7 +13,7 @@
                     <children>
                         <GridPane>
                             <columnConstraints>
-                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="145.0" prefWidth="145.0"/>
+                                <ColumnConstraints halignment="RIGHT" hgrow="NEVER"/>
                                 <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
                             </columnConstraints>
                             <rowConstraints>
@@ -29,7 +29,7 @@
                             <children>
                                 <Label text="%editor.label.name">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelName" minWidth="360" GridPane.columnIndex="1">
@@ -39,35 +39,35 @@
                                 </Label>
                                 <Label text="%editor.label.description" GridPane.rowIndex="1">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="1"/>
                                 <Label text="%editor.label.value.start" GridPane.rowIndex="2">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorValueStart" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="2"/>
                                 <Label text="%editor.label.value.minimum" GridPane.rowIndex="3">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorValueMinimum" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="3"/>
                                 <Label text="%editor.label.value.maximum" GridPane.rowIndex="4">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorValueMaximum" minWidth="360" GridPane.columnIndex="1"
                                            GridPane.rowIndex="4"/>
                                 <Label text="%editor.label.algebraicVariables" GridPane.rowIndex="5">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelAlgebraicVariables" minWidth="360" GridPane.columnIndex="1"
@@ -78,7 +78,7 @@
                                 </Label>
                                 <Label text="%editor.label.agents" GridPane.rowIndex="6">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelAgents" minWidth="360" GridPane.columnIndex="1"
@@ -89,7 +89,7 @@
                                 </Label>
                                 <Label text="%editor.label.constraints" GridPane.rowIndex="7">
                                     <GridPane.margin>
-                                        <Insets right="5.0"/>
+                                        <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelConstraints" minWidth="360" GridPane.columnIndex="1"

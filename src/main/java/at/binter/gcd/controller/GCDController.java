@@ -2,9 +2,7 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.elements.*;
-import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
-import at.binter.gcd.model.xml.XmlVariable;
 import at.binter.gcd.xml.XmlReader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
@@ -53,13 +52,14 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     private ListView<ChangeMu> changeMuListView;
 
-    private GCDModel model = new GCDModel();
+    protected GCDModel model = new GCDModel();
 
     private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
     private EditDialog<Agent> agentEditDialog;
     private EditDialog<Constraint> constraintEditDialog;
     private EditDialog<Variable> variableEditDialog;
     private EditDialog<Parameter> parameterEditDialog;
+    private EditDialog<ChangeMu> changeMuEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,7 +76,7 @@ public class GCDController extends BaseController implements Initializable {
         parameterListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         parameterListView.setItems(model.getParameters().sorted());
         changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        changeMuListView.setItems(model.getChangeMus().sorted());
+        changeMuListView.setItems(model.getChangeMus().sorted(Comparator.comparing(ChangeMu::getIdentifier)));
 
         registerEventHandlers();
     }
@@ -87,6 +87,7 @@ public class GCDController extends BaseController implements Initializable {
         constraintEditDialog = new EditDialog<>(constraintListView, model.getConstraints(), gcd.constraintEditorController, gcd);
         variableEditDialog = new EditDialog<>(variableListView, model.getVariables(), gcd.variableEditorController, gcd);
         parameterEditDialog = new EditDialog<>(parameterListView, model.getParameters(), gcd.parameterEditorController, gcd);
+        changeMuEditDialog = new EditDialog<>(changeMuListView, model.getChangeMus(), gcd.changeMuEditorController, gcd);
     }
 
     private void registerEventHandlers() {
@@ -120,9 +121,10 @@ public class GCDController extends BaseController implements Initializable {
             }
         });
 
-        changeMuButtonEdit.setOnAction(event -> {
-            gcd.changeMuEditorController.createEditor(event);
-            // TODO: fill with data from selected value
+        changeMuListView.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedChangeMu();
+            }
         });
     }
 
@@ -182,6 +184,11 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
+    protected void editSelectedChangeMu() {
+        changeMuEditDialog.editSelectedValue();
+    }
+
+    @FXML
     protected void openFileChooser() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
@@ -197,38 +204,7 @@ public class GCDController extends BaseController implements Initializable {
                 log.info("Loading gcd model from file {}", file.getAbsolutePath());
             }
             XmlModel xmlModel = XmlReader.read(file);
-            if (xmlModel != null) {
-                for (XmlFunction algVar : xmlModel.algebraicVariables) {
-                    AlgebraicVariable newAlgVar = new AlgebraicVariable();
-                    newAlgVar.setFunction(algVar.function);
-                    model.getAlgebraicVariables().add(newAlgVar);
-                }
-                for (XmlFunction agent : xmlModel.agents) {
-                    Agent newAgent = new Agent();
-                    newAgent.setFunction(agent.function);
-                    model.getAgents().add(newAgent);
-                }
-                for (XmlFunction constraint : xmlModel.constraints) {
-                    Constraint newConstraint = new Constraint();
-                    newConstraint.setCondition(constraint.function);
-                    model.getConstraints().add(newConstraint);
-                }
-                for (XmlVariable variable : xmlModel.variables) {
-                    Variable v = model.getVariable(variable.name);
-                    v.setDescription(variable.description);
-                    v.setInitialCondition(variable.initialConditions);
-                    v.setStartValue(variable.startValue);
-                    v.setMinValue(variable.minValue);
-                    v.setMaxValue(variable.maxValue);
-                    v.setPlotColor(variable.getPlotColor());
-                    v.setPlotThickness(variable.getPlotThickness());
-                    v.setPlotLineStyle(variable.getPlotLineStyle());
-                }
-                // TODO load xml to gcd model
-                // model.loadXMLModel(xmlModel);
-            }
-        } else {
-            System.out.println("no file selected");
+            model.loadXmlModel(xmlModel);
         }
     }
 
@@ -248,6 +224,7 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     protected void undo() {
         System.out.println("undo called");
+        model.generateChangeMu();
     }
 
     @FXML
@@ -262,7 +239,6 @@ public class GCDController extends BaseController implements Initializable {
 
     @FXML
     protected void showHelpWindow() {
-        System.out.println("showHelpWindow called");
         gcd.helpController.showHelpWindow();
     }
 }

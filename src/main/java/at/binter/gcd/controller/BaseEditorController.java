@@ -40,7 +40,6 @@ public abstract class BaseEditorController<T> extends BaseController implements 
 
     private void registerEventHandlers() {
         editorButtonConfirm.setOnAction(event -> {
-            T obj = createDataObject();
             // TODO: validate formdata
             hasData = true;
             popup.close();
