@@ -34,6 +34,10 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
         this.description = sanitizeString(description);
     }
 
+    public PlotStyle getPlotStyle() {
+        return plotStyle;
+    }
+
     @Override
     public String getPlotColor() {
         return plotStyle.getPlotColor();

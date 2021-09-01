@@ -1,6 +1,8 @@
 package at.binter.gcd.model.xml;
 
 
+import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.elements.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -34,5 +36,26 @@ public class XmlModel {
     public List<XmlBasicVariable> changeMu = new ArrayList<>();
 
     public XmlModel() {
+    }
+
+    public XmlModel(GCDModel gcdModel) {
+        for (AlgebraicVariable algVar : gcdModel.getAlgebraicVariables()) {
+            algebraicVariables.add(new XmlFunction(algVar));
+        }
+        for (Agent agent : gcdModel.getAgents()) {
+            agents.add(new XmlFunction(agent));
+        }
+        for (Constraint constraint : gcdModel.getConstraints()) {
+            constraints.add(new XmlFunction(constraint));
+        }
+        for (Variable variable : gcdModel.getVariables()) {
+            variables.add(new XmlVariable(variable));
+        }
+        for (Parameter parameter : gcdModel.getParameters()) {
+            parameters.add(new XmlBasicVariable(parameter));
+        }
+        for (ChangeMu mu : gcdModel.getChangeMus()) {
+            changeMu.add(new XmlBasicVariable(mu));
+        }
     }
 }

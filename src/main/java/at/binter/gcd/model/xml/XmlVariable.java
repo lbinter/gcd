@@ -2,6 +2,7 @@ package at.binter.gcd.model.xml;
 
 import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.PlotStyle;
+import at.binter.gcd.model.elements.Variable;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -16,6 +17,14 @@ public class XmlVariable extends XmlBasicVariable implements HasPlotStyle {
     private PlotStyle plotStyle = new PlotStyle();
 
     public XmlVariable() {
+    }
+
+    public XmlVariable(Variable variable) {
+        super(variable);
+        initialConditions = variable.getInitialCondition();
+        plotStyle.setPlotColor(variable.getPlotColor());
+        plotStyle.setPlotThickness(variable.getPlotThickness());
+        plotStyle.setPlotLineStyle(variable.getPlotLineStyle());
     }
 
     @Override
@@ -54,5 +63,14 @@ public class XmlVariable extends XmlBasicVariable implements HasPlotStyle {
     @Override
     public boolean hasValidPlotStyle() {
         return plotStyle.hasValidPlotStyle();
+    }
+
+
+    public Variable createVariable() {
+        Variable v = new Variable(name);
+        v.setDescription(description);
+        writeMinMaxValues(v);
+        v.getPlotStyle().update(this);
+        return v;
     }
 }

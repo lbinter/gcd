@@ -516,53 +516,35 @@ public class GCDModel {
         clearModel();
         ArrayList<AlgebraicVariable> newAlgebraicVariables = new ArrayList<>();
         for (XmlFunction algVar : model.algebraicVariables) {
-            AlgebraicVariable newAlgVar = new AlgebraicVariable();
-            newAlgVar.setFunction(algVar.function);
-            newAlgebraicVariables.add(newAlgVar);
+            newAlgebraicVariables.add(algVar.createAlgebraicVariable());
         }
         getAlgebraicVariables().addAll(newAlgebraicVariables);
 
         ArrayList<Agent> newAgents = new ArrayList<>();
         for (XmlFunction agent : model.agents) {
-            Agent newAgent = new Agent();
-            newAgent.setFunction(agent.function);
-            newAgents.add(newAgent);
+            newAgents.add(agent.createAgent());
         }
         getAgents().addAll(newAgents);
 
         for (XmlFunction constraint : model.constraints) {
-            Constraint newConstraint = new Constraint();
-            newConstraint.setCondition(constraint.function);
-            getConstraints().add(newConstraint);
+            getConstraints().add(constraint.createConstraint());
         }
 
         for (XmlVariable variable : model.variables) {
             Variable v = getVariable(variable.name);
-            v.setDescription(variable.description);
-            v.setInitialCondition(variable.initialConditions);
-            v.setStartValue(variable.startValue);
-            v.setMinValue(variable.minValue);
-            v.setMaxValue(variable.maxValue);
-            v.setPlotColor(variable.getPlotColor());
-            v.setPlotThickness(variable.getPlotThickness());
-            v.setPlotLineStyle(variable.getPlotLineStyle());
+            v.update(variable.createVariable());
         }
 
         for (XmlBasicVariable parameter : model.parameters) {
             Parameter p = getParameter(parameter.name);
-            p.setDescription(parameter.description);
-            p.setStartValue(parameter.startValue);
-            p.setMinValue(parameter.minValue);
-            p.setMaxValue(parameter.maxValue);
+            p.update(parameter.createParameter());
         }
 
         runGenerateChangeMu = true;
         generateChangeMu();
         for (XmlBasicVariable changeMu : model.changeMu) {
             ChangeMu mu = getChangeMu(changeMu.name);
-            mu.setStartValue(changeMu.startValue);
-            mu.setMinValue(changeMu.minValue);
-            mu.setMaxValue(changeMu.maxValue);
+            mu.update(changeMu.createChangeMu(mu.getAgent(), mu.getVariable(), mu.getIndex()));
         }
     }
 }

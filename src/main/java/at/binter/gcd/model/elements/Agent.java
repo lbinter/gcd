@@ -34,6 +34,10 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
         plotStyle.update(modified);
     }
 
+    public PlotStyle getPlotStyle() {
+        return plotStyle;
+    }
+
     @Override
     public String getPlotColor() {
         return plotStyle.getPlotColor();

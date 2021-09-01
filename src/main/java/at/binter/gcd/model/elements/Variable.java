@@ -92,6 +92,10 @@ public class Variable implements Updatable<Variable>, HasPlotStyle, HasMinMaxVal
         return minMaxValues.hasNoValues();
     }
 
+    public PlotStyle getPlotStyle() {
+        return plotStyle;
+    }
+
     @Override
     public String getPlotColor() {
         return plotStyle.getPlotColor();
