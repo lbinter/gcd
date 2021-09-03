@@ -51,7 +51,7 @@ public abstract class BaseEditorController<T> extends BaseController implements 
         this.scene = scene;
     }
 
-    public void createEditor(T dataObject) {
+    public void showEditor(T dataObject) {
         popup = new Stage();
         popup.initStyle(StageStyle.UNDECORATED);
         popup.setScene(scene);

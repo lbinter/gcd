@@ -3,13 +3,8 @@ package at.binter.gcd;
 
 import at.binter.gcd.controller.*;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +22,7 @@ import java.util.ResourceBundle;
  */
 public class GCDApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(GCDApplication.class);
+    public static GCDApplication app;
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
@@ -60,6 +56,12 @@ public class GCDApplication extends Application {
     public ParameterEditorController parameterEditorController;
     public ChangeMuEditorController changeMuEditorController;
     public HelpController helpController;
+
+    public GCDApplication() {
+        if (app == null) {
+            app = this;
+        }
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -165,22 +167,5 @@ public class GCDApplication extends Application {
             if (log.isWarnEnabled()) log.warn(e.getMessage());
             return '!' + i18nKey + '!';
         }
-    }
-
-    public void askUserRemoveAlert(ListView<?> list, ObservableList<?> observableList, String i18nName) {
-        int selectedIndex = list.getSelectionModel().getSelectedIndex();
-        if (selectedIndex == -1) {
-            return;
-        }
-        String selectedText = observableList.get(selectedIndex).toString();
-        String title = getString("list.remove.question.title");
-        String message = getString("list.remove.question.message", getString(i18nName), selectedText);
-        Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
-        alert.setTitle(title);
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(getString("button.yes"));
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(getString("button.no"));
-        alert.showAndWait().filter(response -> response == ButtonType.YES)
-                .ifPresent(response -> observableList.remove(selectedIndex));
-
     }
 }

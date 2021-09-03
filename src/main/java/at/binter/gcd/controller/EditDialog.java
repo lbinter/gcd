@@ -19,7 +19,7 @@ public record EditDialog<T extends Updatable<T>>(ListView<T> listView,
             return;
         }
         T selected = list.get(selectedIndex);
-        editor.createEditor(selected);
+        editor.showEditor(selected);
 
         if (editor.hasData()) {
             T modified = editor.createDataObject();
@@ -29,7 +29,7 @@ public record EditDialog<T extends Updatable<T>>(ListView<T> listView,
     }
 
     public void addNewItem() {
-        editor.createEditor(null);
+        editor.showEditor(null);
         if (editor.hasData()) {
             list.add(editor.createDataObject());
         }

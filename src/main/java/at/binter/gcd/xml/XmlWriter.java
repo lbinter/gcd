@@ -1,5 +1,6 @@
 package at.binter.gcd.xml;
 
+import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.xml.XmlModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -14,9 +15,9 @@ import static at.binter.gcd.util.FileUtils.isValidGCDFile;
 public class XmlWriter {
     private static final Logger log = LoggerFactory.getLogger(XmlWriter.class);
 
-   /* public static boolean write(GCDModel gcdModel, File file) {
-        return write(new XmlModel(gcdModel), file);
-    }*/
+    public static boolean write(GCDModel gcdModel) {
+        return write(new XmlModel(gcdModel), gcdModel.getFile());
+    }
 
     public static boolean write(XmlModel xmlModel, File file) {
         try {
@@ -38,10 +39,9 @@ public class XmlWriter {
                     }
                 }
                 if (isValidGCDFile(file)) {
-                    if (log.isInfoEnabled()) {
-                        log.info("Saving model to file {}", file.getAbsolutePath());
-                    }
+                    log.info("Saving model to file {}", file.getAbsolutePath());
                     jaxbMarshaller.marshal(xmlModel, file);
+                    log.info("Saved!");
                     return true;
                 } else {
                     return false;

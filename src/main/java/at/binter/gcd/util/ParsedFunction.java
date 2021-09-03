@@ -18,6 +18,9 @@ public class ParsedFunction {
     public final List<String> sortedParameters = new ArrayList<>();
 
     public ParsedFunction(String function) {
+        if (StringUtils.isBlank(function)) {
+            throw new IllegalArgumentException("Function may not be empty or null!");
+        }
         this.function = sanitizeString(function).replace("\"", "");
         if (log.isTraceEnabled()) {
             log.trace("Parse function: \"{}\"", function);

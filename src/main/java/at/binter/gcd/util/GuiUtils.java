@@ -1,16 +1,19 @@
 package at.binter.gcd.util;
 
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+
+import static at.binter.gcd.GCDApplication.app;
 
 public class GuiUtils {
 
@@ -23,8 +26,10 @@ public class GuiUtils {
     }
 
     public static String sanitizeString(String str) {
-        if (StringUtils.isBlank(str)) return "";
-        return str.trim().replaceAll(" +", " ");
+        if (str == null) return null;
+        String sanitized = str.trim().replaceAll(" +", " ");
+        if (StringUtils.isBlank(sanitized)) return null;
+        return sanitized;
     }
 
     public static Double readDoubleValueFrom(TextField textField) {
@@ -77,5 +82,23 @@ public class GuiUtils {
 
     public static TextFormatter<Double> createDoubleTextFormatter() {
         return new TextFormatter<>(converter, null, filter);
+    }
+
+    public static void showInvalidFileError(File file) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(app.getString("error.invalid.file.title"));
+        alert.setHeaderText(app.getString("error.invalid.file.title"));
+        alert.setContentText(file.getAbsolutePath() + ": " + app.getString("error.invalid.file.message"));
+        alert.showAndWait();
+    }
+
+    public static Optional<ButtonType> saveOverwriteQuestion(File file) {
+        String title = app.getString("dialog.save.overwrite.question.title");
+        String message = app.getString("dialog.save.overwrite.question.message", file.getAbsolutePath());
+        Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
+        alert.setTitle(title);
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(app.getString("button.yes"));
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(app.getString("button.no"));
+        return alert.showAndWait();
     }
 }

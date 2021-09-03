@@ -12,18 +12,17 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New"/>
-                        <MenuItem mnemonicParsing="false" text="Open…"/>
+                        <MenuItem fx:id="menuNew" mnemonicParsing="false" onAction="#clearModel" text="New"/>
+                        <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#loadFromFile" text="Open…"/>
                         <Menu mnemonicParsing="false" text="Open Recent"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Close"/>
-                        <MenuItem mnemonicParsing="false" text="Save"/>
-                        <MenuItem mnemonicParsing="false" text="Save As…"/>
-                        <MenuItem mnemonicParsing="false" text="Revert"/>
+                        <MenuItem fx:id="menuSave" mnemonicParsing="false" onAction="#save" text="Save"/>
+                        <MenuItem fx:id="menuSaveAs" mnemonicParsing="false" onAction="#saveAs" text="Save As…"/>
+                        <MenuItem fx:id="menuRevert" mnemonicParsing="false" onAction="#revert" text="Revert"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Preferences…"/>
+                        <MenuItem fx:id="menuPreferences" mnemonicParsing="false" text="Preferences…"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Quit"/>
+                        <MenuItem fx:id="menuQuit" mnemonicParsing="false" text="Quit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
@@ -50,7 +49,7 @@
         <ToolBar prefHeight="40.0" prefWidth="200.0">
             <items>
                 <Button fx:id="buttonLoad" minHeight="38.0" minWidth="34.0" mnemonicParsing="false"
-                        onAction="#openFileChooser" prefHeight="38.0" prefWidth="34.0" text="%symbols.load"
+                        onAction="#loadFromFile" prefHeight="38.0" prefWidth="34.0" text="%symbols.load"
                         textAlignment="CENTER">
                     <font>
                         <Font name="Lucida Sans Unicode" size="12.0"/>

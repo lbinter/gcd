@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,7 +30,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     @FXML
     private Label editorLabelVariables;
     @FXML
-    private Label editorLabelParameter;
+    private Label editorLabelParameters;
     @FXML
     private TextField editorPlotColor;
     @FXML
@@ -67,9 +68,15 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        if (StringUtils.isBlank(newValue)) {
+            editorLabelVariables.setText("");
+            editorLabelParameters.setText("");
+            editorLabelDefinition.setText("");
+            return;
+        }
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
-        setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
+        setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
         setDefinition(editorName.getText(), editorParameter.getText(), newValue);
     }
 
@@ -84,7 +91,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         editorFunction.setText("");
         editorDescription.setText("");
         editorLabelVariables.setText("");
-        editorLabelParameter.setText("");
+        editorLabelParameters.setText("");
         editorPlotColor.setText("");
         editorPlotThickness.setText("");
         editorPlotLineArt.setText("");
@@ -106,7 +113,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     @Override
     protected void fillDataFrom(AlgebraicVariable data) {
         editorLabelVariables.setText("");
-        editorLabelParameter.setText("");
+        editorLabelParameters.setText("");
         editorName.setText(data.getName());
         editorParameter.setText(data.getParameter());
         editorFunction.setText(data.getFunction());

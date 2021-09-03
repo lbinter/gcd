@@ -1,7 +1,7 @@
 package at.binter.gcd.controller;
 
 public interface Editor<T> {
-    void createEditor(T dataObject);
+    void showEditor(T dataObject);
 
     boolean hasData();
 

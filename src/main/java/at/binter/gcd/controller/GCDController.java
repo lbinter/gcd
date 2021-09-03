@@ -4,6 +4,7 @@ import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
+import at.binter.gcd.xml.XmlWriter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
+import static at.binter.gcd.util.GuiUtils.showInvalidFileError;
 import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
 
 
@@ -27,15 +29,11 @@ public class GCDController extends BaseController implements Initializable {
     public static FileChooser.ExtensionFilter gcdFileExt = new FileChooser.ExtensionFilter("GCD", "*.gcd");
 
     @FXML
-    private Button buttonSave;
-    @FXML
     private Button buttonUndo;
     @FXML
     private Button buttonRedo;
     @FXML
     private Button buttonGCD;
-    @FXML
-    private Button buttonHelp;
 
     @FXML
     private ListView<AlgebraicVariable> algVarListView;
@@ -91,36 +89,32 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     private void registerEventHandlers() {
+
         algVarListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedAlgebraicVariable();
             }
         });
-
         agentListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedAgent();
             }
         });
-
         constraintListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedConstraint();
             }
         });
-
         variableListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedVariable();
             }
         });
-
         parameterListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedParameter();
             }
         });
-
         changeMuListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedChangeMu();
@@ -189,36 +183,44 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void openFileChooser() {
+    protected void loadFromFile() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
         fc.setSelectedExtensionFilter(gcdFileExt);
         // TODO fc.setInitialDirectory(new File("path"));
         File file = fc.showOpenDialog(gcd.primaryStage);
+        loadModel(file);
+    }
+
+    @FXML
+    protected void save() {
+        if (model.getFile() == null) {
+            saveAs();
+        } else {
+            saveModel();
+        }
+    }
+
+    @FXML
+    protected void saveAs() {
+        File file = showSaveFileDialog();
         if (file != null) {
             if (!isValidGCDFile(file)) {
                 showInvalidFileError(file);
                 return;
             }
-            if (log.isInfoEnabled()) {
-                log.info("Loading gcd model from file {}", file.getAbsolutePath());
-            }
-            XmlModel xmlModel = XmlReader.read(file);
-            model.loadXmlModel(xmlModel);
+            saveModelToFile(file);
         }
     }
 
-    private void showInvalidFileError(File file) {
-        /*GuiError.showError(
-                frame,
-                file.getAbsolutePath() + ": " + SwingI18n.getString("error.invalid.file.message"),
-                SwingI18n.getString("error.invalid.file.title")
-        );*/
+    @FXML
+    public void revert() {
+        loadModel(model.getFile());
     }
 
     @FXML
-    protected void save() {
-        System.out.println("saveModel called");
+    public void clearModel() {
+        model.clearModel();
     }
 
     @FXML
@@ -240,5 +242,46 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     protected void showHelpWindow() {
         gcd.helpController.showHelpWindow();
+    }
+
+    private File showSaveFileDialog() {
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(gcdFileExt);
+        fc.setSelectedExtensionFilter(gcdFileExt);
+        return fc.showSaveDialog(gcd.primaryStage);
+    }
+
+    private void saveModelToFile(File file) {
+        if (model.getFile() != file) {
+            if (log.isInfoEnabled()) {
+                String old = "";
+                if (model.getFile() != null) {
+                    old = model.getFile().getAbsolutePath();
+                }
+                log.info("Setting model.file from \"{}\" to \"{}\"", old, file.getAbsolutePath());
+            }
+            model.setFile(file);
+        }
+        saveModel();
+    }
+
+    private void saveModel() {
+        if (XmlWriter.write(model)) {
+            model.setSavedToFile(true);
+        }
+    }
+
+    private void loadModel(File file) {
+        if (file != null) {
+            if (!isValidGCDFile(file)) {
+                showInvalidFileError(file);
+                return;
+            }
+            if (log.isInfoEnabled()) {
+                log.info("Loading gcd model from file {}", file.getAbsolutePath());
+            }
+            XmlModel xmlModel = XmlReader.read(file);
+            model.loadXmlModel(xmlModel);
+        }
     }
 }

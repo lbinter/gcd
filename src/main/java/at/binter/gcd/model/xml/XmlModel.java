@@ -39,23 +39,25 @@ public class XmlModel {
     }
 
     public XmlModel(GCDModel gcdModel) {
-        for (AlgebraicVariable algVar : gcdModel.getAlgebraicVariables()) {
+        for (AlgebraicVariable algVar : gcdModel.getAlgebraicVariables().sorted()) {
             algebraicVariables.add(new XmlFunction(algVar));
         }
         for (Agent agent : gcdModel.getAgents()) {
             agents.add(new XmlFunction(agent));
         }
-        for (Constraint constraint : gcdModel.getConstraints()) {
+        for (Constraint constraint : gcdModel.getConstraints().sorted()) {
             constraints.add(new XmlFunction(constraint));
         }
-        for (Variable variable : gcdModel.getVariables()) {
+        for (Variable variable : gcdModel.getVariables().sorted()) {
             variables.add(new XmlVariable(variable));
         }
-        for (Parameter parameter : gcdModel.getParameters()) {
+        for (Parameter parameter : gcdModel.getParameters().sorted()) {
             parameters.add(new XmlBasicVariable(parameter));
         }
         for (ChangeMu mu : gcdModel.getChangeMus()) {
-            changeMu.add(new XmlBasicVariable(mu));
+            if (!mu.hasNoValues()) {
+                changeMu.add(new XmlBasicVariable(mu));
+            }
         }
     }
 }

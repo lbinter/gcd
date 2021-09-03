@@ -6,6 +6,8 @@ import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.model.xml.XmlVariable;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +36,9 @@ public class GCDModel {
     private final ObservableList<ChangeMu> allChangeMu = FXCollections.observableArrayList();
     private final ObservableList<ChangeMu> changeMus = FXCollections.observableArrayList();
     private final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
+
+    private File file;
+    private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean runGenerateChangeMu = true;
 
@@ -496,6 +502,7 @@ public class GCDModel {
     public void clearModel() {
         if (isEmpty()) return;
         unregisterChangeListeners();
+        setFile(null);
         algebraicVariables.clear();
         algebraicVariableNameMap.clear();
         agents.clear();
@@ -514,6 +521,7 @@ public class GCDModel {
         if (model == null) return;
         runGenerateChangeMu = false;
         clearModel();
+        setFile(model.file);
         ArrayList<AlgebraicVariable> newAlgebraicVariables = new ArrayList<>();
         for (XmlFunction algVar : model.algebraicVariables) {
             newAlgebraicVariables.add(algVar.createAlgebraicVariable());
@@ -546,5 +554,25 @@ public class GCDModel {
             ChangeMu mu = getChangeMu(changeMu.name);
             mu.update(changeMu.createChangeMu(mu.getAgent(), mu.getVariable(), mu.getIndex()));
         }
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public boolean isSavedToFile() {
+        return savedToFile.get();
+    }
+
+    public BooleanProperty savedToFileProperty() {
+        return savedToFile;
+    }
+
+    public void setSavedToFile(boolean savedToFile) {
+        this.savedToFile.set(savedToFile);
     }
 }
