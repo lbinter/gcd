@@ -42,6 +42,8 @@ public class GCDModel {
 
     private boolean runGenerateChangeMu = true;
 
+    private boolean clearGlobal = true;
+
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
@@ -287,6 +289,14 @@ public class GCDModel {
         return parameterNameMap.containsKey(name);
     }
 
+    public boolean isClearGlobal() {
+        return clearGlobal;
+    }
+
+    public void setClearGlobal(boolean clearGlobal) {
+        this.clearGlobal = clearGlobal;
+    }
+
     private void addVariables(HasVariableStringList source) {
         source.getVariables().forEach(name -> addVariable(source, name));
     }
@@ -454,6 +464,11 @@ public class GCDModel {
         return algebraicVariables;
     }
 
+    public AlgebraicVariable getAlgebraicVariable(String name) {
+        if (StringUtils.isBlank(name)) return null;
+        return algebraicVariableNameMap.get(name);
+    }
+
     public ObservableList<Agent> getAgents() {
         return agents;
     }
@@ -485,6 +500,9 @@ public class GCDModel {
         return parameterNameMap.get(name);
     }
 
+    public ObservableList<ChangeMu> getAllChangeMu() {
+        return allChangeMu;
+    }
 
     public ObservableList<ChangeMu> getChangeMus() {
         return changeMus;

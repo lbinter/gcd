@@ -7,6 +7,15 @@ public class PlotStyle implements HasPlotStyle, Updatable<HasPlotStyle> {
     private Double plotThickness;
     private String plotLineStyle;
 
+    public PlotStyle() {
+    }
+
+    public PlotStyle(String plotColor, Double plotThickness, String plotLineStyle) {
+        this.plotColor = plotColor;
+        this.plotThickness = plotThickness;
+        this.plotLineStyle = plotLineStyle;
+    }
+
     @Override
     public void update(HasPlotStyle modified) {
         setPlotColor(modified.getPlotColor());

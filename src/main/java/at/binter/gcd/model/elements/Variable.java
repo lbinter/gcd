@@ -48,6 +48,10 @@ public class Variable implements Updatable<Variable>, HasPlotStyle, HasMinMaxVal
         return initialCondition;
     }
 
+    public String getDefaultInitialCondition() {
+        return getName() + "0";
+    }
+
     public void setInitialCondition(String initialCondition) {
         this.initialCondition = sanitizeString(initialCondition);
     }

@@ -235,8 +235,8 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void openGCDOutput() {
-        System.out.println("openGCDOutput called");
+    protected void openMathematicaWindow() {
+        gcd.mathematicaController.showMathematicaWindow();
     }
 
     @FXML

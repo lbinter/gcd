@@ -76,7 +76,7 @@
                 </Button>
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
                 <Button fx:id="buttonGCD" minHeight="38.0" minWidth="42.0" mnemonicParsing="false"
-                        onAction="#openGCDOutput" prefHeight="38.0" prefWidth="42.0" text="%symbols.gcd"
+                        onAction="#openMathematicaWindow" prefHeight="38.0" prefWidth="42.0" text="%symbols.gcd"
                         textAlignment="CENTER"/>
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
                 <Button fx:id="buttonHelp" minHeight="38.0" minWidth="34.0" mnemonicParsing="false"

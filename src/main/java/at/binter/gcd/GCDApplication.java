@@ -36,6 +36,7 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderParameterEditor;
     public FXMLLoader loaderChangeMuEditor;
     public FXMLLoader loaderHelp;
+    public FXMLLoader loaderMathematica;
 
     public Stage primaryStage;
     public Scene primaryScene;
@@ -47,6 +48,7 @@ public class GCDApplication extends Application {
     public Scene parameterEditorScene;
     public Scene changeMuEditorScene;
     public Scene helpScene;
+    public Scene mathematicaScene;
 
     public GCDController gcdController;
     public AlgebraicVariableEditorController algebraicVariableEditorController;
@@ -56,6 +58,7 @@ public class GCDApplication extends Application {
     public ParameterEditorController parameterEditorController;
     public ChangeMuEditorController changeMuEditorController;
     public HelpController helpController;
+    public MathematicaController mathematicaController;
 
     public GCDApplication() {
         if (app == null) {
@@ -146,6 +149,15 @@ public class GCDApplication extends Application {
         gcdController = loaderGCD.getController();
         gcdController.setApplication(this);
         gcdController.initializeGCDDepended();
+
+        loaderMathematica = new FXMLLoader();
+        loaderMathematica.setLocation(getClass().getResource("mathematica.fxml"));
+        loaderMathematica.setResources(resources);
+        mathematicaScene = new Scene(loaderMathematica.load());
+        mathematicaScene.getStylesheets().add(gcdCss);
+        mathematicaController = loaderMathematica.getController();
+        mathematicaController.setApplication(this);
+        mathematicaController.initializeGCDDepended();
 
         primaryStage.show();
     }
