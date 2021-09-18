@@ -5,7 +5,7 @@ public interface GCDBuilder {
 
     void write(String line);
 
-    void writeLine(String line);
+    void writeln(String line);
 
     void linebreak();
 

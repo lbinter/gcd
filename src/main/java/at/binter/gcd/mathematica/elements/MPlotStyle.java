@@ -1,7 +1,7 @@
 package at.binter.gcd.mathematica.elements;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
-import at.binter.gcd.mathematica.HTMLWrapper;
+import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.PlotStyle;
 import at.binter.gcd.model.elements.Agent;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MPlotStyle implements HTMLWrapper {
+public class MPlotStyle extends MBase {
     private static final Logger log = LoggerFactory.getLogger(MPlotStyle.class);
 
     public static final PlotStyle defaultPlotStyle = new PlotStyle("Black", 1.0, null);
@@ -76,22 +76,15 @@ public class MPlotStyle implements HTMLWrapper {
     }
 
     @Override
-    public String toHTML() {
-        HTMLBuilder builder = new HTMLBuilder();
-        toHTML(builder);
-        return builder.toString();
-    }
-
-    @Override
     public void toHTML(HTMLBuilder builder) {
         builder.write(name);
-        builder.writeLine(":= {");
+        builder.writeln(":= {");
         builder.increaseIndent(4);
         Iterator<MDirective> it = directives.iterator();
         while (it.hasNext()) {
             it.next().toHTML(builder, it.hasNext());
         }
         builder.decreaseIndent(4);
-        builder.writeLine("};");
+        builder.writeln("};");
     }
 }

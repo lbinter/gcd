@@ -37,6 +37,7 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     public void fillData() {
+        mathematicaCode.getEngine().setUserStyleSheetLocation(gcd.mathematicaCss);
         mathematicaCode.getEngine().loadContent(htmlWriter.generate());
         // TODO notebook output
     }

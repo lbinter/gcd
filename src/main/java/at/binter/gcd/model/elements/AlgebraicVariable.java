@@ -75,7 +75,11 @@ public class AlgebraicVariable extends Function implements HasPlotStyle, Updatab
 
     @Override
     public String toString() {
-        return Tools.transformMathematicaGreekToUnicodeLetters(getName() + "[" + parameter + "]" + assignmentSymbol + getFunction());
+        return Tools.transformMathematicaGreekToUnicodeLetters(toStringRaw());
+    }
+
+    public String toStringRaw() {
+        return getCompleteName() + assignmentSymbol + getFunction();
     }
 
     @Override

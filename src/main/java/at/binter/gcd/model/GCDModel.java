@@ -1,5 +1,18 @@
 package at.binter.gcd.model;
 
+import at.binter.gcd.mathematica.elements.MParameter;
+import at.binter.gcd.mathematica.elements.MVariable;
+import at.binter.gcd.mathematica.syntax.IExpression;
+import at.binter.gcd.mathematica.syntax.MComment;
+import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.MExpressionList;
+import at.binter.gcd.mathematica.syntax.binary.*;
+import at.binter.gcd.mathematica.syntax.function.MJoin;
+import at.binter.gcd.mathematica.syntax.function.MLength;
+import at.binter.gcd.mathematica.syntax.function.MTable;
+import at.binter.gcd.mathematica.syntax.group.MList;
+import at.binter.gcd.mathematica.syntax.group.MParentheses;
+import at.binter.gcd.mathematica.syntax.unary.MReplaceAll;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlBasicVariable;
 import at.binter.gcd.model.xml.XmlFunction;
@@ -19,17 +32,21 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GCDModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
 
     private final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList(algebraicVariable -> new Observable[]{algebraicVariable.nameProperty()});
+    private final SortedList<AlgebraicVariable> algebraicVariablesSorted = algebraicVariables.sorted();
     private final Map<String, AlgebraicVariable> algebraicVariableNameMap = new HashMap<>();
     private final ObservableList<Agent> agents = FXCollections.observableArrayList();
+    private final SortedList<Agent> agentsSorted = agents.sorted();
     private final Map<String, Agent> agentNameMap = new HashMap<>();
     private final ObservableList<Constraint> constraints = FXCollections.observableArrayList();
     private final ObservableList<Variable> variables = FXCollections.observableArrayList();
+    private final SortedList<Variable> variablesSorted = variables.sorted();
     private final Map<String, Variable> variableNameMap = new HashMap<>();
     private final ObservableList<Parameter> parameters = FXCollections.observableArrayList();
     private final Map<String, Parameter> parameterNameMap = new HashMap<>();
@@ -464,6 +481,10 @@ public class GCDModel {
         return algebraicVariables;
     }
 
+    public SortedList<AlgebraicVariable> getAlgebraicVariablesSorted() {
+        return algebraicVariablesSorted;
+    }
+
     public AlgebraicVariable getAlgebraicVariable(String name) {
         if (StringUtils.isBlank(name)) return null;
         return algebraicVariableNameMap.get(name);
@@ -471,6 +492,10 @@ public class GCDModel {
 
     public ObservableList<Agent> getAgents() {
         return agents;
+    }
+
+    public SortedList<Agent> getAgentsSorted() {
+        return agentsSorted;
     }
 
     public Agent getAgent(String name) {
@@ -484,6 +509,10 @@ public class GCDModel {
 
     public ObservableList<Variable> getVariables() {
         return variables;
+    }
+
+    public SortedList<Variable> getVariablesSorted() {
+        return variablesSorted;
     }
 
     public Variable getVariable(String name) {
@@ -592,5 +621,321 @@ public class GCDModel {
 
     public void setSavedToFile(boolean savedToFile) {
         this.savedToFile.set(savedToFile);
+    }
+
+    public static final MComment diffVarComment = new MComment("durch Differentialgleichungen bestimmte Variable");
+    public static final MVariable diffVar = new MVariable("diffvar");
+    public static final MVariable nDiffVar = new MVariable("ndiffvar");
+    public static final MComment algVarComment = new MComment("durch algebraische Definitionsgleichungen bestimmte Variable");
+    public static final MVariable algVar = new MVariable("algvar");
+    public static final MVariable nAlgVar = new MVariable("nalgvar");
+    public static final MVariable var = new MVariable("var");
+    public static final MVariable nVar = new MVariable("nvar");
+
+    public static final MComment AGComment = new MComment("Agenten");
+    public static final MVariable AG = new MVariable("AG");
+    public static final MVariable nAG = new MVariable("nAG");
+
+    public static final MComment substituteComment = new MComment("algebraische Definitionsgleichungen der \"algebraischen\" Variablen algvar");
+    public static final MVariable substitute = new MVariable("substitute");
+    public static final MParameter defAlgVar = new MParameter("defalgvar", "ii_", "t_", "var_");
+    public static final MParameter defAlgVarSubstitute = new MParameter("defalgvarsubstitute", "ii_", "t_", "var_");
+    public static final MComment defuVarComment = new MComment("Definitionsgleichungen der Nutzenfunktionen");
+    public static final MParameter defuVar = new MParameter("defuvar", "j_", "t_", "var_");
+    public static final MParameter defuVarSubstitute = new MParameter("defuvarsubstitute", "j_", "t_", "var_");
+    public static final MComment nZwangBComment = new MComment("Definitionsgleichungen der Zwangsbedingungen");
+    public static final MVariable nZwangB = new MVariable("nZwangB");
+    public static final MParameter defzVar = new MParameter("defzvar", "q_", "t_", "var_");
+    public static final MParameter defzVarSubstitute = new MParameter("defzvarsubstitute", "q_", "t_", "var_");
+    public static final MComment mfiComment = new MComment("indizierte Machtfaktoren");
+    public static final MVariable mfi = new MVariable("MFi");
+    public static final MTable mfiTable = new MTable(
+            new MParameter("\\[Mu]", "j", "i"),
+            new MList(new MExpression("j"), AG),
+            new MList(new MExpression("i"), nDiffVar)
+    );
+    private static final MPostfix mfiMatrix = new MPostfix(mfi, new MExpression("MatrixForm"));
+
+    public MSet getSetDiffVar() {
+        MList list = new MList();
+        for (Variable v : getVariablesSorted()) {
+            list.add(new MExpression("variable", v.getName()));
+        }
+        return new MSet(diffVar, list);
+    }
+
+    public MSet getSetnDiffVar() {
+        return new MSet(nDiffVar, new MLength(diffVar));
+    }
+
+    public MSet getSetAlgVar() {
+        MList list = new MList();
+        for (AlgebraicVariable v : getAlgebraicVariablesSorted()) {
+            list.add(new MExpression("variable", v.getName()));
+        }
+        return new MSet(algVar, list);
+    }
+
+    public MSet getSetnAlgVar() {
+        return new MSet(nAlgVar, new MLength(algVar));
+    }
+
+    public MSet getSetVar() {
+        return new MSet(var, new MJoin(diffVar, algVar));
+    }
+
+    public MSet getSetnVar() {
+        return new MSet(nVar, new MLength(var));
+    }
+
+    public MSet getSetAG() {
+        MList list = new MList();
+        for (Agent a : getAgentsSorted()) {
+            list.add(new MExpression("variable", a.getName()));
+        }
+        return new MSet(AG, list);
+    }
+
+    public MSet getSetnAG() {
+        return new MSet(nAG, new MLength(AG));
+    }
+
+    public MSet getSetSubstitute() {
+        MList list = new MList();
+        list.setElementsLinebreak(1);
+        for (AlgebraicVariable aV : getAlgebraicVariablesSorted()) {
+            MExpressionList l = new MExpressionList();
+            l.add(new MParameter(aV.getName(), aV.getParameter()));
+            l.add(new MExpression("&#8594;"));
+            l.add(new MExpression(aV.getFunction()));
+            list.add(l);
+        }
+        MSet set = new MSet(substitute, list);
+        set.setAddSemicolon(true);
+        return set;
+    }
+
+    public List<MSetDelayed> getSetDelayedDefalgvar() {
+        List<MSetDelayed> list = new ArrayList<>(algebraicVariables.size());
+        int ii = 1;
+        for (AlgebraicVariable aV : getAlgebraicVariablesSorted()) {
+            MParameter algVar = new MParameter(aV.getName(), aV.getParameter());
+            MSetDelayed delayed = new MSetDelayed(defAlgVar,
+                    new MCondition(
+                            algVar,
+                            new MEqual(new MExpression("parameter", "ii"), new MExpression(ii))
+                    )
+            );
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+            ii++;
+        }
+        return list;
+    }
+
+    private MParameter getDefalgVar(int ii) {
+        if (ii > getAlgebraicVariables().size()) {
+            log.error("Called getDefalgvar with ii of {}", ii);
+        }
+        return new MParameter(defAlgVar.getName(), String.valueOf(ii), "t", "var");
+    }
+
+    private MParameter getDefAlgVarSubstitute(int ii) {
+        if (ii > getAlgebraicVariables().size()) {
+            log.error("Called getDefAlgVarSubstitute with ii of {}", ii);
+        }
+        return new MParameter(defAlgVarSubstitute.getName(), String.valueOf(ii), "t", "var");
+    }
+
+    public List<MSetDelayed> getSetDelayedDefAlgVarSubstitute() {
+        List<MSetDelayed> list = new ArrayList<>(algebraicVariables.size());
+        for (int ii = 1; ii <= getAlgebraicVariables().size(); ii++) {
+            MExpressionList expr = new MExpressionList();
+            expr.add(getDefalgVar(ii));
+            expr.add(new MReplaceAll(substitute));
+            MParentheses parentheses = new MParentheses(expr);
+            MSetDelayed delayed = new MSetDelayed(defAlgVarSubstitute,
+                    new MCondition(
+                            parentheses,
+                            new MEqual(new MExpression("parameter", "ii"), new MExpression(ii))
+                    )
+            );
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefAlgVar() {
+        List<MParameter> list = new ArrayList<>();
+        for (int ii = 1; ii <= getAlgebraicVariables().size(); ii++) {
+            list.add(getDefalgVar(ii));
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefAlgVarSubstitute() {
+        List<MParameter> list = new ArrayList<>();
+        for (int ii = 1; ii <= getAlgebraicVariables().size(); ii++) {
+            list.add(getDefAlgVarSubstitute(ii));
+        }
+        return list;
+    }
+
+    public MParameter getDefuVar(String index) {
+        if (StringUtils.isBlank(index)) {
+            log.error("Called getDefuVar with index of null");
+        } else if (getAgent(index) == null) {
+            log.error("Called getDefuVar with non exists agent index of {}", index);
+        }
+        return new MParameter(defuVar.getName(), index, "t", "var");
+    }
+
+    public MParameter getDefuVarSubstitute(String index) {
+        if (StringUtils.isBlank(index)) {
+            log.error("Called getDefuVarSubstitute with index of null");
+        } else if (getAgent(index) == null) {
+            log.error("Called getDefuVarSubstitute with non exists agent index of {}", index);
+        }
+        return new MParameter(defuVarSubstitute.getName(), index, "t", "var");
+    }
+
+    public List<IExpression> getSetDelayedDefuVar() {
+        List<IExpression> list = new ArrayList<>(agents.size());
+        for (Agent a : getAgentsSorted()) {
+            if (StringUtils.isNotBlank(a.getDescription())) {
+                list.add(new MComment(a.getDescription()));
+            }
+            MSetDelayed delayed = new MSetDelayed(defuVar,
+                    new MCondition(
+                            new MParentheses(new MExpression(a.getFunction())),
+                            new MEqual(
+                                    new MExpression("parameter", "j"),
+                                    new MExpression("variable", a.getName()
+                                    ))));
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<MSetDelayed> getSetDelayedDefuVarSubstitute() {
+        List<MSetDelayed> list = new ArrayList<>(agents.size());
+        for (Agent a : getAgentsSorted()) {
+            MExpressionList expr = new MExpressionList();
+            expr.add(getDefuVar(a.getName()));
+            expr.add(new MReplaceAll(substitute));
+            MParentheses parentheses = new MParentheses(expr);
+
+            MSetDelayed delayed = new MSetDelayed(defuVarSubstitute,
+                    new MCondition(
+                            parentheses,
+                            new MEqual(
+                                    new MExpression("parameter", "j"),
+                                    new MExpression("variable", a.getName()
+                                    ))));
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefuVar() {
+        List<MParameter> list = new ArrayList<>();
+        for (Agent a : getAgentsSorted()) {
+            list.add(getDefuVar(a.getName()));
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefuVarSubstitute() {
+        List<MParameter> list = new ArrayList<>();
+        for (Agent a : getAgentsSorted()) {
+            list.add(getDefuVarSubstitute(a.getName()));
+        }
+        return list;
+    }
+
+    public MSet getSetnZwangB() {
+        return new MSet(nZwangB, new MExpression(getConstraints().size()));
+    }
+
+    public MParameter getDefzVar(int ii) {
+        if (ii > getConstraints().size()) {
+            log.error("Called getDefzvar with q of {}", ii);
+        }
+        return new MParameter(defzVar.getName(), String.valueOf(ii), "t", "var");
+    }
+
+    public MParameter getDefzVarSubstitute(int ii) {
+        if (ii > getConstraints().size()) {
+            log.error("Called getDefzVarSubstitute with q of {}", ii);
+        }
+        return new MParameter(defzVarSubstitute.getName(), String.valueOf(ii), "t", "var");
+    }
+
+    public List<IExpression> getSetDelayedDefzVar() {
+        List<IExpression> list = new ArrayList<>(agents.size());
+        for (Constraint c : getConstraints()) {
+            if (StringUtils.isNotBlank(c.getDescription())) {
+                list.add(new MComment(c.getDescription()));
+            }
+            MSetDelayed delayed = new MSetDelayed(defzVar,
+                    new MCondition(
+                            new MParentheses(new MExpression(c.getCondition())),
+                            new MEqual(
+                                    new MExpression("parameter", "q"),
+                                    new MExpression(c.getId())
+                            )));
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<MSetDelayed> getSetDelayedDefzVarSubstitute() {
+        List<MSetDelayed> list = new ArrayList<>(agents.size());
+        for (Constraint c : getConstraints()) {
+            MExpressionList expr = new MExpressionList();
+            expr.add(getDefzVar(c.getId()));
+            expr.add(new MReplaceAll(substitute));
+            MParentheses parentheses = new MParentheses(expr);
+
+            MSetDelayed delayed = new MSetDelayed(defzVarSubstitute,
+                    new MCondition(
+                            parentheses,
+                            new MEqual(
+                                    new MExpression("parameter", "q"),
+                                    new MExpression(c.getId())
+                            )));
+            delayed.setAddSemicolon(true);
+            list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefzVar() {
+        List<MParameter> list = new ArrayList<>();
+        for (Constraint c : getConstraints()) {
+            list.add(getDefzVar(c.getId()));
+        }
+        return list;
+    }
+
+    public List<MParameter> getParameterListDefzVarSubstitute() {
+        List<MParameter> list = new ArrayList<>();
+        for (Constraint c : getConstraints()) {
+            list.add(getDefzVarSubstitute(c.getId()));
+        }
+        return list;
+    }
+
+    public MSet getSetMFi() {
+        return new MSet(mfi, mfiTable);
+    }
+
+    public MPostfix getMFiMatrix() {
+        mfiMatrix.setAddSemicolon(true);
+        return mfiMatrix;
     }
 }

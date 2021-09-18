@@ -27,6 +27,7 @@ public class GCDApplication extends Application {
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
     public String gcdCss;
+    public String mathematicaCss;
 
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
@@ -75,6 +76,7 @@ public class GCDApplication extends Application {
         this.primaryStage = primaryStage;
 
         gcdCss = Objects.requireNonNull(getClass().getResource("gcd.css")).toExternalForm();
+        mathematicaCss = Objects.requireNonNull(getClass().getResource("mathematica.css")).toExternalForm();
 
         loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));

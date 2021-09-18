@@ -24,9 +24,23 @@ public class HTMLBuilder implements GCDBuilder {
         append(text);
     }
 
+    public void write(String clazz, String text) {
+        openSpan(clazz);
+        write(text);
+        closeSpan();
+    }
+
+    public void openSpan(String clazz) {
+        write("<span class=\"" + clazz + "\">");
+    }
+
+    public void closeSpan() {
+        write("</span>");
+    }
+
 
     @Override
-    public void writeLine(String text) {
+    public void writeln(String text) {
         write(text);
         linebreak();
     }

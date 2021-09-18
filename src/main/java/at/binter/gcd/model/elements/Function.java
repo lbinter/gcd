@@ -57,6 +57,10 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
         this.parameter = sanitizeString(parameter);
     }
 
+    public String getCompleteName() {
+        return getName() + "[" + parameter + "]";
+    }
+
     public void setFunction(String function) {
         if (StringUtils.isBlank(function)) {
             functionProperty().set("");

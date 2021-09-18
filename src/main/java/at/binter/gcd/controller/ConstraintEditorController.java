@@ -41,6 +41,11 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
     }
 
     private void conditionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        if (StringUtils.isBlank(newValue)) {
+            editorLabelVariables.setText("");
+            editorLabelParameter.setText("");
+            return;
+        }
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);

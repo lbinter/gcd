@@ -1,11 +1,11 @@
 package at.binter.gcd.mathematica.elements;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
-import at.binter.gcd.mathematica.HTMLWrapper;
+import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.model.HasPlotStyle;
 import org.apache.commons.lang3.StringUtils;
 
-public class MDirective implements HTMLWrapper {
+public class MDirective extends MBase {
     private HasPlotStyle plotStyle;
     private String comment;
 
@@ -32,13 +32,6 @@ public class MDirective implements HTMLWrapper {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    @Override
-    public String toHTML() {
-        HTMLBuilder builder = new HTMLBuilder();
-        toHTML(builder);
-        return builder.toString();
     }
 
     @Override
