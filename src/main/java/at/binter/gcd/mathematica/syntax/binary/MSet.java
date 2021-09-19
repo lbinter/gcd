@@ -10,6 +10,11 @@ public class MSet extends MBinaryOperator {
         super(expr1, expr2);
     }
 
+    public MSet(IExpression expr1, IExpression expr2, boolean addSemicolon) {
+        super(expr1, expr2);
+        setAddSemicolon(addSemicolon);
+    }
+
     @Override
     public String getSymbolKeyboard() {
         return symbolKeyboard;

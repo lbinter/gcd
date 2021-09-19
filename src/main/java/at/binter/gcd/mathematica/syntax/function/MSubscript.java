@@ -38,6 +38,7 @@ public class MSubscript extends MFunction {
         getParameters().get(0).toHTML(builder);
         builder.write("<" + getHtmlTag() + ">");
         Iterator<IExpression> it = getParameters().iterator();
+        it.next();
         while (it.hasNext()) {
             it.next().toHTML(builder);
             if (it.hasNext()) {

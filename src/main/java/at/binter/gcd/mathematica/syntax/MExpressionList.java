@@ -11,8 +11,22 @@ import java.util.List;
 public class MExpressionList extends MBase implements IExpression {
     private final List<IExpression> expressions = new ArrayList<>();
 
+    public MExpressionList() {
+    }
+
+    public MExpressionList(IExpression... expressions) {
+        addAll(expressions);
+    }
+
     public List<IExpression> getExpressions() {
         return expressions;
+    }
+
+    public void addAll(IExpression... expressions) {
+        if (expressions == null || expressions.length == 0) return;
+        for (IExpression e : expressions) {
+            add(e);
+        }
     }
 
     public void add(IExpression expression) {

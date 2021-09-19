@@ -9,3 +9,7 @@
 .parameter {
     color: #438958;
 }
+
+* {
+    font-family: Consolas;
+}

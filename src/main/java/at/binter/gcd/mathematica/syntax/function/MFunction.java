@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class MFunction extends MBase {
+public abstract class MFunction extends MBase implements IExpression {
     public static final String delimiter = ", ";
 
     protected final List<IExpression> parameters = new ArrayList<>();
@@ -31,10 +31,17 @@ public abstract class MFunction extends MBase {
         return parameters;
     }
 
-    public void addParameters(IExpression... expr) {
-        if (expr == null || expr.length == 0) return;
-        for (IExpression e : expr) {
+    public void addParameters(IExpression... params) {
+        if (params == null || params.length == 0) return;
+        for (IExpression e : params) {
             addParameter(e);
+        }
+    }
+
+    public void addParameters(String... params) {
+        if (params == null || params.length == 0) return;
+        for (String s : params) {
+            addParameter(s);
         }
     }
 
@@ -46,6 +53,16 @@ public abstract class MFunction extends MBase {
     public void addParameter(String expr) {
         if (StringUtils.isBlank(expr)) return;
         parameters.add(new MExpression(expr));
+    }
+
+    @Override
+    public String getCssClass() {
+        return null;
+    }
+
+    @Override
+    public String getExpression() {
+        return toHTML();
     }
 
     @Override

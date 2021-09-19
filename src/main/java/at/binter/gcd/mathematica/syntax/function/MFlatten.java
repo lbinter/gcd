@@ -6,19 +6,19 @@ import at.binter.gcd.mathematica.syntax.MExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MLength extends MFunction implements IExpression {
-    private static final Logger log = LoggerFactory.getLogger(MLength.class);
-    public static final String function = "Length";
+public class MFlatten extends MFunction implements IExpression {
+    private static final Logger log = LoggerFactory.getLogger(MFlatten.class);
+    public static final String function = "Flatten";
     public static final String htmlTag = null;
 
-    public MLength() {
+    public MFlatten() {
     }
 
-    public MLength(String parameter) {
+    public MFlatten(String parameter) {
         addParameter(new MExpression(parameter));
     }
 
-    public MLength(MExpression... parameters) {
+    public MFlatten(MExpression... parameters) {
         super(parameters);
     }
 
@@ -39,7 +39,7 @@ public class MLength extends MFunction implements IExpression {
         if (getParameters().size() == 1) {
             getParameters().get(0).toHTML(builder);
         } else {
-            log.error("Length[x] has to many parameters ({})", getParameters().size());
+            log.error("Flatten[x] has to many parameters ({})", getParameters().size());
         }
         builder.append("]");
     }
@@ -57,7 +57,7 @@ public class MLength extends MFunction implements IExpression {
         if (getParameters().size() == 1) {
             b.append(getParameters().get(0).getExpression());
         } else {
-            log.error("Length[x] has to many parameters ({})", getParameters().size());
+            log.error("Flatten[x] has to many parameters ({})", getParameters().size());
         }
         b.append("]");
         return b.toString();

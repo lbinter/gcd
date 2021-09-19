@@ -2,12 +2,10 @@ package at.binter.gcd.mathematica;
 
 import at.binter.gcd.mathematica.elements.MPlotStyle;
 import at.binter.gcd.mathematica.syntax.IExpression;
-import at.binter.gcd.mathematica.syntax.MComment;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.HasPlotStyle;
+import at.binter.gcd.model.MathematicaModel;
 import at.binter.gcd.model.elements.Agent;
-import at.binter.gcd.model.elements.AlgebraicVariable;
-import at.binter.gcd.model.elements.ChangeMu;
 import at.binter.gcd.model.elements.Variable;
 import javafx.collections.transformation.SortedList;
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +19,12 @@ import java.util.List;
 
 public class GCDWriterHTML implements GCDMathematica {
     private static final Logger log = LoggerFactory.getLogger(GCDWriterHTML.class);
-    private final GCDModel model;
+    private final GCDModel gcdModel;
+    private final MathematicaModel model;
 
     public GCDWriterHTML(GCDModel gcdModel) {
-        this.model = gcdModel;
+        this.gcdModel = gcdModel;
+        model = new MathematicaModel(gcdModel);
     }
 
     @Override
@@ -37,29 +37,17 @@ public class GCDWriterHTML implements GCDMathematica {
             builder.linebreak();
         }
         builder.writeln(generatePlotStyles());
-        builder.linebreak();
         builder.writeln(generateVariableDefinition());
-        builder.linebreak();
         builder.writeln(generateAgentDefinition());
-        builder.linebreak();
         builder.writeln(generateSubstitutes());
-        builder.linebreak();
         builder.writeln(generateConstraintDefinition());
-        builder.linebreak();
         builder.writeln(generateChangeMus());
-        builder.linebreak();
         builder.writeln(generateTransformVariables());
-        builder.linebreak();
         builder.writeln(generateIndexedVariables());
-        builder.linebreak();
         builder.writeln(generateSubstituteVariables());
-        builder.linebreak();
         builder.writeln(generateSubstituteFunctions());
-        builder.linebreak();
         builder.writeln(generateBehavioralEquation());
-        builder.linebreak();
         builder.writeln(generateInitialConditions());
-        builder.linebreak();
         builder.writeln(generateSystemOfEquation());
         return builder.toString();
     }
@@ -69,8 +57,8 @@ public class GCDWriterHTML implements GCDMathematica {
         HTMLBuilder builder = new HTMLBuilder();
         builder.writeln("defaultColor = Black;");
         builder.writeln("defaultThickness = AbsoluteThickness[1];");
-        model.getAgents().sorted().forEach(agent -> builder.writeln(new MPlotStyle(model, agent).toHTML()));
-        builder.writeln(new MPlotStyle(model).toHTML());
+        gcdModel.getAgents().sorted().forEach(agent -> builder.writeln(new MPlotStyle(gcdModel, agent).toHTML()));
+        builder.writeln(new MPlotStyle(gcdModel).toHTML());
         return builder.toString();
     }
 
@@ -118,12 +106,13 @@ public class GCDWriterHTML implements GCDMathematica {
         HTMLBuilder builder = new HTMLBuilder();
 
         List<IExpression> list = new ArrayList<>();
-        list.add(GCDModel.diffVarComment);
+        list.add(model.getDiffVarComment());
         list.add(model.getSetDiffVar());
         list.add(model.getSetnDiffVar());
-        list.add(GCDModel.algVarComment);
+        list.add(model.getAlgVarComment());
         list.add(model.getSetAlgVar());
         list.add(model.getSetnAlgVar());
+        list.add(model.getVarComment());
         list.add(model.getSetVar());
         list.add(model.getSetnVar());
 
@@ -147,7 +136,7 @@ public class GCDWriterHTML implements GCDMathematica {
 
         List<IExpression> list = new ArrayList<>();
 
-        list.add(GCDModel.AGComment);
+        list.add(model.getAGComment());
         list.add(model.getSetAG());
         list.add(model.getSetnAG());
 
@@ -162,13 +151,14 @@ public class GCDWriterHTML implements GCDMathematica {
 
         List<IExpression> list = new ArrayList<>();
 
-        list.add(GCDModel.substituteComment);
+        list.add(model.getSubstituteComment());
         list.add(model.getSetSubstitute());
         list.addAll(model.getSetDelayedDefalgvar());
         list.addAll(model.getSetDelayedDefAlgVarSubstitute());
         list.addAll(model.getParameterListDefAlgVar());
         list.addAll(model.getParameterListDefAlgVarSubstitute());
-        list.add(GCDModel.defuVarComment);
+        list.add(model.getLinebreak());
+        list.add(model.getDefuVarComment());
         list.addAll(model.getSetDelayedDefuVar());
         list.addAll(model.getSetDelayedDefuVarSubstitute());
         list.addAll(model.getParameterListDefuVar());
@@ -185,7 +175,7 @@ public class GCDWriterHTML implements GCDMathematica {
 
         List<IExpression> list = new ArrayList<>();
 
-        list.add(GCDModel.nZwangBComment);
+        list.add(model.getnZwangBComment());
         list.add(model.getSetnZwangB());
         list.addAll(model.getSetDelayedDefzVar());
         list.addAll(model.getSetDelayedDefzVarSubstitute());
@@ -203,169 +193,52 @@ public class GCDWriterHTML implements GCDMathematica {
 
         List<IExpression> list = new ArrayList<>();
 
-        list.add(GCDModel.mfiComment);
+        list.add(model.getMfiComment());
         list.add(model.getSetMFi());
         list.add(model.getMFiMatrix());
+        list.add(model.getMachtfaktorenComment());
+        list.add(model.getFlattenMFiComment());
+        list.add(model.getSetFlattenMFi());
+        list.add(model.getSetChangeMu());
+        list.add(model.getMFexComment());
+        list.add(model.getSetMFex());
 
         writeToBuilder(builder, list, true);
 
-        MComment machtfaktoren = new MComment(
-                "Machtfaktoren müssen in Manipulate als nichtindizierte Variable",
-                "angegeben werden, indizierte Variable können in Manipulate nicht",
-                "manipuliert werden!!!");
-        machtfaktoren.toHTML(builder);
-
-        builder.comment("indizierte Machtfaktoren");
-        builder.writeln("MFi = Table[\\[Mu][j, i], {j, AG}, {i, ndiffvar}]");
-        builder.writeln("MFi // MatrixForm;");
-        builder.comment("Machtfaktoren müssen in Manipulate als nichtindizierte Variable " +
-                "angegeben werden, indizierte Variable können in Manipulate nicht " +
-                "manipuliert werden!!!");
-        builder.writeln("flattenMFi = Flatten[MFi]; ");
-
-        Iterator<ChangeMu> it = model.getAllChangeMu().iterator();
-        builder.write("change\\[Mu] = {");
-        builder.increaseIndent(4);
-        Agent current = null;
-        int muCount = 0;
-        while (it.hasNext()) {
-            ChangeMu mu = it.next();
-            if (current != mu.getAgent()) {
-                if (muCount > 1) {
-                    builder.linebreak();
-                }
-                builder.linebreak();
-                current = mu.getAgent();
-                muCount = 0;
-            }
-            if (muCount > 4) {
-                builder.linebreak();
-                muCount = 0;
-            }
-            builder.write(mu.getIndexName());
-            builder.write("->");
-            builder.write(mu.getIdentifier());
-            muCount++;
-            if (it.hasNext()) {
-                builder.write(", ");
-            }
-        }
-        builder.decreaseIndent(4);
-        builder.linebreak();
-        builder.writeln("};");
-        builder.linebreak();
-        builder.comment("Machtfaktoren als nichtindizierte Variable");
-        builder.write("MFex = flattenMFi /. change\\[Mu]");
         return builder.toString();
     }
 
     @Override
     public String generateTransformVariables() {
         HTMLBuilder builder = new HTMLBuilder();
-        builder.comment("Lagrangefaktoren");
-        builder.writeln("\\[Lambda]F = Array[Subscript[\\[Lambda], #] &, {nZwangB}]");
-        builder.comment("Wandle die aktuellen Variablen diffvar um in ein Array diffvarx von indizierten Variablen x der Länge ndiffvar");
-        builder.writeln("diffvarx = Array[Subscript[x, #] &, {ndiffvar}];");
-        builder.writeln("algvarxx = Array[Subscript[xx, #] &, {nalgvar}];");
-        builder.writeln("varxxx = Join[diffvarx, algvarxx]");
+
+        List<IExpression> list = new ArrayList<>();
+
+        list.add(model.getLambdaFComment());
+        list.add(model.getSetLambdaF());
+        list.add(model.getLinebreak());
+        list.add(model.getDiffVarXComment());
+        list.add(model.getSetDiffVarX());
+        list.add(model.getSetAlgVarXX());
+        list.add(model.getSetVarXXX());
+
+        writeToBuilder(builder, list, true);
+
         return builder.toString();
     }
 
     @Override
     public String generateIndexedVariables() {
-        SortedList<Variable> variables = model.getVariables().sorted();
-        SortedList<AlgebraicVariable> algebraicVariables = model.getAlgebraicVariables().sorted();
         HTMLBuilder builder = new HTMLBuilder();
 
-        builder.write("changediffax = {");
-        builder.increaseIndent(4);
-        int count = 1;
-        Iterator<Variable> it = variables.iterator();
-        while (it.hasNext()) {
-            Variable v = it.next();
-            if ((count - 1) % 4 == 0) {
-                builder.linebreak();
-            }
-            builder.write(v.getName());
-            builder.write(" -> ");
-            builder.write(subscript("x", String.valueOf(count)));
-            if (it.hasNext()) {
-                builder.write(", ");
-            } else {
-                builder.linebreak();
-            }
-            count++;
-        }
-        builder.decreaseIndent(4);
-        builder.writeln("}");
+        List<IExpression> list = new ArrayList<>();
 
-        builder.write("changediffxa = {");
-        builder.increaseIndent(4);
-        count = 1;
-        it = variables.iterator();
-        while (it.hasNext()) {
-            Variable v = it.next();
-            if ((count - 1) % 4 == 0) {
-                builder.linebreak();
-            }
-            builder.write(subscript("x", String.valueOf(count)));
-            builder.write(" -> ");
-            builder.write(v.getName());
-            if (it.hasNext()) {
-                builder.write(", ");
-            } else {
-                builder.linebreak();
-            }
-            count++;
-        }
-        builder.decreaseIndent(4);
-        builder.writeln("}");
+        list.add(model.getSetChangeDiffaX());
+        list.add(model.getSetChangeDiffXa());
+        list.add(model.getSetChangeAlgbXX());
+        list.add(model.getSetChangeAlgXXb());
 
-
-        builder.write("changediffax = {");
-        builder.increaseIndent(4);
-        count = 1;
-        Iterator<AlgebraicVariable> itA = algebraicVariables.iterator();
-        while (itA.hasNext()) {
-            AlgebraicVariable algVar = itA.next();
-            if ((count - 1) % 3 == 0) {
-                builder.linebreak();
-            }
-            builder.write(algVar.getName());
-            builder.write(" -> ");
-            builder.write(subscript("xx", String.valueOf(count)));
-            if (itA.hasNext()) {
-                builder.write(", ");
-            } else {
-                builder.linebreak();
-            }
-            count++;
-        }
-        builder.decreaseIndent(4);
-        builder.writeln("}");
-
-
-        builder.write("changediffax = {");
-        builder.increaseIndent(4);
-        count = 1;
-        itA = algebraicVariables.iterator();
-        while (itA.hasNext()) {
-            AlgebraicVariable algVar = itA.next();
-            if ((count - 1) % 3 == 0) {
-                builder.linebreak();
-            }
-            builder.write(subscript("xx", String.valueOf(count)));
-            builder.write(" -> ");
-            builder.write(algVar.getName());
-            if (itA.hasNext()) {
-                builder.write(", ");
-            } else {
-                builder.linebreak();
-            }
-            count++;
-        }
-        builder.decreaseIndent(4);
-        builder.writeln("}");
+        writeToBuilder(builder, list, true);
 
         return builder.toString();
     }
@@ -373,23 +246,28 @@ public class GCDWriterHTML implements GCDMathematica {
     @Override
     public String generateSubstituteVariables() {
         HTMLBuilder builder = new HTMLBuilder();
-        builder.writeln("defalgvarsubstitutexxx[jj_, t_, varxxx_] := defalgvarsubstitute[jj, t, var] /. changediffax /. changealgbxx;");
-        builder.writeln("defuvarsubstitutexxx[j_, t_, varxxx_] := defuvarsubstitute[j, t, var] /. changediffax /. changealgbxx;");
-        builder.writeln("defzvarsubstitutexxx[q_, t_, varxxx_] := defzvarsubstitute[q, t, var] /. changediffax /. changealgbxx;");
+
+        List<IExpression> list = new ArrayList<>();
+
+        list.add(model.getSetDelayedDefAlgVarSubstituteXXX());
+        list.add(model.getSetDelayedDefUVarSubstituteXXX());
+        list.add(model.getSetDelayedDefZVarSubstituteXXX());
+
+        writeToBuilder(builder, list, true);
+
         return builder.toString();
     }
 
     @Override
     public String generateSubstituteFunctions() {
-        SortedList<Agent> agents = model.getAgents().sorted();
         HTMLBuilder builder = new HTMLBuilder();
 
-        agents.forEach(agent -> {
-            builder.writeln("defuvarsubstitutexxx[" + agent.getName() + ", t, var]");
-        });
-        model.getConstraints().forEach(c -> {
-            builder.writeln("defzvarsubstitutexxx[" + c.getId() + ", t, var]");
-        });
+        List<IExpression> list = new ArrayList<>();
+
+        list.addAll(model.getParameterListDefUVarSubstituteXXX());
+        list.addAll(model.getParameterListDefZVarSubstituteXXX());
+
+        writeToBuilder(builder, list, true);
 
         return builder.toString();
     }
@@ -439,7 +317,7 @@ public class GCDWriterHTML implements GCDMathematica {
 
     @Override
     public String generateInitialConditions() {
-        SortedList<Variable> variables = model.getVariables().sorted();
+        SortedList<Variable> variables = gcdModel.getVariables().sorted();
         HTMLBuilder builder = new HTMLBuilder();
         builder.comment("Definition der Anfangsbedingungen");
         builder.writeln("init = {");
@@ -472,7 +350,7 @@ public class GCDWriterHTML implements GCDMathematica {
 
     @Override
     public String generateSystemOfEquation() {
-        SortedList<Agent> agents = model.getAgents().sorted();
+        SortedList<Agent> agents = gcdModel.getAgents().sorted();
         HTMLBuilder builder = new HTMLBuilder();
         builder.comment("Zum Berechnen und Plotten der Nutzenfunktionen");
         builder.writeln("ugl = {");

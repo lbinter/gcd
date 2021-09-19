@@ -14,6 +14,7 @@ public class MList extends MGroup implements IExpression {
     public static final String groupCloseSymbol = "}";
     public String delimiter = ", ";
     private int elementsLinebreak = -1;
+    private int elementsBlock = -1;
     protected final List<IExpression> elements = new ArrayList<>();
 
     public MList() {
@@ -76,20 +77,35 @@ public class MList extends MGroup implements IExpression {
         this.elementsLinebreak = elementsLinebreak;
     }
 
+    public int getElementsBlock() {
+        return elementsBlock;
+    }
+
+    public void setElementsBlock(int elementsBlock) {
+        this.elementsBlock = elementsBlock;
+    }
+
     @Override
     public void toHTML(HTMLBuilder builder) {
-        int count = 1;
+        int count = 0;
         builder.write(getGroupStartSymbol());
         Iterator<IExpression> it = elements.iterator();
-        boolean addLineBreaks = getElementsLinebreak() != -1;
+        boolean addLineBreaks = elementsLinebreak != -1;
         if (addLineBreaks) {
             builder.increaseIndent(4);
         }
         while (it.hasNext()) {
-            if (addLineBreaks && (count - 1) % getElementsLinebreak() == 0) {
-                builder.linebreak();
+            if (addLineBreaks) {
+                if (count % elementsLinebreak == 0) {
+                    builder.linebreak();
+                }
+                if (count == elementsBlock) {
+                    builder.linebreak();
+                    builder.linebreak();
+                    count = 0;
+                }
             }
-            builder.write(it.next().getExpression());
+            it.next().toHTML(builder);
             if (it.hasNext()) {
                 builder.write(delimiter);
             } else if (addLineBreaks) {

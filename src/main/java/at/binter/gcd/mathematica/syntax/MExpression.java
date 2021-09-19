@@ -12,6 +12,12 @@ public class MExpression extends MBase implements IExpression {
         this.expression = expression;
     }
 
+    public MExpression(String expression, boolean doLinebreaks) {
+        this(null, expression);
+        setDoLinebreaks(doLinebreaks);
+    }
+
+
     public MExpression(int value) {
         this.cssClass = null;
         this.expression = String.valueOf(value);
