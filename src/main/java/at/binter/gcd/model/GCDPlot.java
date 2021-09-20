@@ -2,7 +2,7 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,10 +202,10 @@ public class GCDPlot extends GCDBaseModel {
     }
 
     public void removeAlgebraicVariable(AlgebraicVariable algebraicVariable,
-                                        ObservableList<AlgebraicVariable> selectedAlgebraicVariables,
-                                        ObservableList<Agent> selectedAgents,
-                                        ObservableList<Variable> selectedVariables,
-                                        ObservableList<Parameter> selectedParameters) {
+                                        AlgebraicVariable[] selectedAlgebraicVariables,
+                                        Agent[] selectedAgents,
+                                        Variable[] selectedVariables,
+                                        Parameter[] selectedParameters) {
         algebraicVariables.remove(algebraicVariable);
         removeVariables(algebraicVariable.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
         removeParameters(algebraicVariable.getParameters(), selectedParameters);
@@ -221,10 +221,10 @@ public class GCDPlot extends GCDBaseModel {
     }
 
     public void removeAgent(Agent agent,
-                            ObservableList<AlgebraicVariable> selectedAlgebraicVariables,
-                            ObservableList<Agent> selectedAgents,
-                            ObservableList<Variable> selectedVariables,
-                            ObservableList<Parameter> selectedParameters) {
+                            AlgebraicVariable[] selectedAlgebraicVariables,
+                            Agent[] selectedAgents,
+                            Variable[] selectedVariables,
+                            Parameter[] selectedParameters) {
         agents.remove(agent);
         removeVariables(agent.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
         removeParameters(agent.getParameters(), selectedParameters);
@@ -237,9 +237,9 @@ public class GCDPlot extends GCDBaseModel {
     }
 
     public void removeVariable(Variable variable,
-                               ObservableList<AlgebraicVariable> selectedAlgebraicVariables,
-                               ObservableList<Agent> selectedAgents,
-                               ObservableList<Variable> selectedVariables) {
+                               AlgebraicVariable[] selectedAlgebraicVariables,
+                               Agent[] selectedAgents,
+                               Variable[] selectedVariables) {
         for (Variable v : selectedVariables) {
             if (v.equals(variable)) {
                 return;
@@ -273,9 +273,9 @@ public class GCDPlot extends GCDBaseModel {
     }
 
     public void removeParameter(Parameter parameter,
-                                ObservableList<Agent> selectedAgents,
-                                ObservableList<AlgebraicVariable> selectedAlgebraicVariables,
-                                ObservableList<Parameter> selectedParameters) {
+                                AlgebraicVariable[] selectedAlgebraicVariables,
+                                Agent[] selectedAgents,
+                                Parameter[] selectedParameters) {
         for (Parameter p : selectedParameters) {
             if (p.equals(parameter)) {
                 return;
@@ -331,19 +331,19 @@ public class GCDPlot extends GCDBaseModel {
      * @param selectedParameters         selected parameters needed for removeAlgebraicVariable
      */
     private void removeVariables(List<String> variables,
-                                 ObservableList<AlgebraicVariable> selectedAlgebraicVariables,
-                                 ObservableList<Agent> selectedAgents,
-                                 ObservableList<Variable> selectedVariables,
-                                 ObservableList<Parameter> selectedParameters) {
+                                 AlgebraicVariable[] selectedAlgebraicVariables,
+                                 Agent[] selectedAgents,
+                                 Variable[] selectedVariables,
+                                 Parameter[] selectedParameters) {
         for (String name : variables) {
             if (model.hasVariable(name)) {
                 Variable variable = model.getVariable(name);
-                if (!selectedVariables.contains(variable)) {
+                if (!ArrayUtils.contains(selectedVariables, variable)) {
                     removeVariable(variable, selectedAlgebraicVariables, selectedAgents, selectedVariables);
                 }
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
-                if (!selectedAlgebraicVariables.contains(algVar)) {
+                if (!ArrayUtils.contains(selectedAlgebraicVariables, algVar)) {
                     removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
                 }
             }
@@ -364,11 +364,11 @@ public class GCDPlot extends GCDBaseModel {
      * @param selectedParameters selected parameters needed for removeAlgebraicVariable
      */
     private void removeParameters(List<String> parameters,
-                                  ObservableList<Parameter> selectedParameters) {
+                                  Parameter[] selectedParameters) {
         for (String name : parameters) {
             if (model.hasParameter(name)) {
                 Parameter parameter = model.getParameter(name);
-                if (!selectedParameters.contains(parameter)) {
+                if (!ArrayUtils.contains(selectedParameters, parameter)) {
                     removeParameter(parameter);
                 }
             }
