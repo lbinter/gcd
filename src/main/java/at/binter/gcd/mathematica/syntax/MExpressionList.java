@@ -11,7 +11,19 @@ import java.util.List;
 public class MExpressionList extends MBase implements IExpression {
     private final List<IExpression> expressions = new ArrayList<>();
 
+    private String delimiter = " ";
+
     public MExpressionList() {
+    }
+
+    public MExpressionList(boolean noDelimiter) {
+        if (noDelimiter) {
+            setDelimiter(null);
+        }
+    }
+
+    public MExpressionList(String delimiter) {
+        setDelimiter(delimiter);
     }
 
     public MExpressionList(IExpression... expressions) {
@@ -34,6 +46,14 @@ public class MExpressionList extends MBase implements IExpression {
         expressions.add(expression);
     }
 
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
     @Override
     public String getCssClass() {
         return null;
@@ -41,15 +61,7 @@ public class MExpressionList extends MBase implements IExpression {
 
     @Override
     public String getExpression() {
-        StringBuilder b = new StringBuilder();
-        Iterator<IExpression> it = expressions.iterator();
-        while (it.hasNext()) {
-            b.append(it.next().getExpression());
-            if (it.hasNext()) {
-                b.append(" ");
-            }
-        }
-        return b.toString();
+        return toHTML();
     }
 
     @Override
@@ -57,8 +69,8 @@ public class MExpressionList extends MBase implements IExpression {
         Iterator<IExpression> it = expressions.iterator();
         while (it.hasNext()) {
             it.next().toHTML(builder);
-            if (it.hasNext()) {
-                builder.write(" ");
+            if (delimiter != null && it.hasNext()) {
+                builder.write(delimiter);
             }
         }
     }

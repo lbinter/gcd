@@ -6,10 +6,14 @@
     color: #002CC3;
 }
 
+.replaceMe {
+    color: #ff0000;
+}
+
 .parameter {
     color: #438958;
 }
 
 * {
-    font-family: Consolas;
+    font-family: Consolas, serif;
 }

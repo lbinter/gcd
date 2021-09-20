@@ -86,6 +86,10 @@ public class Variable implements Updatable<Variable>, HasPlotStyle, HasMinMaxVal
         minMaxValues.setMaxValue(maxValue);
     }
 
+    public boolean hasValidInitValues() {
+        return minMaxValues.hasAllValues() && getDefaultInitialCondition().equals(getInitialCondition());
+    }
+
     @Override
     public boolean hasAllValues() {
         return minMaxValues.hasAllValues();

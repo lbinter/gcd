@@ -2,6 +2,7 @@ package at.binter.gcd.mathematica.syntax;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.util.Tools;
 
 public class MExpression extends MBase implements IExpression {
     private final String cssClass;
@@ -23,6 +24,16 @@ public class MExpression extends MBase implements IExpression {
         this.expression = String.valueOf(value);
     }
 
+    public MExpression(double value) {
+        this.cssClass = null;
+        String val = String.valueOf(value);
+        if (val.endsWith(".0")) {
+            expression = val.replace(".0", "");
+        } else {
+            expression = val;
+        }
+    }
+
     public MExpression(String cssClass, String expression) {
         this.cssClass = cssClass;
         this.expression = expression;
@@ -41,9 +52,9 @@ public class MExpression extends MBase implements IExpression {
     @Override
     public void toHTML(HTMLBuilder builder) {
         if (cssClass != null) {
-            builder.write(getCssClass(), getExpression());
+            builder.write(getCssClass(), Tools.transformMathematicaGreekToGreekHtmlLetters(getExpression()));
         } else {
-            builder.write(getExpression());
+            builder.write(Tools.transformMathematicaGreekToGreekHtmlLetters(getExpression()));
         }
     }
 }

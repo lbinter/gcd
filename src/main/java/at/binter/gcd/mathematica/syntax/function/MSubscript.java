@@ -42,7 +42,7 @@ public class MSubscript extends MFunction {
         while (it.hasNext()) {
             it.next().toHTML(builder);
             if (it.hasNext()) {
-                builder.write(delimiter);
+                builder.write(getDelimiter());
             }
         }
         builder.write("</" + getHtmlTag() + ">");

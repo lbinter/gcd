@@ -37,8 +37,6 @@ public class MParentheses extends MGroup {
 
     @Override
     public String getExpression() {
-        return getGroupStartSymbol() +
-                expr.getExpression() +
-                getGroupCloseSymbol();
+        return toHTML();
     }
 }

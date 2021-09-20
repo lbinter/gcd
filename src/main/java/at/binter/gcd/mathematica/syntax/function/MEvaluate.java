@@ -6,19 +6,19 @@ import at.binter.gcd.mathematica.syntax.MExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MFlatten extends MFunction implements IExpression {
-    private static final Logger log = LoggerFactory.getLogger(MFlatten.class);
-    public static final String function = "Flatten";
+public class MEvaluate extends MFunction implements IExpression {
+    private static final Logger log = LoggerFactory.getLogger(MEvaluate.class);
+    public static final String function = "Evaluate";
     public static final String htmlTag = null;
 
-    public MFlatten() {
+    public MEvaluate() {
     }
 
-    public MFlatten(String parameter) {
+    public MEvaluate(String parameter) {
         addParameter(new MExpression(parameter));
     }
 
-    public MFlatten(MExpression... parameters) {
+    public MEvaluate(IExpression... parameters) {
         super(parameters);
     }
 
@@ -34,14 +34,14 @@ public class MFlatten extends MFunction implements IExpression {
 
     @Override
     public void toHTML(HTMLBuilder builder) {
-        builder.append(function);
-        builder.append("[");
+        builder.write(function);
+        builder.write("[");
         if (getParameters().size() == 1) {
             getParameters().get(0).toHTML(builder);
         } else {
-            log.error("Flatten[x] has to many parameters ({})", getParameters().size());
+            log.error("Length[x] has to many parameters ({})", getParameters().size());
         }
-        builder.append("]");
+        builder.write("]");
     }
 
     @Override

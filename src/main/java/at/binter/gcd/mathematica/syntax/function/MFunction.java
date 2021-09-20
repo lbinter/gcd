@@ -11,9 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class MFunction extends MBase implements IExpression {
-    public static final String delimiter = ", ";
-
+    public static final IExpression linebreak = new MExpression("empty");
     protected final List<IExpression> parameters = new ArrayList<>();
+    private String delimiter = ", ";
+    private boolean linebreakAfterFunction = false;
+    private boolean linebreakAfterParameter = false;
 
     public MFunction() {
     }
@@ -52,7 +54,35 @@ public abstract class MFunction extends MBase implements IExpression {
 
     public void addParameter(String expr) {
         if (StringUtils.isBlank(expr)) return;
-        parameters.add(new MExpression(expr));
+        parameters.add(new MExpression("parameter", expr));
+    }
+
+    public void addLinebreak() {
+        parameters.add(linebreak);
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public boolean isLinebreakAfterFunction() {
+        return linebreakAfterFunction;
+    }
+
+    public boolean isLinebreakAfterParameter() {
+        return linebreakAfterParameter;
+    }
+
+    public void setLinebreakAfterParameter(boolean linebreakAfterParameter) {
+        this.linebreakAfterParameter = linebreakAfterParameter;
+    }
+
+    public void setLinebreakAfterFunction(boolean linebreakAfterFunction) {
+        this.linebreakAfterFunction = linebreakAfterFunction;
     }
 
     @Override
@@ -69,12 +99,35 @@ public abstract class MFunction extends MBase implements IExpression {
     public void toHTML(HTMLBuilder builder) {
         builder.write(getFunction());
         builder.write("[");
+        if (linebreakAfterFunction) {
+            builder.linebreak();
+            builder.increaseIndent(4);
+        }
         Iterator<IExpression> it = getParameters().iterator();
+        boolean increaseIndent = true;
         while (it.hasNext()) {
-            it.next().toHTML(builder);
-            if (it.hasNext()) {
-                builder.write(delimiter);
+            IExpression expression = it.next();
+            if (linebreak == expression) {
+                builder.linebreak();
+            } else {
+                expression.toHTML(builder);
+                if (it.hasNext()) {
+                    builder.write(delimiter);
+                    if (linebreakAfterParameter) {
+                        builder.linebreak();
+                        if (!linebreakAfterFunction && increaseIndent) {
+                            increaseIndent = false;
+                            builder.increaseIndent(4);
+                        }
+                    }
+                }
             }
+        }
+        if (linebreakAfterFunction) {
+            builder.decreaseIndent(4);
+        }
+        if (!increaseIndent) {
+            builder.decreaseIndent(4);
         }
         builder.write("]");
     }

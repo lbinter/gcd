@@ -92,6 +92,7 @@ public class XmlFunction implements HasPlotStyle {
     public AlgebraicVariable createAlgebraicVariable() {
         AlgebraicVariable algVar = new AlgebraicVariable();
         algVar.setName(name);
+        algVar.setParameter(parameter);
         algVar.setFunction(function);
         algVar.setDescription(description);
         algVar.getPlotStyle().update(this);
@@ -101,7 +102,6 @@ public class XmlFunction implements HasPlotStyle {
     public Agent createAgent() {
         Agent agent = new Agent();
         agent.setName(name);
-        agent.setParameter(parameter);
         agent.setFunction(function);
         agent.setDescription(description);
         agent.getPlotStyle().update(this);

@@ -41,7 +41,7 @@ public class MArray extends MFunction implements IExpression {
         while (it.hasNext()) {
             it.next().toHTML(builder);
             if (it.hasNext()) {
-                builder.write(delimiter);
+                builder.write(getDelimiter());
             }
         }
         builder.write("]");
@@ -61,7 +61,7 @@ public class MArray extends MFunction implements IExpression {
         while (it.hasNext()) {
             b.append(it.next());
             if (it.hasNext()) {
-                b.append(delimiter);
+                b.append(getDelimiter());
             }
         }
         b.append("]");

@@ -51,15 +51,6 @@ public class MLength extends MFunction implements IExpression {
 
     @Override
     public String getExpression() {
-        StringBuilder b = new StringBuilder();
-        b.append(function);
-        b.append("[");
-        if (getParameters().size() == 1) {
-            b.append(getParameters().get(0).getExpression());
-        } else {
-            log.error("Length[x] has to many parameters ({})", getParameters().size());
-        }
-        b.append("]");
-        return b.toString();
+        return toHTML();
     }
 }

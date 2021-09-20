@@ -31,18 +31,38 @@ public class MathematicaModel {
         return model;
     }
 
-    private boolean clearGlobal = true;
+    private final MVariable variableT = new MVariable("t");
+    private final MVariable variableX = new MVariable("x");
+    private final MVariable variableXX = new MVariable("xx");
+    private final MVariable variableLambda = new MVariable("\\[Lambda]");
+    private final MVariable variablePartialD = new MVariable("\\[PartialD]");
+    private final MExpression e0 = new MExpression(0);
+    private final MExpression e2p5 = new MExpression("2.5");
+    private final MExpression e20 = new MExpression(20);
+    private final MExpression e30 = new MExpression(30);
+    private final MExpression e50 = new MExpression(50);
+    private final MExpression e100 = new MExpression(100);
+
+    private final MExpression parameterI = new MExpression("parameter", "i");
+    private final MExpression parameterII = new MExpression("parameter", "ii");
+    private final MExpression parameterJ = new MExpression("parameter", "j");
+    private final MExpression parameterQ = new MExpression("parameter", "q");
+    private final MExpression parameterT = new MExpression("parameter", "t");
+    private final MExpression parameterPlotMax = new MExpression("parameter", "plotmax");
+    private final MExpression parameterTMax = new MExpression("parameter", "tmax");
+    private final MExpression parameterSharp = new MExpression("parameter", "#");
+    private final MExpression parameterSol = new MExpression("parameter", "sol");
 
     private final MExpression linebreak = new MExpression("", true);
-    private final MComment diffVarComment = new MComment("durch Differentialgleichungen bestimmte Variable");
-    private final MVariable diffVar = new MVariable("diffvar");
-    private final MVariable nDiffVar = new MVariable("ndiffvar");
-    private final MComment algVarComment = new MComment("durch algebraische Definitionsgleichungen bestimmte Variable");
-    private final MVariable algVar = new MVariable("algvar");
-    private final MVariable nAlgVar = new MVariable("nalgvar");
+    private final MComment diffvarComment = new MComment("durch Differentialgleichungen bestimmte Variable");
+    private final MVariable diffvar = new MVariable("diffvar");
+    private final MVariable ndiffvar = new MVariable("ndiffvar");
+    private final MComment algvarComment = new MComment("durch algebraische Definitionsgleichungen bestimmte Variable");
+    private final MVariable algvar = new MVariable("algvar");
+    private final MVariable nalgvar = new MVariable("nalgvar");
     private final MComment varComment = new MComment("gesamte Variable");
     private final MVariable var = new MVariable("var");
-    private final MVariable nVar = new MVariable("nvar");
+    private final MVariable nvar = new MVariable("nvar");
 
     private final MComment AGComment = new MComment("Agenten");
     private final MVariable AG = new MVariable("AG");
@@ -50,21 +70,21 @@ public class MathematicaModel {
 
     private final MComment substituteComment = new MComment("algebraische Definitionsgleichungen der \"algebraischen\" Variablen algvar");
     private final MVariable substitute = new MVariable("substitute");
-    private final MParameter defAlgVar = new MParameter("defalgvar", "ii_", "t_", "var_");
-    private final MParameter defAlgVarSubstitute = new MParameter("defalgvarsubstitute", "ii_", "t_", "var_");
-    private final MComment defuVarComment = new MComment("Definitionsgleichungen der Nutzenfunktionen");
-    private final MParameter defuVar = new MParameter("defuvar", "j_", "t_", "var_");
-    private final MParameter defuVarSubstitute = new MParameter("defuvarsubstitute", "j_", "t_", "var_");
+    private final MParameter defalgvar = new MParameter("defalgvar", "ii_", "t_", "var_");
+    private final MParameter defalgvarsubstitute = new MParameter("defalgvarsubstitute", "ii_", "t_", "var_");
+    private final MComment defuvarComment = new MComment("Definitionsgleichungen der Nutzenfunktionen");
+    private final MParameter defuvar = new MParameter("defuvar", "j_", "t_", "var_");
+    private final MParameter defuvarsubstitute = new MParameter("defuvarsubstitute", "j_", "t_", "var_");
     private final MComment nZwangBComment = new MComment("Definitionsgleichungen der Zwangsbedingungen");
     private final MVariable nZwangB = new MVariable("nZwangB");
-    private final MParameter defzVar = new MParameter("defzvar", "q_", "t_", "var_");
-    private final MParameter defzVarSubstitute = new MParameter("defzvarsubstitute", "q_", "t_", "var_");
+    private final MParameter defzvar = new MParameter("defzvar", "q_", "t_", "var_");
+    private final MParameter defzvarsubstitute = new MParameter("defzvarsubstitute", "q_", "t_", "var_");
     private final MComment mfiComment = new MComment("indizierte Machtfaktoren");
     private final MVariable mfi = new MVariable("MFi");
     private final MTable mfiTable = new MTable(
             new MParameter("\\[Mu]", "j", "i"),
             new MList(new MExpression("j"), AG),
-            new MList(new MExpression("i"), nDiffVar));
+            new MList(new MExpression("i"), ndiffvar));
     private final MPostfix mfiMatrix = new MPostfix(mfi, new MExpression("MatrixForm"), true);
     private final MComment machtfaktorenComment = new MComment("Machtfaktoren müssen in Manipulate als nichtindizierte Variable angegeben werden, indizierte Variable können in Manipulate nicht  manipuliert werden!!!");
     private final MComment flattenMFiComment = new MComment("um change\\[Mu] leichter hinschreiben zu können, change\\[Mu] kann leider nicht automatisch erstellt werden");
@@ -76,50 +96,64 @@ public class MathematicaModel {
     private final MVariable lambdaF = new MVariable("\\[Lambda]F");
     private final MArray lambdaFArray = new MArray(
             new MExpressionList(
-                    new MSubscript(new MVariable("\\[Lambda]"), new MExpression("parameter", "#")),
+                    new MSubscript(variableLambda, parameterSharp),
                     new MExpression("&")
             ), new MList(nZwangB));
-    private final MComment diffVarXComment = new MComment("Wandle die aktuellen Variablen diffvar um in ein Array diffvarx von indizierten Variablen x der Länge ndiffvar");
-    private final MVariable diffVarX = new MVariable("diffvarx");
-    private final MArray diffVarXArray = new MArray(
+    private final MComment diffvarxComment = new MComment("Wandle die aktuellen Variablen diffvar um in ein Array diffvarx von indizierten Variablen x der Länge ndiffvar");
+    private final MVariable diffvarx = new MVariable("diffvarx");
+    private final MArray diffvarxArray = new MArray(
             new MExpressionList(
-                    new MSubscript(new MVariable("x"), new MExpression("parameter", "#")),
+                    new MSubscript(new MVariable("x"), parameterSharp),
                     new MExpression("&")
-            ), new MList(nDiffVar));
-    private final MVariable algVarXX = new MVariable("algvarxx");
-    private final MArray algVarXXArray = new MArray(
+            ), new MList(ndiffvar));
+    private final MVariable algvarxx = new MVariable("algvarxx");
+    private final MArray algvarxxArray = new MArray(
             new MExpressionList(
-                    new MSubscript(new MVariable("xx"), new MExpression("parameter", "#")),
+                    new MSubscript(new MVariable("xx"), parameterSharp),
                     new MExpression("&")
-            ), new MList(nAlgVar));
-    private final MVariable varXXX = new MVariable("varxxx");
-    private final MJoin varXXXJoin = new MJoin(diffVarX, algVarXX);
-    private final MVariable changeDiffaX = new MVariable("changediffax");
-    private final MVariable changeDiffXa = new MVariable("changediffxa");
-    private final MVariable changeAlgbXX = new MVariable("changealgbxx");
-    private final MVariable changeAlgXXb = new MVariable("changealgxxb");
-    private final MParameter defAlgVarSubstituteXXX = new MParameter("defalgvarsubstitutexxx", "jj_", "t_", "varxxx_");
-    private final MParameter defUVarSubstituteXXX = new MParameter("defuvarsubstitutexxx", "j_", "t_", "varxxx_");
-    private final MParameter defZVarSubstituteXXX = new MParameter("defzvarsubstitutexxx", "q_", "t_", "varxxx_");
+            ), new MList(nalgvar));
+    private final MVariable varxxx = new MVariable("varxxx");
+    private final MJoin varxxxJoin = new MJoin(diffvarx, algvarxx);
+    private final MVariable changediffax = new MVariable("changediffax");
+    private final MVariable changediffxa = new MVariable("changediffxa");
+    private final MVariable changealgbxx = new MVariable("changealgbxx");
+    private final MVariable changealgxxb = new MVariable("changealgxxb");
+    private final MParameter defalgvarsubstitutexxx = new MParameter("defalgvarsubstitutexxx", "jj_", "t_", "varxxx_");
+    private final MParameter defuvarsubstitutexxx = new MParameter("defuvarsubstitutexxx", "j_", "t_", "varxxx_");
+    private final MParameter defzvarsubstitutexxx = new MParameter("defzvarsubstitutexxx", "q_", "t_", "varxxx_");
+    private final MVariable dgldiffxxx = new MVariable("dgldiffxxx");
+    private final MVariable dglalgxxx = new MVariable("dglalgxxx");
+    private final MComment dglzxxxComment = new MComment("Zwangsbedingungen für allgemeines GCD Modell mit indizierten Variablen");
+    private final MVariable dglzxxx = new MVariable("dglzxxx");
+    private final MVariable dglxxx = new MVariable("dglxxx");
+    private final MComment dglComment = new MComment("Rücktransformation des Modells mit indizierten Variablen in Modell mit benannten Variablen");
+    private final MVariable dgl = new MVariable("dgl");
+    private final MComment initComment = new MComment("Definition der Anfangsbedingungen");
+    private final MVariable init = new MVariable("init");
+    private final MComment uglComment = new MComment("Zum Berechnen und Plotten der Nutzenfunktionen");
+    private final MVariable ugl = new MVariable("ugl");
+    private final MComment glComment = new MComment("Führe alle Gleichungen für NDSolve zusammen");
+    private final MVariable gl = new MVariable("gl");
+    private final MComment glvarComment = new MComment("Differentialgleichungsvariable incl. Lagrangefaktoren und Nutzenfunktionen");
+    private final MVariable glvar = new MVariable("glvar");
+    private final MComment GLComment = new MComment("Transformiere die indizierten Machtfaktoren in den Gleichungen gl in nicht indizierte Machtfaktoren");
+    private final MVariable GL = new MVariable("GL");
+    private final MComment afterGl = new MComment("Das berechnete Ergebnis von GL muss manuell in das Programm zur",
+            "Lösung der Modellgleichungen übertragen werden (es reicht nicht indem",
+            "man nur \"GL\" in NDSolve schreibt, das kann Manipulate nicht ",
+            "verarbeiten). Dann das Lösungsprogramm gesondert gestartet werden");
 
-    public boolean isClearGlobal() {
-        return clearGlobal;
-    }
 
     public MExpression getLinebreak() {
         return linebreak;
     }
 
-    public void setClearGlobal(boolean clearGlobal) {
-        this.clearGlobal = clearGlobal;
+    public MComment getDiffvarComment() {
+        return diffvarComment;
     }
 
-    public MComment getDiffVarComment() {
-        return diffVarComment;
-    }
-
-    public MComment getAlgVarComment() {
-        return algVarComment;
+    public MComment getAlgvarComment() {
+        return algvarComment;
     }
 
     public MComment getVarComment() {
@@ -134,8 +168,8 @@ public class MathematicaModel {
         return substituteComment;
     }
 
-    public MComment getDefuVarComment() {
-        return defuVarComment;
+    public MComment getDefuvarComment() {
+        return defuvarComment;
     }
 
     public MComment getnZwangBComment() {
@@ -162,8 +196,40 @@ public class MathematicaModel {
         return lambdaFComment;
     }
 
-    public MComment getDiffVarXComment() {
-        return diffVarXComment;
+    public MComment getDiffvarxComment() {
+        return diffvarxComment;
+    }
+
+    public MComment getDglzxxxComment() {
+        return dglzxxxComment;
+    }
+
+    public MComment getDglComment() {
+        return dglComment;
+    }
+
+    public MComment getInitComment() {
+        return initComment;
+    }
+
+    public MComment getUglComment() {
+        return uglComment;
+    }
+
+    public MComment getGlComment() {
+        return glComment;
+    }
+
+    public MComment getGlvarComment() {
+        return glvarComment;
+    }
+
+    public MComment getGLComment() {
+        return GLComment;
+    }
+
+    public MComment getAfterGl() {
+        return afterGl;
     }
 
     public MSet getSetDiffVar() {
@@ -171,11 +237,11 @@ public class MathematicaModel {
         for (Variable v : model.getVariablesSorted()) {
             list.add(new MExpression("variable", v.getName()));
         }
-        return new MSet(diffVar, list);
+        return new MSet(diffvar, list);
     }
 
     public MSet getSetnDiffVar() {
-        return new MSet(nDiffVar, new MLength(diffVar));
+        return new MSet(ndiffvar, new MLength(diffvar));
     }
 
     public MSet getSetAlgVar() {
@@ -183,19 +249,19 @@ public class MathematicaModel {
         for (AlgebraicVariable v : model.getAlgebraicVariablesSorted()) {
             list.add(new MExpression("variable", v.getName()));
         }
-        return new MSet(algVar, list);
+        return new MSet(algvar, list);
     }
 
     public MSet getSetnAlgVar() {
-        return new MSet(nAlgVar, new MLength(algVar));
+        return new MSet(nalgvar, new MLength(algvar));
     }
 
     public MSet getSetVar() {
-        return new MSet(var, new MJoin(diffVar, algVar));
+        return new MSet(var, new MJoin(diffvar, algvar));
     }
 
     public MSet getSetnVar() {
-        return new MSet(nVar, new MLength(var));
+        return new MSet(nvar, new MLength(var));
     }
 
     public MSet getSetAG() {
@@ -228,10 +294,10 @@ public class MathematicaModel {
         int ii = 1;
         for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
             MParameter algVar = new MParameter(aV.getName(), aV.getParameter());
-            MSetDelayed delayed = new MSetDelayed(defAlgVar,
+            MSetDelayed delayed = new MSetDelayed(defalgvar,
                     new MCondition(
                             algVar,
-                            new MEqual(new MExpression("parameter", "ii"), new MExpression(ii))
+                            new MEqual(parameterII, new MExpression(ii))
                     ),
                     true);
             list.add(delayed);
@@ -244,24 +310,24 @@ public class MathematicaModel {
         if (ii > model.getAlgebraicVariables().size()) {
             log.error("Called getDefalgvar with ii of {}", ii);
         }
-        return new MParameter(defAlgVar.getName(), String.valueOf(ii), "t", "var");
+        return new MParameter(defalgvar.getName(), String.valueOf(ii), "t", "var");
     }
 
     private MParameter getDefAlgVarSubstitute(int ii) {
         if (ii > model.getAlgebraicVariables().size()) {
             log.error("Called getDefAlgVarSubstitute with ii of {}", ii);
         }
-        return new MParameter(defAlgVarSubstitute.getName(), String.valueOf(ii), "t", "var");
+        return new MParameter(defalgvarsubstitute.getName(), String.valueOf(ii), "t", "var");
     }
 
     public List<MSetDelayed> getSetDelayedDefAlgVarSubstitute() {
         List<MSetDelayed> list = new ArrayList<>(model.getAlgebraicVariables().size());
         for (int ii = 1; ii <= model.getAlgebraicVariables().size(); ii++) {
             MParentheses parentheses = new MParentheses(new MReplaceAll(getDefalgVar(ii), substitute));
-            MSetDelayed delayed = new MSetDelayed(defAlgVarSubstitute,
+            MSetDelayed delayed = new MSetDelayed(defalgvarsubstitute,
                     new MCondition(
                             parentheses,
-                            new MEqual(new MExpression("parameter", "ii"), new MExpression(ii))
+                            new MEqual(parameterII, new MExpression(ii))
                     ),
                     true);
             list.add(delayed);
@@ -291,7 +357,7 @@ public class MathematicaModel {
         } else if (model.getAgent(index) == null) {
             log.error("Called getDefuVar with non exists agent index of {}", index);
         }
-        return new MParameter(defuVar.getName(), index, "t", "var");
+        return new MParameter(defuvar.getName(), index, "t", "var");
     }
 
     public MParameter getDefuVarSubstitute(String index) {
@@ -300,7 +366,7 @@ public class MathematicaModel {
         } else if (model.getAgent(index) == null) {
             log.error("Called getDefuVarSubstitute with non exists agent index of {}", index);
         }
-        return new MParameter(defuVarSubstitute.getName(), index, "t", "var");
+        return new MParameter(defuvarsubstitute.getName(), index, "t", "var");
     }
 
     public List<IExpression> getSetDelayedDefuVar() {
@@ -309,13 +375,12 @@ public class MathematicaModel {
             if (StringUtils.isNotBlank(a.getDescription())) {
                 list.add(new MComment(a.getDescription()));
             }
-            MSetDelayed delayed = new MSetDelayed(defuVar,
+            MSetDelayed delayed = new MSetDelayed(defuvar,
                     new MCondition(
                             new MParentheses(new MExpression(a.getFunction())),
                             new MEqual(
-                                    new MExpression("parameter", "j"),
-                                    new MExpression("variable", a.getName()
-                                    ))),
+                                    parameterJ,
+                                    new MExpression("variable", a.getName()))),
                     true);
             list.add(delayed);
         }
@@ -326,13 +391,12 @@ public class MathematicaModel {
         List<MSetDelayed> list = new ArrayList<>(model.getAgents().size());
         for (Agent a : model.getAgentsSorted()) {
             MParentheses parentheses = new MParentheses(new MReplaceAll(getDefuVar(a.getName()), substitute));
-            MSetDelayed delayed = new MSetDelayed(defuVarSubstitute,
+            MSetDelayed delayed = new MSetDelayed(defuvarsubstitute,
                     new MCondition(
                             parentheses,
                             new MEqual(
-                                    new MExpression("parameter", "j"),
-                                    new MExpression("variable", a.getName()
-                                    ))),
+                                    parameterJ,
+                                    new MExpression("variable", a.getName()))),
                     true);
             list.add(delayed);
         }
@@ -363,14 +427,14 @@ public class MathematicaModel {
         if (ii > model.getConstraints().size()) {
             log.error("Called getDefzvar with q of {}", ii);
         }
-        return new MParameter(defzVar.getName(), String.valueOf(ii), "t", "var");
+        return new MParameter(defzvar.getName(), String.valueOf(ii), "t", "var");
     }
 
     public MParameter getDefzVarSubstitute(int ii) {
         if (ii > model.getConstraints().size()) {
             log.error("Called getDefzVarSubstitute with q of {}", ii);
         }
-        return new MParameter(defzVarSubstitute.getName(), String.valueOf(ii), "t", "var");
+        return new MParameter(defzvarsubstitute.getName(), String.valueOf(ii), "t", "var");
     }
 
     public List<IExpression> getSetDelayedDefzVar() {
@@ -379,11 +443,11 @@ public class MathematicaModel {
             if (StringUtils.isNotBlank(c.getDescription())) {
                 list.add(new MComment(c.getDescription()));
             }
-            MSetDelayed delayed = new MSetDelayed(defzVar,
+            MSetDelayed delayed = new MSetDelayed(defzvar,
                     new MCondition(
                             new MParentheses(new MExpression(c.getCondition())),
                             new MEqual(
-                                    new MExpression("parameter", "q"),
+                                    parameterQ,
                                     new MExpression(c.getId())
                             )),
                     true);
@@ -396,11 +460,11 @@ public class MathematicaModel {
         List<MSetDelayed> list = new ArrayList<>(model.getAgents().size());
         for (Constraint c : model.getConstraints()) {
             MParentheses parentheses = new MParentheses(new MReplaceAll(getDefzVar(c.getId()), substitute));
-            MSetDelayed delayed = new MSetDelayed(defzVarSubstitute,
+            MSetDelayed delayed = new MSetDelayed(defzvarsubstitute,
                     new MCondition(
                             parentheses,
                             new MEqual(
-                                    new MExpression("parameter", "q"),
+                                    parameterQ,
                                     new MExpression(c.getId())
                             )),
                     true);
@@ -464,15 +528,15 @@ public class MathematicaModel {
     }
 
     public MSet getSetDiffVarX() {
-        return new MSet(diffVarX, diffVarXArray, true);
+        return new MSet(diffvarx, diffvarxArray, true);
     }
 
     public MSet getSetAlgVarXX() {
-        return new MSet(algVarXX, algVarXXArray, true);
+        return new MSet(algvarxx, algvarxxArray, true);
     }
 
     public MSet getSetVarXXX() {
-        return new MSet(varXXX, varXXXJoin);
+        return new MSet(varxxx, varxxxJoin);
     }
 
     public MSet getSetChangeDiffaX() {
@@ -483,11 +547,11 @@ public class MathematicaModel {
             MExpressionList l = new MExpressionList();
             l.add(new MVariable(v.getName()));
             l.add(new MExpression("&#8594;"));
-            l.add(new MSubscript(new MVariable("x"), new MExpression(count)));
+            l.add(new MSubscript(variableX, new MExpression(count)));
             list.add(l);
             count++;
         }
-        return new MSet(changeDiffaX, list);
+        return new MSet(changediffax, list);
     }
 
     public MSet getSetChangeDiffXa() {
@@ -496,13 +560,13 @@ public class MathematicaModel {
         int count = 1;
         for (Variable v : model.getVariablesSorted()) {
             MExpressionList l = new MExpressionList();
-            l.add(new MSubscript(new MVariable("x"), new MExpression(count)));
+            l.add(new MSubscript(variableX, new MExpression(count)));
             l.add(new MExpression("&#8594;"));
             l.add(new MVariable(v.getName()));
             list.add(l);
             count++;
         }
-        return new MSet(changeDiffXa, list);
+        return new MSet(changediffxa, list);
     }
 
     public MSet getSetChangeAlgbXX() {
@@ -513,11 +577,11 @@ public class MathematicaModel {
             MExpressionList l = new MExpressionList();
             l.add(new MVariable(v.getName()));
             l.add(new MExpression("&#8594;"));
-            l.add(new MSubscript(new MVariable("xx"), new MExpression(count)));
+            l.add(new MSubscript(variableXX, new MExpression(count)));
             list.add(l);
             count++;
         }
-        return new MSet(changeAlgbXX, list);
+        return new MSet(changealgbxx, list);
     }
 
     public MSet getSetChangeAlgXXb() {
@@ -526,44 +590,44 @@ public class MathematicaModel {
         int count = 1;
         for (AlgebraicVariable v : model.getAlgebraicVariablesSorted()) {
             MExpressionList l = new MExpressionList();
-            l.add(new MSubscript(new MVariable("xx"), new MExpression(count)));
+            l.add(new MSubscript(variableXX, new MExpression(count)));
             l.add(new MExpression("&#8594;"));
             l.add(new MVariable(v.getName()));
             list.add(l);
             count++;
         }
-        return new MSet(changeAlgXXb, list);
+        return new MSet(changealgxxb, list);
     }
 
     public MSetDelayed getSetDelayedDefAlgVarSubstituteXXX() {
-        return new MSetDelayed(defAlgVarSubstituteXXX,
+        return new MSetDelayed(defalgvarsubstitutexxx,
                 new MReplaceAll(
                         new MReplaceAll(
-                                new MParameter(defAlgVarSubstitute.getName(), "jj", "t", "var"),
-                                changeDiffaX),
-                        changeAlgbXX),
+                                new MParameter(defalgvarsubstitute.getName(), "jj", "t", "var"),
+                                changediffax),
+                        changealgbxx),
                 true
         );
     }
 
     public MSetDelayed getSetDelayedDefUVarSubstituteXXX() {
-        return new MSetDelayed(defUVarSubstituteXXX,
+        return new MSetDelayed(defuvarsubstitutexxx,
                 new MReplaceAll(
                         new MReplaceAll(
-                                new MParameter(defuVarSubstitute.getName(), "j", "t", "var"),
-                                changeDiffaX),
-                        changeAlgbXX),
+                                new MParameter(defuvarsubstitute.getName(), "j", "t", "var"),
+                                changediffax),
+                        changealgbxx),
                 true
         );
     }
 
     public MSetDelayed getSetDelayedDefZVarSubstituteXXX() {
-        return new MSetDelayed(defZVarSubstituteXXX,
+        return new MSetDelayed(defzvarsubstitutexxx,
                 new MReplaceAll(
                         new MReplaceAll(
-                                new MParameter(defzVarSubstitute.getName(), "q", "t", "var"),
-                                changeDiffaX),
-                        changeAlgbXX),
+                                new MParameter(defzvarsubstitute.getName(), "q", "t", "var"),
+                                changediffax),
+                        changealgbxx),
                 true
         );
     }
@@ -571,7 +635,7 @@ public class MathematicaModel {
     public List<MParameter> getParameterListDefUVarSubstituteXXX() {
         List<MParameter> list = new ArrayList<>();
         for (Agent a : model.getAgentsSorted()) {
-            list.add(new MParameter(defUVarSubstituteXXX.getName(), a.getName(), "t", "varxxx"));
+            list.add(new MParameter(defuvarsubstitutexxx.getName(), a.getName(), "t", "varxxx"));
         }
         return list;
     }
@@ -579,8 +643,247 @@ public class MathematicaModel {
     public List<MParameter> getParameterListDefZVarSubstituteXXX() {
         List<MParameter> list = new ArrayList<>();
         for (Constraint c : model.getConstraints()) {
-            list.add(new MParameter(defZVarSubstituteXXX.getName(), String.valueOf(c.getId()), "t", "varxxx"));
+            list.add(new MParameter(defzvarsubstitutexxx.getName(), String.valueOf(c.getId()), "t", "varxxx"));
         }
         return list;
+    }
+
+    public MSet getSetDgldiffxxx() {
+        MSubscript xi = new MSubscript(variableX, parameterI);
+
+        MExpressionList xiApos = new MExpressionList(true);
+        xiApos.add(xi);
+        xiApos.add(new MExpression("'"));
+
+        MParameter xiOfT = new MParameter(xi, variableT);
+
+        MParameter xiAposOfT = new MParameter(xiApos, variableT);
+
+        MSubscript partialDXiOfT = new MSubscript(variablePartialD, xiOfT);
+
+        MSubscript partialDXiAposOfT = new MSubscript(variablePartialD, xiAposOfT);
+
+        MParameter muJI = new MParameter("\\[Mu]", "j", "i");
+
+        MParameter defUSubX = new MParameter(defuvarsubstitutexxx.getName(),
+                parameterJ,
+                new MVariable("t"),
+                new MVariable("varxxx"));
+
+        MSubscript lambdaQ = new MSubscript(variableLambda, parameterQ);
+        MParameter lambdaQofT = new MParameter(lambdaQ, variableT);
+
+        MExpressionList list1 = new MExpressionList(true);
+        list1.add(partialDXiOfT);
+        list1.add(defUSubX);
+        MEvaluate eval1 = new MEvaluate(list1);
+
+        MExpressionList list2 = new MExpressionList();
+        list2.setDelimiter(" ");
+        list2.add(muJI);
+        list2.add(eval1);
+
+        MSum sum1 = new MSum(list2, new MList(parameterJ, AG));
+
+        MExpressionList condEvalList = new MExpressionList(true);
+        condEvalList.add(partialDXiAposOfT);
+        condEvalList.add(new MParameter(defzvarsubstitutexxx.getName(), parameterQ, variableT, varxxx));
+        MEvaluate condTrue = new MEvaluate(condEvalList);
+
+        MExpressionList condFalseList = new MExpressionList(true);
+        condFalseList.add(partialDXiOfT);
+        condFalseList.add(new MParameter(defzvarsubstitutexxx.getName(), parameterQ, variableT, varxxx));
+        MEvaluate condFalse = new MEvaluate(condFalseList);
+
+        MNotEqual cond = new MNotEqual(new MEvaluate(condEvalList), e0);
+        MIf mIf = new MIf(cond, condTrue, condFalse);
+        mIf.setLinebreakBeforeFunction(true);
+        mIf.setLinebreakAfterCondition(true);
+        mIf.setLinebreakAfterTrue(true);
+        mIf.setLinebreakAfter(true);
+
+        MExpressionList list3 = new MExpressionList();
+        list3.add(lambdaQofT);
+        list3.add(mIf);
+
+        MSum sum2 = new MSum(list3, new MList(parameterQ, nZwangB), new MList(parameterI, ndiffvar));
+
+        MAddition addition = new MAddition(sum1, sum2);
+        addition.setLinebreakAfterOperator(true);
+
+        MEqual equal = new MEqual(xiAposOfT, addition);
+        equal.setLinebreakAfterOperator(true);
+
+        MTable table = new MTable(equal);
+
+        return new MSet(dgldiffxxx, table, true);
+    }
+
+    public MSet getSetAglalgxxx() {
+        MSubscript xxii = new MSubscript(variableXX, parameterII);
+        MParameter xxiiOfT = new MParameter(xxii, variableT);
+        MParameter def = new MParameter(defalgvarsubstitutexxx.getName(), parameterII, variableT, varxxx);
+        MList list = new MList(parameterII, nalgvar);
+        MEqual equal = new MEqual(xxiiOfT, def);
+        MTable table = new MTable(equal, list);
+        return new MSet(dglalgxxx, table, true);
+    }
+
+    public MSet getSetDglzxxx() {
+        MParameter def = new MParameter(defzvarsubstitutexxx.getName(), parameterQ, variableT, varxxx);
+        MList list = new MList(parameterQ, nZwangB);
+        MEqual equal = new MEqual(e0, def);
+        MTable table = new MTable(equal, list);
+        return new MSet(dglzxxx, table, true);
+    }
+
+    public MSet getSetDglxxx() {
+        MJoin join = new MJoin(dglalgxxx, dgldiffxxx, dglzxxx);
+        return new MSet(dglxxx, join, true);
+    }
+
+    public MSet getSetDgl() {
+        MReplaceAll r1 = new MReplaceAll(dglxxx, changediffxa);
+        MReplaceAll r2 = new MReplaceAll(r1, changealgxxb);
+        return new MSet(dgl, r2, true);
+    }
+
+    public MSet getSetInit() {
+        MList list = new MList();
+        list.setElementsLinebreak(4);
+        for (Variable v : model.getVariablesSorted()) {
+            MParameter p = new MParameter(v.getName(), e0);
+            if (StringUtils.isNotBlank(v.getInitialCondition())) {
+                list.add(new MEqual(p, new MExpression(v.getInitialCondition())));
+            } else {
+                list.add(new MEqual(p, new MVariable(v.getDefaultInitialCondition())));
+            }
+        }
+        return new MSet(init, list, true);
+    }
+
+    public MSet getSetUgl() {
+        MList list = new MList();
+        list.setElementsLinebreak(1);
+        for (Agent a : model.getAgentsSorted()) {
+            MParameter p = new MParameter("u" + a.getName(), variableT);
+            MParameter d = new MParameter(defuvar.getName(), new MVariable(a.getName()), variableT, var);
+            list.add(new MEqual(p, d));
+        }
+        return new MSet(ugl, list);
+    }
+
+    public MSet getSetGl() {
+        MJoin join = new MJoin(ugl, dgl, init);
+        return new MSet(gl, join, true);
+    }
+
+    public MSet getSetGlvar() {
+        MList list = new MList("uh", "uf", "ub", "uzb", "ug");
+        MJoin join = new MJoin(list, var, lambdaF);
+        return new MSet(glvar, join);
+    }
+
+    public MSet getSetGL() {
+        MReplaceAll r1 = new MReplaceAll(gl, changeMu);
+        return new MSet(GL, r1);
+    }
+
+    public MManipulate getManipulate() {
+
+        MList plotList = new MList(new MExpression("replaceMe", "PLOT LIST"));
+        // TODO add plots
+
+        MExpressionList conMethod = new MExpressionList();
+        conMethod.add(new MExpression("\"ConstraintMethod\""));
+        conMethod.add(new MExpression("&#8594;"));
+        conMethod.add(new MExpression("\"Projection\""));
+        MExpressionList indexReductionList = new MExpressionList();
+        indexReductionList.add(new MExpression("\"IndexReduction\""));
+        indexReductionList.add(new MExpression("&#8594;"));
+        indexReductionList.add(new MList(new MExpression("True"), conMethod));
+        MExpressionList methodList = new MExpressionList();
+        methodList.add(new MExpression("Method"));
+        methodList.add(new MExpression("&#8594;"));
+        methodList.add(new MList(indexReductionList));
+
+        MQuietNDSolve ndSolve = new MQuietNDSolve();
+        ndSolve.addParameter(new MExpression("replaceMe", "OUTPUT GL"));
+        ndSolve.addParameter(glvar);
+        ndSolve.addParameter(new MList(parameterT, e0, e50));
+        ndSolve.addParameter(methodList);
+
+        MList moduleList = new MList(new MSet(parameterSol, ndSolve));
+        MModule module = new MModule(moduleList, plotList);
+        module.setLinebreakAfterFunction(true);
+        module.setLinebreakAfterParameter(true);
+        MList mList = new MList(module);
+        mList.setElementsLinebreak(1);
+        MColumn column = new MColumn(mList);
+        MManipulate manipulate = new MManipulate(column);
+        manipulate.setLinebreakAfterFunction(true);
+        manipulate.addLinebreak();
+
+        int blockSize = 4;
+        int varInit = 0;
+        for (Variable v : model.getVariablesSorted()) {
+            if (v.hasValidInitValues()) {
+                if (varInit % blockSize == 0) {
+                    manipulate.addLinebreak();
+                }
+                manipulate.addParameter(getVariableConfig(v.getInitialCondition(), v.getStartValue(), v.getMinValue(), v.getMaxValue()));
+                varInit++;
+            }
+        }
+        if (varInit != 0) {
+            manipulate.addLinebreak();
+        }
+        int muInit = 0;
+        Agent lastAgent = null;
+        for (ChangeMu mu : model.getChangeMus()) {
+            if (mu.hasAllValues()) {
+                if (lastAgent != mu.getAgent()) {
+                    lastAgent = mu.getAgent();
+                    if (muInit != 0) {
+                        manipulate.addLinebreak();
+                        muInit = 0;
+                    }
+                }
+                if (muInit % blockSize == 0) {
+                    manipulate.addLinebreak();
+                }
+                manipulate.addParameter(getVariableConfig(mu.getIdentifier(), mu.getStartValue(), mu.getMinValue(), mu.getMaxValue()));
+                muInit++;
+            }
+        }
+        if (muInit != 0) {
+            manipulate.addLinebreak();
+        }
+        int paramInit = 0;
+        for (Parameter p : model.getParametersSorted()) {
+            if (p.hasAllValues()) {
+                if (paramInit % blockSize == 0) {
+                    manipulate.addLinebreak();
+                }
+                manipulate.addParameter(getVariableConfig(p.getName(), p.getStartValue(), p.getMinValue(), p.getMaxValue()));
+                paramInit++;
+            }
+        }
+        if (paramInit != 0) {
+            manipulate.addLinebreak();
+            manipulate.addLinebreak();
+        }
+        manipulate.addParameter(getVariableConfig(parameterTMax, e30, e0, e100));
+        manipulate.addParameter(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
+
+        return manipulate;
+    }
+
+    private MList getVariableConfig(IExpression name, IExpression startValue, IExpression minValue, IExpression maxValue) {
+        return new MList(new MList(name, startValue), minValue, maxValue);
+    }
+
+    private MList getVariableConfig(String name, double startValue, double minValue, double maxValue) {
+        return new MList(new MList(new MExpression("parameter", name), new MExpression(startValue)), new MExpression(minValue), new MExpression(maxValue));
     }
 }

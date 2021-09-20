@@ -35,6 +35,7 @@ public class GCDModel {
     private final SortedList<Variable> variablesSorted = variables.sorted();
     private final Map<String, Variable> variableNameMap = new HashMap<>();
     private final ObservableList<Parameter> parameters = FXCollections.observableArrayList();
+    private final SortedList<Parameter> parametersSorted = parameters.sorted();
     private final Map<String, Parameter> parameterNameMap = new HashMap<>();
     private final ObservableList<ChangeMu> allChangeMu = FXCollections.observableArrayList();
     private final ObservableList<ChangeMu> changeMus = FXCollections.observableArrayList();
@@ -508,6 +509,10 @@ public class GCDModel {
 
     public ObservableList<Parameter> getParameters() {
         return parameters;
+    }
+
+    public SortedList<Parameter> getParametersSorted() {
+        return parametersSorted;
     }
 
     public Parameter getParameter(String name) {

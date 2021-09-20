@@ -1,6 +1,7 @@
 package at.binter.gcd.mathematica.elements;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
+import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.mathematica.syntax.MExpression;
 import org.apache.commons.lang3.StringUtils;
@@ -9,16 +10,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MParameter extends MExpression {
+public class MParameter extends MBase implements IExpression {
     private final List<IExpression> parameter = new ArrayList<>();
 
+    private final IExpression name;
+
     public MParameter(String name) {
-        super("variable", name);
+        this.name = new MVariable(name);
+    }
+
+    public MParameter(IExpression name) {
+        this.name = name;
     }
 
     public MParameter(String name, IExpression... parameter) {
         this(name);
         for (IExpression p : parameter) {
+            addParameter(p);
+        }
+    }
+
+    public MParameter(IExpression name, String... parameter) {
+        this(name);
+        for (String p : parameter) {
             addParameter(p);
         }
     }
@@ -30,8 +44,15 @@ public class MParameter extends MExpression {
         }
     }
 
+    public MParameter(IExpression... expressions) {
+        this(expressions[0]);
+        for (int i = 1; i < expressions.length; i++) {
+            addParameter(expressions[i]);
+        }
+    }
+
     public String getName() {
-        return getExpression();
+        return name.getExpression();
     }
 
     public List<IExpression> getParameter() {
@@ -48,7 +69,7 @@ public class MParameter extends MExpression {
 
     @Override
     public void toHTML(HTMLBuilder builder) {
-        super.toHTML(builder);
+        name.toHTML(builder);
         builder.write("[");
         Iterator<IExpression> it = parameter.iterator();
         while (it.hasNext()) {
@@ -63,5 +84,15 @@ public class MParameter extends MExpression {
             }
         }
         builder.write("]");
+    }
+
+    @Override
+    public String getCssClass() {
+        return null;
+    }
+
+    @Override
+    public String getExpression() {
+        return toHTML();
     }
 }

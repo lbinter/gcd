@@ -20,7 +20,20 @@ public class Tools {
             "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho",
             "sigmaf", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega"};
 
+    public static final String[] specialLetters = new String[]{
+            "PartialD"};
+
+    public static final Map<String, String> specialLettersHTMLMap = new HashMap<>();
+
     public static final Map<String, String> greekLettersUnicodeMap = new HashMap<>();
+
+    static {
+        for (int i = 0; i < greekLetters.length; i++) {
+            int unicode = 0x03B1 + i;
+            greekLettersUnicodeMap.put(greekLetters[i], "" + (char) unicode);
+        }
+        specialLettersHTMLMap.put(specialLetters[0], "&part;");
+    }
 
     public static Converter<String> greekLetterConverter = new Converter<>() {
         @Override
@@ -84,13 +97,6 @@ public class Tools {
             return list;
         }
     };
-
-    static {
-        for (int i = 0; i < greekLetters.length; i++) {
-            int unicode = 0x03B1 + i;
-            greekLettersUnicodeMap.put(greekLetters[i], "" + (char) unicode);
-        }
-    }
 
     public static String getParameterTypesAsString(Method m) {
         return StringUtils.remove(StringUtils.join(m.getParameterTypes(), ','), "class ");
@@ -164,6 +170,9 @@ public class Tools {
     public static String transformMathematicaGreekToGreekHtmlLetters(String text) {
         for (String l : greekLetters) {
             text = text.replace("\\[" + l + "]", "&" + l.toLowerCase() + ";");
+        }
+        for (String l : specialLetters) {
+            text = text.replace("\\[" + l + "]", specialLettersHTMLMap.get(l));
         }
         return text;
     }

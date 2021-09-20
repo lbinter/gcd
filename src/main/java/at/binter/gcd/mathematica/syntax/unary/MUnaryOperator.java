@@ -29,8 +29,6 @@ public abstract class MUnaryOperator extends MBase implements IExpression {
 
     @Override
     public String getExpression() {
-        return getSymbolKeyboard() +
-                " " +
-                expr.getExpression();
+        return toHTML();
     }
 }

@@ -14,7 +14,7 @@ public class XmlVariable extends XmlBasicVariable implements HasPlotStyle {
     @XmlElement
     public String initialConditions;
 
-    private PlotStyle plotStyle = new PlotStyle();
+    private final PlotStyle plotStyle = new PlotStyle();
 
     public XmlVariable() {
     }
@@ -68,6 +68,7 @@ public class XmlVariable extends XmlBasicVariable implements HasPlotStyle {
 
     public Variable createVariable() {
         Variable v = new Variable(name);
+        v.setInitialCondition(initialConditions);
         v.setDescription(description);
         writeMinMaxValues(v);
         v.getPlotStyle().update(this);

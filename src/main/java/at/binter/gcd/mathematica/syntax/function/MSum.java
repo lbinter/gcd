@@ -7,19 +7,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class MTable extends MFunction implements IExpression {
-    private static final Logger log = LoggerFactory.getLogger(MTable.class);
-    public static final String function = "Table";
+public class MSum extends MFunction implements IExpression {
+    private static final Logger log = LoggerFactory.getLogger(MSum.class);
+    public static final String function = "Sum";
     public static final String htmlTag = null;
 
-    public MTable() {
+    public MSum() {
     }
 
-    public MTable(String parameter) {
+    public MSum(String parameter) {
         addParameter(parameter);
     }
 
-    public MTable(IExpression... parameters) {
+    public MSum(IExpression... parameters) {
         super(parameters);
     }
 

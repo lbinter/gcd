@@ -5,19 +5,19 @@ import at.binter.gcd.mathematica.syntax.MExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MJoin extends MFunction implements IExpression {
-    private static final Logger log = LoggerFactory.getLogger(MJoin.class);
-    public static final String function = "Join";
+public class MManipulate extends MFunction {
+    private static final Logger log = LoggerFactory.getLogger(MManipulate.class);
+    public static final String function = "Manipulate";
     public static final String htmlTag = null;
 
-    public MJoin() {
+    public MManipulate() {
     }
 
-    public MJoin(String parameter) {
+    public MManipulate(String parameter) {
         addParameter(new MExpression(parameter));
     }
 
-    public MJoin(IExpression... parameters) {
+    public MManipulate(IExpression... parameters) {
         super(parameters);
     }
 

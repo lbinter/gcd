@@ -9,6 +9,8 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
 
     public abstract String getSymbolSpecial();
 
+    private boolean linebreakAfterOperator = false;
+
     protected IExpression expr1;
     protected IExpression expr2;
 
@@ -17,16 +19,32 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
         this.expr2 = expr2;
     }
 
+    public boolean isLinebreakAfterOperator() {
+        return linebreakAfterOperator;
+    }
+
+    public void setLinebreakAfterOperator(boolean linebreakAfterOperator) {
+        this.linebreakAfterOperator = linebreakAfterOperator;
+    }
+
     @Override
     public void toHTML(HTMLBuilder builder) {
+        int increaseIntent = 0;
         expr1.toHTML(builder);
         builder.write(" ");
         builder.write(getSymbolKeyboard());
-        builder.write(" ");
+        if (linebreakAfterOperator) {
+            builder.linebreak();
+            builder.increaseIndent(4);
+            increaseIntent += 4;
+        } else {
+            builder.write(" ");
+        }
         expr2.toHTML(builder);
         if (isAddSemicolon()) {
             builder.write(";");
         }
+        builder.decreaseIndent(increaseIntent);
         if (isDoLinebreaks()) {
             builder.linebreak();
         }
@@ -39,10 +57,6 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
 
     @Override
     public String getExpression() {
-        return expr1.getExpression() +
-                " " +
-                getSymbolKeyboard() +
-                " " +
-                expr2.getExpression();
+        return toHTML();
     }
 }
