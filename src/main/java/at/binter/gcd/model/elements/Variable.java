@@ -7,7 +7,7 @@ import java.util.Set;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
-public class Variable implements Updatable<Variable>, HasPlotStyle, HasMinMaxValues {
+public class Variable implements Comparable<Variable>, Updatable<Variable>, HasPlotStyle, HasMinMaxValues {
     private String name;
     private String description;
     private String initialCondition;
@@ -165,6 +165,19 @@ public class Variable implements Updatable<Variable>, HasPlotStyle, HasMinMaxVal
 
     public boolean hasReferences() {
         return functionReference.hasReferences();
+    }
+
+    @Override
+    public int compareTo(Variable o) {
+        return getName().compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Variable)) {
+            return false;
+        }
+        return compareTo((Variable) obj) == 0;
     }
 
     @Override

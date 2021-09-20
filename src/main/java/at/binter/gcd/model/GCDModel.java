@@ -5,46 +5,20 @@ import at.binter.gcd.model.xml.XmlBasicVariable;
 import at.binter.gcd.model.xml.XmlFunction;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.model.xml.XmlVariable;
-import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class GCDModel {
+public class GCDModel extends GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
-
-    private final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList(algebraicVariable -> new Observable[]{algebraicVariable.nameProperty()});
-    private final SortedList<AlgebraicVariable> algebraicVariablesSorted = algebraicVariables.sorted();
-    private final Map<String, AlgebraicVariable> algebraicVariableNameMap = new HashMap<>();
-    private final ObservableList<Agent> agents = FXCollections.observableArrayList();
-    private final SortedList<Agent> agentsSorted = agents.sorted();
-    private final Map<String, Agent> agentNameMap = new HashMap<>();
-    private final ObservableList<Constraint> constraints = FXCollections.observableArrayList();
-    private final ObservableList<Variable> variables = FXCollections.observableArrayList();
-    private final SortedList<Variable> variablesSorted = variables.sorted();
-    private final Map<String, Variable> variableNameMap = new HashMap<>();
-    private final ObservableList<Parameter> parameters = FXCollections.observableArrayList();
-    private final SortedList<Parameter> parametersSorted = parameters.sorted();
-    private final Map<String, Parameter> parameterNameMap = new HashMap<>();
-    private final ObservableList<ChangeMu> allChangeMu = FXCollections.observableArrayList();
-    private final ObservableList<ChangeMu> changeMus = FXCollections.observableArrayList();
-    private final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
 
     private File file;
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
-
-    private boolean runGenerateChangeMu = true;
 
     private boolean clearGlobal = true;
 
@@ -53,6 +27,9 @@ public class GCDModel {
             if (c.wasAdded()) {
                 c.getAddedSubList().forEach(algVar -> {
                     algebraicVariableNameMap.put(algVar.getName(), algVar);
+                    if (hasVariable(algVar.getName())) {
+                        removeVariable(getVariable(algVar.getName()));
+                    }
                     addVariables(algVar);
                     addParameters(algVar);
                     if (log.isDebugEnabled()) {
@@ -248,7 +225,7 @@ public class GCDModel {
                 c.getRemoved().forEach(changeMu -> {
                     changeMuNameMap.remove(changeMu.getIdentifier());
                     if (log.isTraceEnabled()) {
-                        log.trace("Added changeMu \"{}\"", changeMu.getIdentifier());
+                        log.trace("Added removed \"{}\"", changeMu.getIdentifier());
                     }
                 });
             }
@@ -259,282 +236,34 @@ public class GCDModel {
         registerChangeListeners();
     }
 
-    public void registerChangeListeners() {
-        algebraicVariables.addListener(algebraicVariableListChangeListener);
-        agents.addListener(agentListChangeListener);
-        constraints.addListener(constraintListChangeListener);
-        variables.addListener(variableListChangeListener);
-        parameters.addListener(parameterListChangeListener);
-        changeMus.addListener(changeMuListChangeListener);
+    @Override
+    protected ListChangeListener<AlgebraicVariable> getAlgebraicVariableListChangeListener() {
+        return algebraicVariableListChangeListener;
     }
 
-    public void unregisterChangeListeners() {
-        algebraicVariables.removeListener(algebraicVariableListChangeListener);
-        agents.removeListener(agentListChangeListener);
-        constraints.removeListener(constraintListChangeListener);
-        variables.removeListener(variableListChangeListener);
-        parameters.removeListener(parameterListChangeListener);
-        changeMus.removeListener(changeMuListChangeListener);
+    @Override
+    protected ListChangeListener<Agent> getAgentListChangeListener() {
+        return agentListChangeListener;
     }
 
-    public boolean hasAlgebraicVariable(String name) {
-        return algebraicVariableNameMap.containsKey(name);
+    @Override
+    protected ListChangeListener<Constraint> getConstraintListChangeListener() {
+        return constraintListChangeListener;
     }
 
-    public boolean hasAgent(String name) {
-        return agentNameMap.containsKey(name);
+    @Override
+    protected ListChangeListener<Variable> getVariableListChangeListener() {
+        return variableListChangeListener;
     }
 
-    public boolean hasVariable(String name) {
-        return variableNameMap.containsKey(name);
+    @Override
+    protected ListChangeListener<Parameter> getParameterListChangeListener() {
+        return parameterListChangeListener;
     }
 
-    public boolean hasParameter(String name) {
-        return parameterNameMap.containsKey(name);
-    }
-
-    public boolean isClearGlobal() {
-        return clearGlobal;
-    }
-
-    public void setClearGlobal(boolean clearGlobal) {
-        this.clearGlobal = clearGlobal;
-    }
-
-    private void addVariables(HasVariableStringList source) {
-        source.getVariables().forEach(name -> addVariable(source, name));
-    }
-
-    private void addVariable(HasVariableStringList source, String name) {
-        if (hasAlgebraicVariable(name)) return;
-        Variable v;
-        if (hasVariable(name)) {
-            v = getVariable(name);
-        } else {
-            v = new Variable(name);
-            variables.add(v);
-        }
-        if (source instanceof AlgebraicVariable) {
-            v.getAlgebraicVariables().add((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            v.getAgents().add((Agent) source);
-        } else if (source instanceof Constraint) {
-            v.getConstraints().add((Constraint) source);
-        }
-    }
-
-    private void removeVariables(HasVariableStringList source) {
-        source.getVariables().forEach(name -> removeVariable(source, name));
-    }
-
-    private void removeVariable(HasVariableStringList source, String name) {
-        if (hasAlgebraicVariable(name)) return;
-        Variable v;
-        if (hasVariable(name)) {
-            v = getVariable(name);
-        } else {
-            return;
-        }
-        if (source instanceof AlgebraicVariable) {
-            v.getAlgebraicVariables().remove((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            v.getAgents().remove((Agent) source);
-        } else if (source instanceof Constraint) {
-            v.getConstraints().remove((Constraint) source);
-        }
-        if (!v.hasReferences()) {
-            removeVariable(v);
-        }
-    }
-
-    private void removeVariable(Variable variable) {
-        if (variable == null) return;
-        if (!variables.remove(variable)) {
-            log.debug("Could not remove variable \"{}\"", variable.getName());
-        }
-    }
-
-    private void updateVariables(HasVariableStringList source) {
-        source.getVariablesAdded().forEach(name -> addVariable(source, name));
-        source.getVariablesRemoved().forEach(name -> removeVariable(source, name));
-    }
-
-    private void addParameters(HasParameterStringList source) {
-        source.getParameters().forEach(name -> addParameter(source, name));
-    }
-
-    private void addParameter(HasParameterStringList source, String name) {
-        if (hasAlgebraicVariable(name)) return;
-        Parameter p;
-        if (hasParameter(name)) {
-            p = getParameter(name);
-        } else {
-            p = new Parameter(name);
-            parameters.add(p);
-        }
-        if (source instanceof AlgebraicVariable) {
-            p.getAlgebraicVariables().add((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            p.getAgents().add((Agent) source);
-        } else if (source instanceof Constraint) {
-            p.getConstraints().add((Constraint) source);
-        }
-    }
-
-    private void removeParameters(HasParameterStringList source) {
-        source.getParameters().forEach(name -> removeParameter(source, name));
-    }
-
-    private void removeParameter(HasParameterStringList source, String name) {
-        if (hasAlgebraicVariable(name)) return;
-        Parameter p;
-        if (hasParameter(name)) {
-            p = getParameter(name);
-        } else {
-            return;
-        }
-        if (source instanceof AlgebraicVariable) {
-            p.getAlgebraicVariables().remove((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            p.getAgents().remove((Agent) source);
-        } else if (source instanceof Constraint) {
-            p.getConstraints().remove((Constraint) source);
-        }
-        if (!p.hasReferences()) {
-            removeParameter(p);
-        }
-    }
-
-    private void removeParameter(Parameter parameter) {
-        if (parameter == null) return;
-        if (!parameters.remove(parameter)) {
-            log.debug("Could not remove parameter \"{}\"", parameter.getName());
-        }
-    }
-
-    private void updateParameters(HasParameterStringList source) {
-        source.getParametersAdded().forEach(name -> addParameter(source, name));
-        source.getParametersRemoved().forEach(name -> removeParameter(source, name));
-    }
-
-    public void generateChangeMu() {
-        if (!runGenerateChangeMu) {
-            return;
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("generateChangeMu called");
-        }
-        allChangeMu.clear();
-        Map<String, ChangeMu> oldChangeMus = new HashMap<>();
-        changeMus.forEach(changeMu -> {
-            oldChangeMus.put(changeMu.getIdentifier(), changeMu);
-        });
-        changeMus.clear();
-        changeMuNameMap.clear();
-        SortedList<Agent> agentList = agents.sorted();
-        SortedList<Variable> variableList = variables.sorted();
-        for (int i = 0; i < agentList.size(); i++) {
-            for (int j = 0; j < variableList.size(); j++) {
-                ChangeMu changeMu = new ChangeMu(agentList.get(i), variableList.get(j), j + 1);
-                allChangeMu.add(changeMu);
-                if (changeMu.requireDoubleValues(algebraicVariables)) {
-                    ChangeMu old = oldChangeMus.get(changeMu.getIdentifier());
-                    if (old != null) {
-                        changeMu.update(old);
-                    }
-                    changeMus.add(changeMu);
-                }
-            }
-        }
-    }
-
-    public boolean canAddAlgebraicVariable(String name) {
-        return !StringUtils.isBlank(name) &&
-                !hasAlgebraicVariable(name) &&
-                !hasAgent(name) &&
-                !hasVariable(name) &&
-                !hasParameter(name);
-    }
-
-    public boolean canAddAgent(String name) {
-        return !StringUtils.isBlank(name) &&
-                !hasAlgebraicVariable(name) &&
-                !hasAgent(name) &&
-                !hasVariable(name) &&
-                !hasParameter(name);
-    }
-
-    public ObservableList<AlgebraicVariable> getAlgebraicVariables() {
-        return algebraicVariables;
-    }
-
-    public SortedList<AlgebraicVariable> getAlgebraicVariablesSorted() {
-        return algebraicVariablesSorted;
-    }
-
-    public AlgebraicVariable getAlgebraicVariable(String name) {
-        if (StringUtils.isBlank(name)) return null;
-        return algebraicVariableNameMap.get(name);
-    }
-
-    public ObservableList<Agent> getAgents() {
-        return agents;
-    }
-
-    public SortedList<Agent> getAgentsSorted() {
-        return agentsSorted;
-    }
-
-    public Agent getAgent(String name) {
-        if (StringUtils.isBlank(name)) return null;
-        return agentNameMap.get(name);
-    }
-
-    public ObservableList<Constraint> getConstraints() {
-        return constraints;
-    }
-
-    public ObservableList<Variable> getVariables() {
-        return variables;
-    }
-
-    public SortedList<Variable> getVariablesSorted() {
-        return variablesSorted;
-    }
-
-    public Variable getVariable(String name) {
-        if (StringUtils.isBlank(name)) return null;
-        return variableNameMap.get(name);
-    }
-
-    public ObservableList<Parameter> getParameters() {
-        return parameters;
-    }
-
-    public SortedList<Parameter> getParametersSorted() {
-        return parametersSorted;
-    }
-
-    public Parameter getParameter(String name) {
-        if (StringUtils.isBlank(name)) return null;
-        return parameterNameMap.get(name);
-    }
-
-    public ObservableList<ChangeMu> getAllChangeMu() {
-        return allChangeMu;
-    }
-
-    public ObservableList<ChangeMu> getChangeMus() {
-        return changeMus;
-    }
-
-    public ChangeMu getChangeMu(String name) {
-        if (StringUtils.isBlank(name)) return null;
-        return changeMuNameMap.get(name);
-    }
-
-    public boolean isEmpty() {
-        return algebraicVariables.size() + agents.size() + constraints.size() + variables.size() + parameters.size() + allChangeMu.size() + changeMus.size() == 0;
+    @Override
+    protected ListChangeListener<ChangeMu> getChangeMuListChangeListener() {
+        return changeMuListChangeListener;
     }
 
     public void clearModel() {
@@ -557,7 +286,7 @@ public class GCDModel {
 
     public void loadXmlModel(XmlModel model) {
         if (model == null) return;
-        runGenerateChangeMu = false;
+        setRunGenerateChangeMu(false);
         clearModel();
         setFile(model.file);
         ArrayList<AlgebraicVariable> newAlgebraicVariables = new ArrayList<>();
@@ -586,12 +315,16 @@ public class GCDModel {
             p.update(parameter.createParameter());
         }
 
-        runGenerateChangeMu = true;
+        setRunGenerateChangeMu(true);
         generateChangeMu();
         for (XmlBasicVariable changeMu : model.changeMu) {
             ChangeMu mu = getChangeMu(changeMu.name);
             mu.update(changeMu.createChangeMu(mu.getAgent(), mu.getVariable(), mu.getIndex()));
         }
+    }
+
+    public boolean isClearGlobal() {
+        return clearGlobal;
     }
 
     public void setFile(File file) {

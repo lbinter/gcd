@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
-public class Parameter implements Updatable<Parameter>, HasMinMaxValues {
+public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, HasMinMaxValues {
     private String name;
     private String description;
     private final MinMaxValues minMaxValues = new MinMaxValues();
@@ -114,5 +114,18 @@ public class Parameter implements Updatable<Parameter>, HasMinMaxValues {
     @Override
     public String toString() {
         return Tools.transformMathematicaGreekToUnicodeLetters(name);
+    }
+
+    @Override
+    public int compareTo(Parameter o) {
+        return getName().compareTo(o.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Parameter)) {
+            return false;
+        }
+        return compareTo((Parameter) obj) == 0;
     }
 }

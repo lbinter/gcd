@@ -1,28 +1,32 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
 import at.binter.gcd.xml.XmlWriter;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 import static at.binter.gcd.util.GuiUtils.showInvalidFileError;
 import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
-
 
 public class GCDController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(GCDController.class);
@@ -34,6 +38,11 @@ public class GCDController extends BaseController implements Initializable {
     private Button buttonRedo;
     @FXML
     private Button buttonGCD;
+    @FXML
+    private TextField addPlotTextField;
+
+    @FXML
+    private TabPane mainTabPane;
 
     @FXML
     private ListView<AlgebraicVariable> algVarListView;
@@ -49,6 +58,8 @@ public class GCDController extends BaseController implements Initializable {
     private Button changeMuButtonEdit;
     @FXML
     private ListView<ChangeMu> changeMuListView;
+    @FXML
+    private Label filePath;
 
     protected GCDModel model = new GCDModel();
 
@@ -63,16 +74,17 @@ public class GCDController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         this.model = new GCDModel();
+        mainTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.SELECTED_TAB);
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        algVarListView.setItems(model.getAlgebraicVariables().sorted());
+        algVarListView.setItems(model.getAlgebraicVariablesSorted());
         agentListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        agentListView.setItems(model.getAgents().sorted());
+        agentListView.setItems(model.getAgentsSorted());
         constraintListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         constraintListView.setItems(model.getConstraints());
         variableListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        variableListView.setItems(model.getVariables().sorted());
+        variableListView.setItems(model.getVariablesSorted());
         parameterListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        parameterListView.setItems(model.getParameters().sorted());
+        parameterListView.setItems(model.getParametersSorted());
         changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         changeMuListView.setItems(model.getChangeMus().sorted(Comparator.comparing(ChangeMu::getIdentifier)));
 
@@ -89,7 +101,6 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     private void registerEventHandlers() {
-
         algVarListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedAlgebraicVariable();
@@ -244,6 +255,43 @@ public class GCDController extends BaseController implements Initializable {
         gcd.helpController.showHelpWindow();
     }
 
+    @FXML
+    protected void addPlot() throws IOException {
+        String plotName = sanitizeString(addPlotTextField.getText());
+        log.info("new plot name {}", plotName);
+        if (StringUtils.isBlank(plotName)) {
+            return;
+        }
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(new PlotController());
+        loader.setLocation(gcd.getClass().getResource("plot.fxml"));
+        loader.setResources(resources);
+
+        Tab tab = new Tab(plotName);
+        tab.setContent(loader.load());
+        tab.setClosable(true);
+        tab.setOnCloseRequest((Event t) -> {
+            String title = gcd.getString("plot.remove.question.title");
+            String message = gcd.getString("plot.remove.question.message", plotName);
+            Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
+            alert.setTitle(title);
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(gcd.getString("button.yes"));
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(gcd.getString("button.no"));
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.YES) {
+                t.consume();
+            }
+        });
+
+        PlotController controller = loader.getController();
+        controller.setApplication(gcd);
+        controller.setPlotModel(new GCDPlot(model, plotName));
+        controller.initializeGCDDepended();
+
+        mainTabPane.getTabs().add(tab);
+        gcd.primaryStage.sizeToScene();
+    }
+
     private File showSaveFileDialog() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
@@ -282,6 +330,8 @@ public class GCDController extends BaseController implements Initializable {
             }
             XmlModel xmlModel = XmlReader.read(file);
             model.loadXmlModel(xmlModel);
+            gcd.primaryStage.setTitle(file.getName() + " - " + resources.getString("main.title"));
+            filePath.setText(file.getParentFile().getAbsolutePath());
         }
     }
 }
