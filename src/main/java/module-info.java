@@ -20,5 +20,12 @@ module at.binter.gcd {
     exports at.binter.gcd.model;
     exports at.binter.gcd.model.xml;
     exports at.binter.gcd.model.elements;
+    exports at.binter.gcd.mathematica;
+    exports at.binter.gcd.mathematica.elements;
+    exports at.binter.gcd.mathematica.syntax;
+    exports at.binter.gcd.mathematica.syntax.unary;
+    exports at.binter.gcd.mathematica.syntax.binary;
+    exports at.binter.gcd.mathematica.syntax.function;
+    exports at.binter.gcd.mathematica.syntax.group;
     exports at.binter.gcd.controller;
 }
