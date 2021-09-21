@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.web.WebView?>
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
          prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/16"
@@ -11,11 +10,6 @@
         <Tab text="%mathematica.window.title">
             <content>
                 <WebView fx:id="mathematicaCode" prefHeight="200.0" prefWidth="200.0"/>
-            </content>
-        </Tab>
-        <Tab text="Untitled Tab 2">
-            <content>
-                <TextArea prefHeight="200.0" prefWidth="200.0"/>
             </content>
         </Tab>
     </tabs>

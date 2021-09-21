@@ -1,13 +1,12 @@
 package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
-import at.binter.gcd.model.xml.XmlBasicVariable;
-import at.binter.gcd.model.xml.XmlFunction;
-import at.binter.gcd.model.xml.XmlModel;
-import at.binter.gcd.model.xml.XmlVariable;
+import at.binter.gcd.model.xml.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,11 @@ import java.util.ArrayList;
 public class GCDModel extends GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
 
+    private ObservableList<GCDPlot> plots = FXCollections.observableArrayList();
+
     private File file;
+    private File fileMathematica;
+    private File fileMathematicaControl;
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean clearGlobal = true;
@@ -270,6 +273,7 @@ public class GCDModel extends GCDBaseModel {
         if (isEmpty()) return;
         unregisterChangeListeners();
         setFile(null);
+        plots.clear();
         algebraicVariables.clear();
         algebraicVariableNameMap.clear();
         agents.clear();
@@ -282,6 +286,44 @@ public class GCDModel extends GCDBaseModel {
         allChangeMu.clear();
         changeMus.clear();
         registerChangeListeners();
+    }
+
+    public ObservableList<GCDPlot> getPlots() {
+        return plots;
+    }
+
+    public void setPlots(ObservableList<GCDPlot> plots) {
+        this.plots = plots;
+    }
+
+    public boolean addPlot(GCDPlot plot) {
+        for (GCDPlot p : plots) {
+            if (p.getName().equals(plot.getName())) {
+                return false;
+            }
+        }
+        plots.add(plot);
+        return true;
+    }
+
+    public File getFileMathematica() {
+        return fileMathematica;
+    }
+
+    public void setFileMathematica(File fileMathematica) {
+        this.fileMathematica = fileMathematica;
+    }
+
+    public File getFileMathematicaControl() {
+        return fileMathematicaControl;
+    }
+
+    public void setFileMathematicaControl(File fileMathematicaControl) {
+        this.fileMathematicaControl = fileMathematicaControl;
+    }
+
+    public void setClearGlobal(boolean clearGlobal) {
+        this.clearGlobal = clearGlobal;
     }
 
     public void loadXmlModel(XmlModel model) {
@@ -320,6 +362,54 @@ public class GCDModel extends GCDBaseModel {
         for (XmlBasicVariable changeMu : model.changeMu) {
             ChangeMu mu = getChangeMu(changeMu.name);
             mu.update(changeMu.createChangeMu(mu.getAgent(), mu.getVariable(), mu.getIndex()));
+        }
+
+        for (XmlPlot plot : model.plots) {
+            GCDPlot p = new GCDPlot(this, plot.name);
+            p.setLegendLabel(plot.legendLabel);
+            p.setPlotStyle(plot.plotStyle);
+            p.setPlotRange(plot.plotRange);
+            for (String name : plot.algebraicVariables) {
+                AlgebraicVariable algVar = getAlgebraicVariable(name);
+                if (algVar == null) {
+                    log.error("Could not find algebraic variable \"{}\" for plot \"{}\"", name, plot.name);
+                } else {
+                    p.addAlgebraicVariable(algVar);
+                }
+            }
+            for (String name : plot.agents) {
+                Agent agent = getAgent(name);
+                if (agent == null) {
+                    log.error("Could not find agent \"{}\" for plot \"{}\"", name, plot.name);
+                } else {
+                    p.addAgent(agent);
+                }
+            }
+            for (String name : plot.variables) {
+                Variable variable = getVariable(name);
+                if (variable == null) {
+                    log.error("Could not find variable \"{}\" for plot \"{}\"", name, plot.name);
+                } else {
+                    p.addVariable(variable);
+                }
+            }
+            for (String name : plot.parameters) {
+                Parameter parameter = getParameter(name);
+                if (parameter == null) {
+                    log.error("Could not find parameter \"{}\" for plot \"{}\"", name, plot.name);
+                } else {
+                    p.addParameter(parameter);
+                }
+            }
+            for (String name : plot.changeMu) {
+                ChangeMu changeMu = getChangeMu(name);
+                if (changeMu == null) {
+                    log.error("Could not find changeMu \"{}\" for plot \"{}\"", name, plot.name);
+                } else {
+                    p.addChangeMu(changeMu);
+                }
+            }
+            addPlot(p);
         }
     }
 

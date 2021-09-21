@@ -1,0 +1,12 @@
+.list-cell:selected > .cell-root {
+    -fx-background-color: blue;
+}
+
+.list-cell:selected {
+    -fx-border-width: 10px;
+    -fx-border-color: pink;
+}
+
+.cell-root {
+    -fx-background-color: red;
+}

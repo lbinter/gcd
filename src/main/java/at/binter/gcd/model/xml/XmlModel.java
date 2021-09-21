@@ -2,6 +2,7 @@ package at.binter.gcd.model.xml;
 
 
 import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.elements.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -35,6 +36,10 @@ public class XmlModel {
     @XmlElement(name = "mu")
     public List<XmlBasicVariable> changeMu = new ArrayList<>();
 
+    @XmlElementWrapper(name = "plots")
+    @XmlElement(name = "plot")
+    public List<XmlPlot> plots = new ArrayList<>();
+
     public XmlModel() {
     }
 
@@ -58,6 +63,9 @@ public class XmlModel {
             if (!mu.hasNoValues()) {
                 changeMu.add(new XmlBasicVariable(mu));
             }
+        }
+        for (GCDPlot plot : gcdModel.getPlots()) {
+            plots.add(new XmlPlot(plot));
         }
     }
 }

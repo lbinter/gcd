@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,9 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
@@ -43,6 +43,7 @@ public class GCDController extends BaseController implements Initializable {
 
     @FXML
     private TabPane mainTabPane;
+    private final List<Tab> plotTabs = new ArrayList<>();
 
     @FXML
     private ListView<AlgebraicVariable> algVarListView;
@@ -129,6 +130,12 @@ public class GCDController extends BaseController implements Initializable {
         changeMuListView.setOnMouseClicked(event -> {
             if (isMousePrimaryDoubleClicked(event)) {
                 editSelectedChangeMu();
+            }
+        });
+
+        addPlotTextField.setOnKeyPressed((KeyEvent event) -> {
+            if (KeyCode.ENTER == event.getCode()) {
+                addPlot();
             }
         });
     }
@@ -256,7 +263,7 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void addPlot() throws IOException {
+    protected void addPlot() {
         String plotName = sanitizeString(addPlotTextField.getText());
         if (StringUtils.isBlank(plotName)) {
             return;
@@ -264,17 +271,26 @@ public class GCDController extends BaseController implements Initializable {
         if (log.isTraceEnabled()) {
             log.trace("adding new plot with name {}", plotName);
         }
-        addPlot(new GCDPlot(model, plotName));
+        GCDPlot newPlot = new GCDPlot(model, plotName);
+        if (model.addPlot(newPlot)) {
+            addPlot(newPlot);
+        }
     }
 
-    private void addPlot(GCDPlot plot) throws IOException {
+    private void addPlot(GCDPlot plot) {
         FXMLLoader loader = new FXMLLoader();
         loader.setController(new PlotController());
         loader.setLocation(gcd.getClass().getResource("plot.fxml"));
         loader.setResources(resources);
 
         Tab tab = new Tab(plot.getName());
-        tab.setContent(loader.load());
+
+        try {
+            tab.setContent(loader.load());
+        } catch (IOException e) {
+            log.error("could not load plot.fxml", e);
+            throw new RuntimeException(e);
+        }
         tab.setClosable(true);
         tab.setOnCloseRequest((Event t) -> {
             String title = gcd.getString("plot.remove.question.title");
@@ -295,6 +311,7 @@ public class GCDController extends BaseController implements Initializable {
         controller.setPlotModel(plot);
 
         mainTabPane.getTabs().add(tab);
+        plotTabs.add(tab);
         gcd.primaryStage.sizeToScene();
     }
 
@@ -315,6 +332,7 @@ public class GCDController extends BaseController implements Initializable {
                 log.info("Setting model.file from \"{}\" to \"{}\"", old, file.getAbsolutePath());
             }
             model.setFile(file);
+            setDataFromFilePath(file);
         }
         saveModel();
     }
@@ -322,6 +340,7 @@ public class GCDController extends BaseController implements Initializable {
     private void saveModel() {
         if (XmlWriter.write(model)) {
             model.setSavedToFile(true);
+            setDataFromFilePath(model.getFile());
         }
     }
 
@@ -335,9 +354,24 @@ public class GCDController extends BaseController implements Initializable {
                 log.info("Loading gcd model from file {}", file.getAbsolutePath());
             }
             XmlModel xmlModel = XmlReader.read(file);
+            clearPlots();
             model.loadXmlModel(xmlModel);
-            gcd.primaryStage.setTitle(file.getName() + " - " + resources.getString("main.title"));
-            filePath.setText(file.getParentFile().getAbsolutePath());
+            setDataFromFilePath(file);
+            for (GCDPlot p : model.getPlots()) {
+                addPlot(p);
+            }
         }
+    }
+
+    private void clearPlots() {
+        for (Tab tab : plotTabs) {
+            mainTabPane.getTabs().remove(tab);
+        }
+        plotTabs.clear();
+    }
+
+    private void setDataFromFilePath(File gcdFile) {
+        gcd.primaryStage.setTitle(gcdFile.getName() + " - " + resources.getString("main.title"));
+        filePath.setText(gcdFile.getParentFile().getAbsolutePath());
     }
 }

@@ -3,7 +3,7 @@
 }
 
 .text-field {
-    -fx-font-family: 'Times New Roman', Arial, sans-serif;
+    -fx-font-family: Consolas, serif;
     -fx-font-size: 16px;
 }
 

@@ -2,6 +2,7 @@ package at.binter.gcd.model.elements;
 
 import at.binter.gcd.model.*;
 import at.binter.gcd.util.Tools;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
@@ -45,6 +46,9 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public String getInitialCondition() {
+        if (StringUtils.isBlank(initialCondition)) {
+            return getDefaultInitialCondition();
+        }
         return initialCondition;
     }
 
@@ -53,7 +57,11 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public void setInitialCondition(String initialCondition) {
-        this.initialCondition = sanitizeString(initialCondition);
+        String newValue = sanitizeString(initialCondition);
+        if (getDefaultInitialCondition().equals(newValue)) {
+            return;
+        }
+        this.initialCondition = newValue;
     }
 
     @Override

@@ -247,6 +247,7 @@ public class PlotController extends BaseController implements Initializable {
     public void setPlotModel(GCDPlot plot) {
         this.plot = plot;
         initializeGCDDepended();
+        // TODO select values based on plot
     }
 
     public void saveSettings() {
