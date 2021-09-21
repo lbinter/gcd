@@ -3,16 +3,22 @@ package at.binter.gcd.model;
 import at.binter.gcd.model.elements.*;
 import javafx.collections.ListChangeListener;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class GCDPlot extends GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDPlot.class);
 
     private final GCDModel model;
     private String name;
+    private String legendLabel;
+    private String plotStyle;
+    private String plotRange;
 
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
@@ -190,6 +196,40 @@ public class GCDPlot extends GCDBaseModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public GCDModel getModel() {
+        return model;
+    }
+
+    public String getLegendLabel() {
+        return legendLabel;
+    }
+
+    public void setLegendLabel(String legendLabel) {
+        this.legendLabel = legendLabel;
+    }
+
+    public String getPlotStyle() {
+        if (StringUtils.isBlank(plotStyle)) {
+            return "PLOTSTYLE" + sanitizeString(getName()).replace(" ", "");
+        }
+        return plotStyle;
+    }
+
+    public void setPlotStyle(String plotStyle) {
+        this.plotStyle = plotStyle;
+    }
+
+    public String getPlotRange() {
+        if (StringUtils.isBlank(plotRange)) {
+            return "{-plotmax, plotmax}";
+        }
+        return plotRange;
+    }
+
+    public void setPlotRange(String plotRange) {
+        this.plotRange = plotRange;
     }
 
     public void addAlgebraicVariable(AlgebraicVariable algebraicVariable) {

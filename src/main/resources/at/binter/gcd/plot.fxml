@@ -5,151 +5,209 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TitledPane text="%plot.possible">
-         <content>
-            <HBox alignment="CENTER">
+      <HBox>
+         <children>
+            <VBox>
                <children>
-                  <TitledPane collapsible="false" text="%list.title.algebraicVariables" textOverrun="CLIP">
+                  <TitledPane text="%plot.possible">
                      <content>
-                        <HBox>
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ListView fx:id="algVarListView" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
+                              <TitledPane collapsible="false" text="%list.title.algebraicVariables" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="algVarListView" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.agents" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="agentListView" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="variableListView" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="parameterListView" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="changeMuListView" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
                            </children>
                         </HBox>
                      </content>
-                     <HBox.margin>
-                        <Insets right="5.0"/>
-                     </HBox.margin>
                   </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.agents" textOverrun="CLIP">
+                  <TitledPane collapsible="false" text="%plot.selected">
                      <content>
-                        <HBox>
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <ListView fx:id="agentListView" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
+                              <TitledPane collapsible="false" text="%list.title.algebraicVariables" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="algVarListSelected" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.agents" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="agentListSelected" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="variableListSelected" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="parameterListSelected" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
+                              <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
+                                 <content>
+                                    <HBox>
+                                       <children>
+                                          <ListView fx:id="changeMuListSelected" maxHeight="240.0" maxWidth="150.0"
+                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
+                                                    prefWidth="150.0"/>
+                                       </children>
+                                    </HBox>
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets left="5.0"/>
+                                 </HBox.margin>
+                              </TitledPane>
                            </children>
                         </HBox>
                      </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="variableListView" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="parameterListView" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="changeMuListView" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0"/>
-                     </HBox.margin>
                   </TitledPane>
                </children>
-            </HBox>
-         </content>
-      </TitledPane>
-      <TitledPane collapsible="false" text="%plot.selected">
-         <content>
-            <HBox alignment="CENTER">
+            </VBox>
+            <VBox>
                <children>
-                  <TitledPane collapsible="false" text="%list.title.algebraicVariables" textOverrun="CLIP">
+                  <TitledPane prefHeight="200.0" prefWidth="200.0" text="%plot.settings">
                      <content>
-                        <HBox>
+                        <VBox alignment="TOP_CENTER">
                            <children>
-                              <ListView fx:id="algVarListSelected" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
+                              <Label layoutX="75.0" layoutY="20.0" text="%plot.name"/>
+                              <TextField fx:id="plotName" layoutX="20.0" layoutY="54.0" promptText="%plot.name"/>
+                              <Label text="%plot.legend.label"/>
+                              <TextField fx:id="plotLegendLabel" promptText="%plot.legend.label">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0"/>
+                                 </VBox.margin>
+                              </TextField>
+                              <Label text="%plot.style"/>
+                              <TextField fx:id="plotStyle" promptText="%plot.style">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0"/>
+                                 </VBox.margin>
+                              </TextField>
+                              <Label text="%plot.range"/>
+                              <TextField fx:id="plotRange" promptText="%plot.range">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0"/>
+                                 </VBox.margin>
+                              </TextField>
+                              <Button mnemonicParsing="false" onAction="#saveSettings" text="%plot.settings.save">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0"/>
+                                 </VBox.margin>
+                              </Button>
                            </children>
-                        </HBox>
+                        </VBox>
                      </content>
-                     <HBox.margin>
-                        <Insets right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.agents" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="agentListSelected" maxHeight="240.0" maxWidth="150.0" minHeight="240.0"
-                                        minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="variableListSelected" maxHeight="240.0" maxWidth="150.0"
-                                        minHeight="240.0" minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="parameterListSelected" maxHeight="240.0" maxWidth="150.0"
-                                        minHeight="240.0" minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                     </HBox.margin>
-                  </TitledPane>
-                  <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
-                     <content>
-                        <HBox>
-                           <children>
-                              <ListView fx:id="changeMuListSelected" maxHeight="240.0" maxWidth="150.0"
-                                        minHeight="240.0" minWidth="150.0" prefHeight="240.0" prefWidth="150.0"/>
-                           </children>
-                        </HBox>
-                     </content>
-                     <HBox.margin>
-                        <Insets left="5.0"/>
-                     </HBox.margin>
                   </TitledPane>
                </children>
-            </HBox>
-         </content>
-      </TitledPane>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0"/>
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </VBox>

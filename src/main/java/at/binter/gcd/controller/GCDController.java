@@ -258,21 +258,27 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     protected void addPlot() throws IOException {
         String plotName = sanitizeString(addPlotTextField.getText());
-        log.info("new plot name {}", plotName);
         if (StringUtils.isBlank(plotName)) {
             return;
         }
+        if (log.isTraceEnabled()) {
+            log.trace("adding new plot with name {}", plotName);
+        }
+        addPlot(new GCDPlot(model, plotName));
+    }
+
+    private void addPlot(GCDPlot plot) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setController(new PlotController());
         loader.setLocation(gcd.getClass().getResource("plot.fxml"));
         loader.setResources(resources);
 
-        Tab tab = new Tab(plotName);
+        Tab tab = new Tab(plot.getName());
         tab.setContent(loader.load());
         tab.setClosable(true);
         tab.setOnCloseRequest((Event t) -> {
             String title = gcd.getString("plot.remove.question.title");
-            String message = gcd.getString("plot.remove.question.message", plotName);
+            String message = gcd.getString("plot.remove.question.message", plot.getName());
             Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
             alert.setTitle(title);
             ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(gcd.getString("button.yes"));
@@ -285,8 +291,8 @@ public class GCDController extends BaseController implements Initializable {
 
         PlotController controller = loader.getController();
         controller.setApplication(gcd);
-        controller.setPlotModel(new GCDPlot(model, plotName));
-        controller.initializeGCDDepended();
+        controller.setParentTab(tab);
+        controller.setPlotModel(plot);
 
         mainTabPane.getTabs().add(tab);
         gcd.primaryStage.sizeToScene();

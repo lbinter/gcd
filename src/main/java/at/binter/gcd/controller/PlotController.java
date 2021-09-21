@@ -5,9 +5,7 @@ import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.elements.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +13,12 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
+
 public class PlotController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(PlotController.class);
 
+    private Tab parentTab;
     protected GCDModel model;
     private GCDPlot plot;
 
@@ -41,6 +42,21 @@ public class PlotController extends BaseController implements Initializable {
     private ListView<Parameter> parameterListSelected;
     @FXML
     private ListView<ChangeMu> changeMuListSelected;
+    @FXML
+    private TextField plotName;
+    @FXML
+    private TextField plotLegendLabel;
+    @FXML
+    private TextField plotStyle;
+    @FXML
+    private TextField plotRange;
+
+    private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
+    private EditDialog<Agent> agentEditDialog;
+    private EditDialog<Constraint> constraintEditDialog;
+    private EditDialog<Variable> variableEditDialog;
+    private EditDialog<Parameter> parameterEditDialog;
+    private EditDialog<ChangeMu> changeMuEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +65,12 @@ public class PlotController extends BaseController implements Initializable {
 
     public void initializeGCDDepended() {
         model = gcd.gcdController.model;
+
+        algebraicVariableEditDialog = new EditDialog<>(algVarListSelected, plot.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
+        agentEditDialog = new EditDialog<>(agentListSelected, plot.getAgents(), gcd.agentEditorController, gcd);
+        variableEditDialog = new EditDialog<>(variableListSelected, plot.getVariables(), gcd.variableEditorController, gcd);
+        parameterEditDialog = new EditDialog<>(parameterListSelected, plot.getParameters(), gcd.parameterEditorController, gcd);
+        changeMuEditDialog = new EditDialog<>(changeMuListSelected, plot.getChangeMus(), gcd.changeMuEditorController, gcd);
 
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         algVarListView.setCellFactory(factory -> {
@@ -209,9 +231,83 @@ public class PlotController extends BaseController implements Initializable {
         variableListSelected.setItems(plot.getVariablesSorted());
         parameterListSelected.setItems(plot.getParametersSorted());
         changeMuListSelected.setItems(plot.getChangeMus());
+
+        plotName.setText(parentTab.getText());
+        plotLegendLabel.setText(plot.getLegendLabel());
+        plotStyle.setText(plot.getPlotStyle());
+        plotRange.setText(plot.getPlotRange());
+
+        registerEventHandlers();
+    }
+
+    public void setParentTab(Tab tab) {
+        parentTab = tab;
     }
 
     public void setPlotModel(GCDPlot plot) {
         this.plot = plot;
+        initializeGCDDepended();
+    }
+
+    public void saveSettings() {
+        String defaultPlotStyle = plot.getPlotStyle();
+        parentTab.setText(plotName.getText());
+        plot.setName(plotName.getText());
+        plot.setLegendLabel(plotLegendLabel.getText());
+        if (!plotStyle.getText().equals(defaultPlotStyle)) {
+            plot.setPlotStyle(plotStyle.getText());
+        } else {
+            plotStyle.setText(plot.getPlotStyle());
+        }
+        plot.setPlotRange(plotRange.getText());
+    }
+
+    private void registerEventHandlers() {
+        algVarListSelected.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAlgebraicVariable();
+            }
+        });
+        agentListSelected.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedAgent();
+            }
+        });
+        variableListSelected.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedVariable();
+            }
+        });
+        parameterListSelected.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedParameter();
+            }
+        });
+        changeMuListSelected.setOnMouseClicked(event -> {
+            if (isMousePrimaryDoubleClicked(event)) {
+                editSelectedChangeMu();
+            }
+        });
+    }
+
+
+    protected void editSelectedAlgebraicVariable() {
+        algebraicVariableEditDialog.editSelectedValue();
+    }
+
+    protected void editSelectedAgent() {
+        agentEditDialog.editSelectedValue();
+    }
+
+    protected void editSelectedVariable() {
+        variableEditDialog.editSelectedValue();
+    }
+
+    protected void editSelectedParameter() {
+        parameterEditDialog.editSelectedValue();
+    }
+
+    protected void editSelectedChangeMu() {
+        changeMuEditDialog.editSelectedValue();
     }
 }

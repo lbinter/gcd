@@ -30,50 +30,44 @@
                                 <RowConstraints/>
                             </rowConstraints>
                             <children>
-                                <Label text="%editor.label.definition" GridPane.halignment="RIGHT">
+                                <Label text="%editor.label.definition" GridPane.halignment="RIGHT"
+                                       GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="4">
-                                    <GridPane.margin>
-                                        <Insets right="10.0"/>
-                                    </GridPane.margin>
-                                </TextField>
-                                <Label text="%editor.label.description" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="4">
+                                <Label text="%editor.label.description" GridPane.halignment="RIGHT">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelDefinition" minWidth="360" wrapText="true"
-                                       GridPane.columnIndex="1">
+                                       GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label text="%editor.label.algebraicVariable" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="1">
+                                       GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorName" maxWidth="100.0"
                                            promptText="%editor.algebraicVariable.example.name" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="1">
+                                           GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Label text="%editor.label.function" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                <Label text="%editor.label.function" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <TextField fx:id="editorFunction" minWidth="360"
                                            promptText="%editor.algebraicVariable.example.function"
-                                           GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                           GridPane.columnIndex="1" GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
@@ -137,12 +131,17 @@
                                         <Insets right="10.0"/>
                                     </GridPane.margin>
                                 </TextField>
-                                <Label text="%editor.label.parameter" GridPane.rowIndex="2">
+                                <Label text="%editor.label.parameter" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets right="10.0"/>
+                                    </GridPane.margin>
+                                </TextField>
+                                <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3"
                                       GridPane.valignment="CENTER">
                                     <children>
                                         <Label text="["/>
@@ -178,6 +177,12 @@
                             </VBox.margin>
                         </HBox>
                     </children>
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                    <padding>
+                        <Insets top="10.0"/>
+                    </padding>
                 </VBox>
             </children>
         </AnchorPane>

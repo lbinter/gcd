@@ -35,7 +35,7 @@ public class FunctionReference {
     }
 
     public String getConstraintsAsString() {
-        return constraints.stream().map(c -> String.valueOf(c.getId())).collect(Collectors.joining(", "));
+        return constraints.stream().map(Constraint::getNameOrId).collect(Collectors.joining(", "));
     }
 
     public boolean hasReferences() {

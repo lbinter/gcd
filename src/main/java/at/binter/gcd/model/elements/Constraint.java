@@ -8,6 +8,7 @@ import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class Constraint implements Updatable<Constraint>, Comparable<Constraint>, HasVariableStringList, HasParameterStringList {
     private int id;
+    private String name;
     private final StringProperty condition = new SimpleStringProperty();
     private String description;
 
@@ -26,6 +28,7 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
         if (modified.getId() != -1) {
             setId(modified.getId());
         }
+        setName(modified.name);
         setCondition(modified.getCondition());
         setDescription(modified.getDescription());
     }
@@ -36,6 +39,21 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNameOrId() {
+        if (StringUtils.isBlank(name)) {
+            return String.format("%2d", id);
+        }
+        return name;
     }
 
     public StringProperty conditionProperty() {
@@ -107,7 +125,7 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
 
     @Override
     public String toString() {
-        return String.format("%2d", id) + ": " + getCondition();
+        return getNameOrId() + ": " + getCondition();
     }
 
     @Override

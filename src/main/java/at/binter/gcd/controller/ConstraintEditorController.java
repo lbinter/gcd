@@ -19,6 +19,8 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
     @FXML
     private Label editorLabelId;
     @FXML
+    private TextField editorName;
+    @FXML
     private TextField editorCondition;
     @FXML
     private TextField editorDescription;
@@ -60,6 +62,7 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         } else {
             constraint.setId(Integer.parseInt(editorLabelId.getText()));
         }
+        constraint.setName(editorName.getText());
         constraint.setCondition(editorCondition.getText());
         constraint.setDescription(editorDescription.getText());
         return constraint;
@@ -67,6 +70,7 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
 
     public void clearData() {
         editorLabelId.setText("");
+        editorName.setText("");
         editorCondition.setText("");
         editorDescription.setText("");
         editorLabelVariables.setText("");
@@ -78,6 +82,7 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         editorLabelVariables.setText("");
         editorLabelParameter.setText("");
         editorLabelId.setText(String.valueOf(data.getId()));
+        editorName.setText(data.getName());
         editorCondition.setText(data.getCondition());
         editorDescription.setText(data.getDescription());
     }
