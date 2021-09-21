@@ -779,7 +779,10 @@ public class MathematicaModel {
     }
 
     public MSet getSetGlvar() {
-        MList list = new MList("uh", "uf", "ub", "uzb", "ug");
+        MList list = new MList();
+        for (Agent a : model.getAgentsSorted()) {
+            list.add(new MVariable("u" + a.getName()));
+        }
         MJoin join = new MJoin(list, var, lambdaF);
         return new MSet(glvar, join);
     }
@@ -807,9 +810,22 @@ public class MathematicaModel {
         methodList.add(new MExpression("&#8594;"));
         methodList.add(new MList(indexReductionList));
 
+        MList glvarList = new MList();
+        for (Agent a : model.getAgentsSorted()) {
+            glvarList.add(new MVariable("u" + a.getName()));
+        }
+        for (IExpression e : ((MList) getSetDiffVar().getExpr2()).getElements()) {
+            glvarList.add(e);
+        }
+        for (IExpression e : ((MList) getSetAlgVar().getExpr2()).getElements()) {
+            glvarList.add(e);
+        }
+        glvarList.add(lambdaF);
         MQuietNDSolve ndSolve = new MQuietNDSolve();
         ndSolve.addParameter(new MExpression("replaceMe", "OUTPUT GL"));
-        ndSolve.addParameter(glvar);
+        ndSolve.addLinebreak();
+        ndSolve.addParameter(glvarList);
+        ndSolve.addLinebreak();
         ndSolve.addParameter(new MList(parameterT, e0, e50));
         ndSolve.addParameter(methodList);
 

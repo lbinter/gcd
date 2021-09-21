@@ -27,6 +27,14 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
         this.linebreakAfterOperator = linebreakAfterOperator;
     }
 
+    public IExpression getExpr1() {
+        return expr1;
+    }
+
+    public IExpression getExpr2() {
+        return expr2;
+    }
+
     @Override
     public void toHTML(HTMLBuilder builder) {
         int increaseIntent = 0;
