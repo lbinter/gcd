@@ -6,11 +6,11 @@ import at.binter.gcd.model.elements.Variable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
@@ -82,8 +82,24 @@ public class GCDPlot {
         return algebraicVariablesSorted;
     }
 
+    public List<AlgebraicVariable> getAlgebraicVariables() {
+        List<AlgebraicVariable> list = new ArrayList<>();
+        for (GCDPlotItem<AlgebraicVariable> item : algebraicVariables) {
+            list.add(item.getItem());
+        }
+        return list;
+    }
+
     public SortedList<GCDPlotItem<Agent>> getAgentsSorted() {
         return agentsSorted;
+    }
+
+    public List<Agent> getAgents() {
+        List<Agent> list = new ArrayList<>();
+        for (GCDPlotItem<Agent> item : agents) {
+            list.add(item.getItem());
+        }
+        return list;
     }
 
     public SortedList<Variable> getVariablesSorted() {
@@ -124,14 +140,53 @@ public class GCDPlot {
         if (algVar == null || hasAlgebraicVariable(algVar)) {
             return;
         }
-        algebraicVariables.add(new GCDPlotItem<>(algVar));
+        GCDPlotItem<AlgebraicVariable> newItem = new GCDPlotItem<>(algVar);
+        newItem.addDependedProperty().addListener((observable, wasSelected, isSelected) -> {
+            if (isSelected) {
+                addVariablesFor(algVar);
+            } else {
+                removeVariablesFor(algVar);
+            }
+        });
+        algebraicVariables.add(newItem);
     }
+
+    public void removeAlgebraicVariable(GCDPlotItem<AlgebraicVariable> algVar) {
+        if (algVar == null || !hasAlgebraicVariable(algVar.getItem())) {
+            return;
+        }
+        if (algebraicVariables.remove(algVar)) {
+            // TODO remove depended
+        }
+    }
+
+    private void removeAlgebraicVariable(AlgebraicVariable algVar) {
+        // TODO implement me
+    }
+
+    public void removeAgent(GCDPlotItem<Agent> agent) {
+        if (agent == null || !hasAgent(agent.getItem())) {
+            return;
+        }
+        if (agents.remove(agent)) {
+            // TODO remove depended
+        }
+    }
+
 
     public void addAgent(Agent agent) {
         if (agent == null || hasAgent(agent)) {
             return;
         }
-        agents.add(new GCDPlotItem<>(agent));
+        GCDPlotItem<Agent> newItem = new GCDPlotItem<>(agent);
+        newItem.addDependedProperty().addListener((observable, wasSelected, isSelected) -> {
+            if (isSelected) {
+                addVariablesFor(agent);
+            } else {
+                removeVariablesFor(agent);
+            }
+        });
+        agents.add(newItem);
     }
 
     public void addVariable(Variable variable) {
@@ -141,38 +196,31 @@ public class GCDPlot {
         variables.add(variable);
     }
 
-    private void addVariables(List<String> variables) {
-        for (String name : variables) {
+    public void removeVariable(Variable variable) {
+    }
+
+    private void addVariablesFor(HasVariableStringList item) {
+        for (String name : item.getVariables()) {
             if (model.hasVariable(name)) {
                 Variable var = model.getVariable(name);
-                //addVariable(var);
+                addVariable(var);
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
-                //addAlgebraicVariable(algVar);
+                addAlgebraicVariable(algVar);
             }
         }
     }
 
-    /**
-     * @param variables                  variable names to remove
-     * @param selectedAlgebraicVariables variables to skip from remove
-     * @param selectedVariables          selected variables to skip from remove
-     */
-    private void removeVariables(List<String> variables,
-                                 AlgebraicVariable[] selectedAlgebraicVariables,
-                                 Agent[] selectedAgents,
-                                 Variable[] selectedVariables) {
-        for (String name : variables) {
+    private void removeVariablesFor(HasVariableStringList item) {
+        for (String name : item.getVariables()) {
             if (model.hasVariable(name)) {
                 Variable variable = model.getVariable(name);
-                if (!ArrayUtils.contains(selectedVariables, variable)) {
-                    // removeVariable(variable, selectedAlgebraicVariables, selectedAgents, selectedVariables);
-                }
+                removeVariable(variable);
+                // TODO remove variable after check
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
-                if (!ArrayUtils.contains(selectedAlgebraicVariables, algVar)) {
-                    // removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables);
-                }
+                removeAlgebraicVariable(algVar);
+                // TODO remove algvar and children
             }
         }
     }

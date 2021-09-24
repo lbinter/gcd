@@ -283,7 +283,7 @@ public class GCDController extends BaseController implements Initializable {
         loader.setLocation(gcd.getClass().getResource("plot.fxml"));
         loader.setResources(resources);
 
-        Tab tab = new Tab(plot.getName());
+        Tab tab = new Tab("Plot: " + plot.getName());
 
         try {
             tab.setContent(loader.load());

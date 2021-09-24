@@ -1,5 +1,6 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.gui.SelectedMatcher;
 import at.binter.gcd.gui.VariableMatcher;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.GCDPlot;
@@ -7,19 +8,25 @@ import at.binter.gcd.model.GCDPlotItem;
 import at.binter.gcd.model.elements.Agent;
 import at.binter.gcd.model.elements.AlgebraicVariable;
 import at.binter.gcd.model.elements.Variable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
@@ -53,9 +60,7 @@ public class PlotController extends BaseController implements Initializable {
     @FXML
     private TextField plotRange;
 
-    private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
-    private EditDialog<Agent> agentEditDialog;
-    private EditDialog<Variable> variableEditDialog;
+    private ObjectProperty<Predicate<? super Variable>> variableFilter;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,21 +70,118 @@ public class PlotController extends BaseController implements Initializable {
     public void initializeGCDDepended() {
         model = gcd.gcdController.model;
 
-        //algebraicVariableEditDialog = new EditDialog<>(algVarListSelected, plot.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
-        //agentEditDialog = new EditDialog<>(agentListSelected, plot.getAgents(), gcd.agentEditorController, gcd);
-        //variableEditDialog = new EditDialog<>(variableListSelected, plot.getVariables(), gcd.variableEditorController, gcd);
-
+        final FilteredList<AlgebraicVariable> viewableAlgebraicVariables = new FilteredList<>(model.getAlgebraicVariablesSorted());
+        ReadOnlyObjectProperty<ObservableList<AlgebraicVariable>> viewableAlgebraicVariablesProperty = new SimpleObjectProperty<>(viewableAlgebraicVariables);
+        ObjectProperty<Predicate<? super AlgebraicVariable>> algebraicVariablesFilter = viewableAlgebraicVariables.predicateProperty();
+        algVarListView.setCellFactory(factory -> {
+            ListCell<AlgebraicVariable> cell = new ListCell<>() {
+                @Override
+                public void updateItem(AlgebraicVariable algVar, boolean empty) {
+                    super.updateItem(algVar, empty);
+                    setText(empty ? null : algVar.toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                algVarListView.requestFocus();
+                if (!cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    AlgebraicVariable item = cell.getItem();
+                    if (!algVarListView.getSelectionModel().getSelectedIndices().contains(index)) {
+                        algVarListView.getSelectionModel().select(index);
+                        plot.addAlgebraicVariable(item);
+                    }
+                    algebraicVariablesFilter.set(new SelectedMatcher<>(plot.getAlgebraicVariables()));
+                    event.consume();
+                }
+            });
+            return cell;
+        });
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        algVarListView.setItems(model.getAlgebraicVariablesSorted());
+        algVarListView.itemsProperty().bind(viewableAlgebraicVariablesProperty);
 
+        final FilteredList<Agent> viewableAgents = new FilteredList<>(model.getAgentsSorted());
+        ReadOnlyObjectProperty<ObservableList<Agent>> viewableAgentsProperty = new SimpleObjectProperty<>(viewableAgents);
+        ObjectProperty<Predicate<? super Agent>> agentsFilter = viewableAgents.predicateProperty();
+        agentListView.setCellFactory(factory -> {
+            ListCell<Agent> cell = new ListCell<>() {
+                @Override
+                public void updateItem(Agent agent, boolean empty) {
+                    super.updateItem(agent, empty);
+                    setText(empty ? null : agent.toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                agentListView.requestFocus();
+                if (!cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    Agent item = cell.getItem();
+                    if (!agentListView.getSelectionModel().getSelectedIndices().contains(index)) {
+                        agentListView.getSelectionModel().select(index);
+                        plot.addAgent(item);
+                    }
+                    agentsFilter.set(new SelectedMatcher<>(plot.getAgents()));
+                    event.consume();
+                }
+            });
+            return cell;
+        });
         agentListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        agentListView.setItems(model.getAgentsSorted());
+        agentListView.itemsProperty().bind(viewableAgentsProperty);
 
+        final FilteredList<Variable> viewableVariable = new FilteredList<>(model.getVariablesSorted());
+        setVariableFilter(viewableVariable.predicateProperty());
         variableListFilter.textProperty().addListener(this::filterVariable);
         variableListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        variableListView.itemsProperty().bind(model.viewableVariableProperty());
+        variableListView.itemsProperty().bind(new SimpleObjectProperty<>(viewableVariable));
 
+        algVarListSelected.setCellFactory(factory -> {
+            CheckBoxListCell<GCDPlotItem<AlgebraicVariable>> cell = new CheckBoxListCell<>(GCDPlotItem::addDependedProperty) {
+                @Override
+                public void updateItem(GCDPlotItem<AlgebraicVariable> item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getItem().toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                algVarListSelected.requestFocus();
+                if (!(event.getTarget() instanceof StackPane) && !cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    GCDPlotItem<AlgebraicVariable> item = cell.getItem();
+                    if (!algVarListSelected.getSelectionModel().getSelectedIndices().contains(index)) {
+                        algVarListSelected.getSelectionModel().select(index);
+                        plot.removeAlgebraicVariable(item);
+                    }
+                    algebraicVariablesFilter.set(new SelectedMatcher<>(plot.getAlgebraicVariables()));
+                    event.consume();
+                }
+            });
+            return cell;
+        });
         algVarListSelected.setItems(plot.getAlgebraicVariablesSorted());
+
+        agentListSelected.setCellFactory(factory -> {
+            CheckBoxListCell<GCDPlotItem<Agent>> cell = new CheckBoxListCell<>(GCDPlotItem::addDependedProperty) {
+                @Override
+                public void updateItem(GCDPlotItem<Agent> item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getItem().toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                agentListSelected.requestFocus();
+                if (!(event.getTarget() instanceof StackPane) && !cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    GCDPlotItem<Agent> item = cell.getItem();
+                    if (!agentListSelected.getSelectionModel().getSelectedIndices().contains(index)) {
+                        agentListSelected.getSelectionModel().select(index);
+                        plot.removeAgent(item);
+                    }
+                    agentsFilter.set(new SelectedMatcher<>(plot.getAgents()));
+                    event.consume();
+                }
+            });
+            return cell;
+        });
         agentListSelected.setItems(plot.getAgentsSorted());
         variableListSelected.setItems(plot.getVariablesSorted());
 
@@ -87,8 +189,10 @@ public class PlotController extends BaseController implements Initializable {
         plotLegendLabel.setText(plot.getLegendLabel());
         plotStyle.setText(plot.getPlotStyle());
         plotRange.setText(plot.getPlotRange());
+    }
 
-        registerEventHandlers();
+    private void setVariableFilter(ObjectProperty<Predicate<? super Variable>> predicateProperty) {
+        variableFilter = predicateProperty;
     }
 
     public void setParentTab(Tab tab) {
@@ -103,7 +207,7 @@ public class PlotController extends BaseController implements Initializable {
 
     public void saveSettings() {
         String defaultPlotStyle = plot.getPlotStyle();
-        parentTab.setText(plotName.getText());
+        parentTab.setText("Plot: " + plotName.getText());
         plot.setName(plotName.getText());
         plot.setLegendLabel(plotLegendLabel.getText());
         if (!plotStyle.getText().equals(defaultPlotStyle)) {
@@ -117,40 +221,9 @@ public class PlotController extends BaseController implements Initializable {
     void filterVariable(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         String filter = sanitizeString(newValue);
         if (StringUtils.isBlank(newValue)) {
-            model.variableFilterProperty().set(new VariableMatcher("*"));
+            variableFilter.set(new VariableMatcher("*"));
         } else {
-            model.variableFilterProperty().set(new VariableMatcher(filter));
+            variableFilter.set(new VariableMatcher(filter));
         }
-    }
-
-    private void registerEventHandlers() {
-        /*algVarListSelected.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedAlgebraicVariable();
-            }
-        });
-        agentListSelected.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedAgent();
-            }
-        });
-        variableListSelected.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedVariable();
-            }
-        });*/
-    }
-
-
-    protected void editSelectedAlgebraicVariable() {
-        algebraicVariableEditDialog.editSelectedValue();
-    }
-
-    protected void editSelectedAgent() {
-        agentEditDialog.editSelectedValue();
-    }
-
-    protected void editSelectedVariable() {
-        variableEditDialog.editSelectedValue();
     }
 }

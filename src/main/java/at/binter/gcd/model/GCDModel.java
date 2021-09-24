@@ -2,17 +2,16 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.*;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.function.Predicate;
 
 public class GCDModel extends GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
@@ -26,16 +25,6 @@ public class GCDModel extends GCDBaseModel {
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean clearGlobal = true;
-
-    private final FilteredList<Variable> viewableVariable = new FilteredList<>(variables);
-
-    public ReadOnlyObjectProperty<ObservableList<Variable>> viewableVariableProperty() {
-        return new SimpleObjectProperty<>(viewableVariable);
-    }
-
-    public ObjectProperty<Predicate<? super Variable>> variableFilterProperty() {
-        return viewableVariable.predicateProperty();
-    }
 
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
