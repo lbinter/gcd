@@ -47,7 +47,7 @@
                                        <children>
                                           <VBox prefHeight="200.0" prefWidth="100.0">
                                              <children>
-                                                <TextField promptText="%plot.filter">
+                                                <TextField fx:id="variableListFilter" promptText="%plot.filter">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0"/>
                                                    </VBox.margin>

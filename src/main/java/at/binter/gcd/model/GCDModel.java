@@ -2,16 +2,17 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.*;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class GCDModel extends GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDModel.class);
@@ -25,6 +26,16 @@ public class GCDModel extends GCDBaseModel {
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean clearGlobal = true;
+
+    private final FilteredList<Variable> viewableVariable = new FilteredList<>(variables);
+
+    public ReadOnlyObjectProperty<ObservableList<Variable>> viewableVariableProperty() {
+        return new SimpleObjectProperty<>(viewableVariable);
+    }
+
+    public ObjectProperty<Predicate<? super Variable>> variableFilterProperty() {
+        return viewableVariable.predicateProperty();
+    }
 
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
@@ -378,18 +389,18 @@ public class GCDModel extends GCDBaseModel {
             p.setLegendLabel(plot.legendLabel);
             p.setPlotStyle(plot.plotStyle);
             p.setPlotRange(plot.plotRange);
-            for (String name : plot.algebraicVariables) {
-                AlgebraicVariable algVar = getAlgebraicVariable(name);
+            for (GCDPlotItem<AlgebraicVariable> item : plot.algebraicVariables) {
+                AlgebraicVariable algVar = getAlgebraicVariable(item.getItem().getName());
                 if (algVar == null) {
-                    log.error("Could not find algebraic variable \"{}\" for plot \"{}\"", name, plot.name);
+                    log.error("Could not find algebraic variable \"{}\" for plot \"{}\"", item.getItem().getName(), plot.name);
                 } else {
                     p.addAlgebraicVariable(algVar);
                 }
             }
-            for (String name : plot.agents) {
-                Agent agent = getAgent(name);
+            for (GCDPlotItem<Agent> item : plot.agents) {
+                Agent agent = getAgent(item.getItem().getName());
                 if (agent == null) {
-                    log.error("Could not find agent \"{}\" for plot \"{}\"", name, plot.name);
+                    log.error("Could not find agent \"{}\" for plot \"{}\"", item.getItem().getName(), plot.name);
                 } else {
                     p.addAgent(agent);
                 }
@@ -400,22 +411,6 @@ public class GCDModel extends GCDBaseModel {
                     log.error("Could not find variable \"{}\" for plot \"{}\"", name, plot.name);
                 } else {
                     p.addVariable(variable);
-                }
-            }
-            for (String name : plot.parameters) {
-                Parameter parameter = getParameter(name);
-                if (parameter == null) {
-                    log.error("Could not find parameter \"{}\" for plot \"{}\"", name, plot.name);
-                } else {
-                    p.addParameter(parameter);
-                }
-            }
-            for (String name : plot.changeMu) {
-                ChangeMu changeMu = getChangeMu(name);
-                if (changeMu == null) {
-                    log.error("Could not find changeMu \"{}\" for plot \"{}\"", name, plot.name);
-                } else {
-                    p.addChangeMu(changeMu);
                 }
             }
             addPlot(p);

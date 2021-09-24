@@ -1,7 +1,11 @@
 package at.binter.gcd.model;
 
-import at.binter.gcd.model.elements.*;
-import javafx.collections.ListChangeListener;
+import at.binter.gcd.model.elements.Agent;
+import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.Variable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -11,7 +15,7 @@ import java.util.List;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
-public class GCDPlot extends GCDBaseModel {
+public class GCDPlot {
     private static final Logger log = LoggerFactory.getLogger(GCDPlot.class);
 
     private final GCDModel model;
@@ -20,174 +24,16 @@ public class GCDPlot extends GCDBaseModel {
     private String plotStyle;
     private String plotRange;
 
-    private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(algVar -> {
-                    algebraicVariableNameMap.put(algVar.getName(), algVar);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" added algebraic variable \"{}\"", name, algVar.getName());
-                    }
-                    algVar.nameProperty().addListener((observable, oldValue, newValue) -> {
-                        AlgebraicVariable removed = algebraicVariableNameMap.remove(oldValue);
-                        if (removed != null) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("Plot \"{}\" removed from algebraicVariableNameMap entry \"{}\"", name, oldValue);
-                            }
-                        } else {
-                            log.error("Plot \"{}\" :could not remove \"{}\" from algebraicVariableNameMap", name, oldValue);
-                        }
-                        algebraicVariableNameMap.put(newValue, algVar);
-                        if (log.isTraceEnabled()) {
-                            log.trace("Plot \"{}\" added algebraicVariableNameMap entry \"{}\"", name, newValue);
-                        }
-                    });
-                });
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(algVar -> {
-                    algebraicVariableNameMap.remove(algVar.getName());
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" removed algebraic variable \"{}\"", name, algVar);
-                    }
-                });
-            }
-        }
-    };
-    private final ListChangeListener<Agent> agentListChangeListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(agent -> {
-                    agentNameMap.put(agent.getName(), agent);
-                    addVariables(agent);
-                    addParameters(agent);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" added agent \"{}\"", name, agent.getName());
-                    }
-                    agent.nameProperty().addListener((observable, oldValue, newValue) -> {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Plot \"{}\" agent was renamed from \"{}\" to \"{}\"", name, oldValue, newValue);
-                        }
-                        Agent removed = agentNameMap.remove(oldValue);
-                        if (removed != null) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("Plot \"{}\" removed from agentNameMap entry \"{}\"", name, oldValue);
-                            }
-                        } else {
-                            log.error("Plot \"{}\" could not remove \"{}\" from agentNameMap", name, oldValue);
-                        }
-                        agentNameMap.put(newValue, agent);
-                        if (log.isTraceEnabled()) {
-                            log.trace("Plot \"{}\" added to agentNameMap entry \"{}\"", name, newValue);
-                        }
-                    });
-                });
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(agent -> {
-                    agentNameMap.remove(agent.getName());
-                    log.trace("Plot \"{}\" removed agent \"{}\"", name, agent);
-                });
-            }
-        }
-    };
-
-    private final ListChangeListener<Variable> variableListChangeListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(variable -> {
-                    variableNameMap.put(variable.getName(), variable);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" added variable \"{}\"", name, variable.getName());
-                    }
-                });
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(variable -> {
-                    variableNameMap.remove(variable.getName());
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" removed variable \"{}\"", name, variable.getName());
-                    }
-                });
-            }
-        }
-    };
-
-    private final ListChangeListener<Parameter> parameterListChangeListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(parameter -> {
-                    parameterNameMap.put(parameter.getName(), parameter);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" added parameter \"{}\"", name, parameter.getName());
-                    }
-                });
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(parameter -> {
-                    parameterNameMap.remove(parameter.getName());
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" removed parameter \"{}\"", name, parameter.getName());
-                    }
-                });
-            }
-        }
-    };
-
-    private final ListChangeListener<ChangeMu> changeMuListChangeListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                c.getAddedSubList().forEach(changeMu -> {
-                    changeMuNameMap.put(changeMu.getIdentifier(), changeMu);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" added changeMu \"{}\"", name, changeMu.getIdentifier());
-                    }
-                });
-            }
-            if (c.wasRemoved()) {
-                c.getRemoved().forEach(changeMu -> {
-                    changeMuNameMap.remove(changeMu.getIdentifier());
-                    if (log.isTraceEnabled()) {
-                        log.trace("Plot \"{}\" removed changeMu \"{}\"", name, changeMu.getIdentifier());
-                    }
-                });
-            }
-        }
-    };
+    private final ObservableList<GCDPlotItem<AlgebraicVariable>> algebraicVariables = FXCollections.observableArrayList();
+    private final SortedList<GCDPlotItem<AlgebraicVariable>> algebraicVariablesSorted = algebraicVariables.sorted();
+    private final ObservableList<GCDPlotItem<Agent>> agents = FXCollections.observableArrayList();
+    private final SortedList<GCDPlotItem<Agent>> agentsSorted = agents.sorted();
+    private final ObservableList<Variable> variables = FXCollections.observableArrayList();
+    private final SortedList<Variable> variablesSorted = variables.sorted();
 
     public GCDPlot(GCDModel model, String name) {
         this.model = model;
         this.name = name;
-    }
-
-    @Override
-    protected ListChangeListener<AlgebraicVariable> getAlgebraicVariableListChangeListener() {
-        return algebraicVariableListChangeListener;
-    }
-
-    @Override
-    protected ListChangeListener<Agent> getAgentListChangeListener() {
-        return agentListChangeListener;
-    }
-
-    @Override
-    protected ListChangeListener<Constraint> getConstraintListChangeListener() {
-        return null;
-    }
-
-    @Override
-    protected ListChangeListener<Variable> getVariableListChangeListener() {
-        return variableListChangeListener;
-    }
-
-    @Override
-    protected ListChangeListener<Parameter> getParameterListChangeListener() {
-        return parameterListChangeListener;
-    }
-
-    @Override
-    protected ListChangeListener<ChangeMu> getChangeMuListChangeListener() {
-        return changeMuListChangeListener;
     }
 
     public String getName() {
@@ -232,128 +78,77 @@ public class GCDPlot extends GCDBaseModel {
         this.plotRange = plotRange;
     }
 
-    public void addAlgebraicVariable(AlgebraicVariable algebraicVariable) {
-        if (algebraicVariables.contains(algebraicVariable)) {
-            return;
-        }
-        algebraicVariables.add(algebraicVariable);
-        addVariables(algebraicVariable.getVariables());
+    public SortedList<GCDPlotItem<AlgebraicVariable>> getAlgebraicVariablesSorted() {
+        return algebraicVariablesSorted;
     }
 
-    public void removeAlgebraicVariable(AlgebraicVariable algebraicVariable,
-                                        AlgebraicVariable[] selectedAlgebraicVariables,
-                                        Agent[] selectedAgents,
-                                        Variable[] selectedVariables) {
-        algebraicVariables.remove(algebraicVariable);
-        removeVariables(algebraicVariable.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables);
+    public SortedList<GCDPlotItem<Agent>> getAgentsSorted() {
+        return agentsSorted;
+    }
+
+    public SortedList<Variable> getVariablesSorted() {
+        return variablesSorted;
+    }
+
+    public boolean hasAlgebraicVariable(AlgebraicVariable algVar) {
+        if (algVar == null) return false;
+        for (GCDPlotItem<AlgebraicVariable> item : algebraicVariables) {
+            if (algVar.equals(item.getItem())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAgent(Agent agent) {
+        if (agent == null) return false;
+        for (GCDPlotItem<Agent> item : agents) {
+            if (agent.equals(item.getItem())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasVariable(Variable variable) {
+        if (variable == null) return false;
+        for (Variable v : variables) {
+            if (variable.equals(v)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addAlgebraicVariable(AlgebraicVariable algVar) {
+        if (algVar == null || hasAlgebraicVariable(algVar)) {
+            return;
+        }
+        algebraicVariables.add(new GCDPlotItem<>(algVar));
     }
 
     public void addAgent(Agent agent) {
-        if (agents.contains(agent)) {
+        if (agent == null || hasAgent(agent)) {
             return;
         }
-        agents.add(agent);
-        addVariables(agent.getVariables());
-    }
-
-    public void removeAgent(Agent agent,
-                            AlgebraicVariable[] selectedAlgebraicVariables,
-                            Agent[] selectedAgents,
-                            Variable[] selectedVariables) {
-        agents.remove(agent);
-        removeVariables(agent.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables);
+        agents.add(new GCDPlotItem<>(agent));
     }
 
     public void addVariable(Variable variable) {
-        if (!variables.contains(variable)) {
-            variables.add(variable);
+        if (variable == null || variables.contains(variable)) {
+            return;
         }
-    }
-
-    public void removeVariable(Variable variable,
-                               AlgebraicVariable[] selectedAlgebraicVariables,
-                               Agent[] selectedAgents,
-                               Variable[] selectedVariables) {
-        for (Variable v : selectedVariables) {
-            if (v.equals(variable)) {
-                return;
-            }
-        }
-        for (AlgebraicVariable algVar : selectedAlgebraicVariables) {
-            for (String name : algVar.getVariables()) {
-                for (Variable var : variables) {
-                    if (name.equals(var.getName())) {
-                        return;
-                    }
-                }
-            }
-        }
-        for (Agent a : selectedAgents) {
-            for (String name : a.getVariables()) {
-                for (Variable var : variables) {
-                    if (name.equals(var.getName())) {
-                        return;
-                    }
-                }
-            }
-        }
-        variables.remove(variable);
-    }
-
-    public void addParameter(Parameter p) {
-        if (!parameters.contains(p)) {
-            parameters.add(p);
-        }
-    }
-
-    public void removeParameter(Parameter parameter,
-                                AlgebraicVariable[] selectedAlgebraicVariables,
-                                Agent[] selectedAgents,
-                                Parameter[] selectedParameters) {
-        for (Parameter p : selectedParameters) {
-            if (p.equals(parameter)) {
-                return;
-            }
-        }
-        for (AlgebraicVariable algVar : selectedAlgebraicVariables) {
-            for (String name : algVar.getParameters()) {
-                for (Parameter p : parameters) {
-                    if (name.equals(p.getName())) {
-                        return;
-                    }
-                }
-            }
-        }
-        for (Agent a : selectedAgents) {
-            for (String name : a.getParameters()) {
-                for (Parameter p : parameters) {
-                    if (name.equals(p.getName())) {
-                        return;
-                    }
-                }
-            }
-        }
-        parameters.remove(parameter);
-    }
-
-    public void addChangeMu(ChangeMu mu) {
-        if (!changeMus.contains(mu)) {
-            changeMus.add(mu);
-        }
-    }
-
-    public void removeChangeMu(ChangeMu mu) {
-        changeMus.remove(mu);
+        variables.add(variable);
     }
 
     private void addVariables(List<String> variables) {
         for (String name : variables) {
             if (model.hasVariable(name)) {
                 Variable var = model.getVariable(name);
-                addVariable(var);
+                //addVariable(var);
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
-                addAlgebraicVariable(algVar);
+                //addAlgebraicVariable(algVar);
             }
         }
     }
@@ -371,12 +166,12 @@ public class GCDPlot extends GCDBaseModel {
             if (model.hasVariable(name)) {
                 Variable variable = model.getVariable(name);
                 if (!ArrayUtils.contains(selectedVariables, variable)) {
-                    removeVariable(variable, selectedAlgebraicVariables, selectedAgents, selectedVariables);
+                    // removeVariable(variable, selectedAlgebraicVariables, selectedAgents, selectedVariables);
                 }
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
                 if (!ArrayUtils.contains(selectedAlgebraicVariables, algVar)) {
-                    removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables);
+                    // removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables);
                 }
             }
         }
