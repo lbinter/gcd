@@ -2,7 +2,9 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.GCDPlot;
-import at.binter.gcd.model.elements.*;
+import at.binter.gcd.model.elements.Agent;
+import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.Variable;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,19 +31,11 @@ public class PlotController extends BaseController implements Initializable {
     @FXML
     private ListView<Variable> variableListView;
     @FXML
-    private ListView<Parameter> parameterListView;
-    @FXML
-    private ListView<ChangeMu> changeMuListView;
-    @FXML
     private ListView<AlgebraicVariable> algVarListSelected;
     @FXML
     private ListView<Agent> agentListSelected;
     @FXML
     private ListView<Variable> variableListSelected;
-    @FXML
-    private ListView<Parameter> parameterListSelected;
-    @FXML
-    private ListView<ChangeMu> changeMuListSelected;
     @FXML
     private TextField plotName;
     @FXML
@@ -53,10 +47,7 @@ public class PlotController extends BaseController implements Initializable {
 
     private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
     private EditDialog<Agent> agentEditDialog;
-    private EditDialog<Constraint> constraintEditDialog;
     private EditDialog<Variable> variableEditDialog;
-    private EditDialog<Parameter> parameterEditDialog;
-    private EditDialog<ChangeMu> changeMuEditDialog;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,14 +60,12 @@ public class PlotController extends BaseController implements Initializable {
         algebraicVariableEditDialog = new EditDialog<>(algVarListSelected, plot.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
         agentEditDialog = new EditDialog<>(agentListSelected, plot.getAgents(), gcd.agentEditorController, gcd);
         variableEditDialog = new EditDialog<>(variableListSelected, plot.getVariables(), gcd.variableEditorController, gcd);
-        parameterEditDialog = new EditDialog<>(parameterListSelected, plot.getParameters(), gcd.parameterEditorController, gcd);
-        changeMuEditDialog = new EditDialog<>(changeMuListSelected, plot.getChangeMus(), gcd.changeMuEditorController, gcd);
 
         algVarListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         algVarListView.setCellFactory(factory -> {
             ListCell<AlgebraicVariable> cell = new ListCell<>() {
                 @Override
-                protected void updateItem(AlgebraicVariable item, boolean empty) {
+                public void updateItem(AlgebraicVariable item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty ? null : item.toString());
                 }
@@ -91,8 +80,7 @@ public class PlotController extends BaseController implements Initializable {
                         plot.removeAlgebraicVariable(algebraicVariable,
                                 algVarListView.getSelectionModel().getSelectedItems().toArray(new AlgebraicVariable[0]),
                                 agentListSelected.getSelectionModel().getSelectedItems().toArray(new Agent[0]),
-                                variableListView.getSelectionModel().getSelectedItems().toArray(new Variable[0]),
-                                parameterListView.getSelectionModel().getSelectedItems().toArray(new Parameter[0]));
+                                variableListView.getSelectionModel().getSelectedItems().toArray(new Variable[0]));
                     } else {
                         algVarListView.getSelectionModel().select(index);
                         plot.addAlgebraicVariable(algebraicVariable);
@@ -123,8 +111,7 @@ public class PlotController extends BaseController implements Initializable {
                         plot.removeAgent(agent,
                                 algVarListView.getSelectionModel().getSelectedItems().toArray(new AlgebraicVariable[0]),
                                 agentListSelected.getSelectionModel().getSelectedItems().toArray(new Agent[0]),
-                                variableListView.getSelectionModel().getSelectedItems().toArray(new Variable[0]),
-                                parameterListView.getSelectionModel().getSelectedItems().toArray(new Parameter[0]));
+                                variableListView.getSelectionModel().getSelectedItems().toArray(new Variable[0]));
                     } else {
                         agentListView.getSelectionModel().select(index);
                         plot.addAgent(agent);
@@ -167,70 +154,9 @@ public class PlotController extends BaseController implements Initializable {
         });
         variableListView.setItems(model.getVariablesSorted());
 
-        parameterListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        parameterListView.setCellFactory(factory -> {
-            ListCell<Parameter> cell = new ListCell<>() {
-                @Override
-                protected void updateItem(Parameter item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty ? null : item.toString());
-                }
-            };
-            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                parameterListView.requestFocus();
-                if (!cell.isEmpty()) {
-                    int index = cell.getIndex();
-                    Parameter parameter = cell.getItem();
-                    if (parameterListView.getSelectionModel().getSelectedIndices().contains(index)) {
-                        parameterListView.getSelectionModel().clearSelection(index);
-                        plot.removeParameter(parameter,
-                                algVarListView.getSelectionModel().getSelectedItems().toArray(new AlgebraicVariable[0]),
-                                agentListSelected.getSelectionModel().getSelectedItems().toArray(new Agent[0]),
-                                parameterListView.getSelectionModel().getSelectedItems().toArray(new Parameter[0]));
-                    } else {
-                        parameterListView.getSelectionModel().select(index);
-                        plot.addParameter(parameter);
-                    }
-                    event.consume();
-                }
-            });
-            return cell;
-        });
-        parameterListView.setItems(model.getParametersSorted());
-
-        changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        changeMuListView.setCellFactory(factory -> {
-            ListCell<ChangeMu> cell = new ListCell<>() {
-                @Override
-                protected void updateItem(ChangeMu item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty ? null : item.toString());
-                }
-            };
-            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                changeMuListView.requestFocus();
-                if (!cell.isEmpty()) {
-                    int index = cell.getIndex();
-                    ChangeMu changeMu = cell.getItem();
-                    if (changeMuListView.getSelectionModel().getSelectedIndices().contains(index)) {
-                        changeMuListView.getSelectionModel().clearSelection(index);
-                        plot.removeChangeMu(changeMu);
-                    } else {
-                        changeMuListView.getSelectionModel().select(index);
-                        plot.addChangeMu(changeMu);
-                    }
-                    event.consume();
-                }
-            });
-            return cell;
-        });
-        changeMuListView.setItems(model.getChangeMus());
-
         algVarListSelected.setItems(plot.getAlgebraicVariablesSorted());
         agentListSelected.setItems(plot.getAgentsSorted());
         variableListSelected.setItems(plot.getVariablesSorted());
-        parameterListSelected.setItems(plot.getParametersSorted());
-        changeMuListSelected.setItems(plot.getChangeMus());
 
         plotName.setText(parentTab.getText());
         plotLegendLabel.setText(plot.getLegendLabel());
@@ -279,16 +205,6 @@ public class PlotController extends BaseController implements Initializable {
                 editSelectedVariable();
             }
         });
-        parameterListSelected.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedParameter();
-            }
-        });
-        changeMuListSelected.setOnMouseClicked(event -> {
-            if (isMousePrimaryDoubleClicked(event)) {
-                editSelectedChangeMu();
-            }
-        });
     }
 
 
@@ -302,13 +218,5 @@ public class PlotController extends BaseController implements Initializable {
 
     protected void editSelectedVariable() {
         variableEditDialog.editSelectedValue();
-    }
-
-    protected void editSelectedParameter() {
-        parameterEditDialog.editSelectedValue();
-    }
-
-    protected void editSelectedChangeMu() {
-        changeMuEditDialog.editSelectedValue();
     }
 }

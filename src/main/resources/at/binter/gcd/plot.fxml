@@ -45,42 +45,23 @@
                                  <content>
                                     <HBox>
                                        <children>
-                                          <ListView fx:id="variableListView" maxHeight="240.0" maxWidth="150.0"
-                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
-                                                    prefWidth="150.0"/>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <TextField promptText="%plot.filter">
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0"/>
+                                                   </VBox.margin>
+                                                </TextField>
+                                                <ListView fx:id="variableListView" maxHeight="205.0" maxWidth="150.0"
+                                                          minHeight="205.0" minWidth="150.0" prefHeight="205.0"
+                                                          prefWidth="150.0"/>
+                                             </children>
+                                          </VBox>
                                        </children>
                                     </HBox>
                                  </content>
                                  <HBox.margin>
                                     <Insets left="5.0" right="5.0"/>
-                                 </HBox.margin>
-                              </TitledPane>
-                              <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
-                                 <content>
-                                    <HBox>
-                                       <children>
-                                          <ListView fx:id="parameterListView" maxHeight="240.0" maxWidth="150.0"
-                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
-                                                    prefWidth="150.0"/>
-                                       </children>
-                                    </HBox>
-                                 </content>
-                                 <HBox.margin>
-                                    <Insets left="5.0" right="5.0"/>
-                                 </HBox.margin>
-                              </TitledPane>
-                              <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
-                                 <content>
-                                    <HBox>
-                                       <children>
-                                          <ListView fx:id="changeMuListView" maxHeight="240.0" maxWidth="150.0"
-                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
-                                                    prefWidth="150.0"/>
-                                       </children>
-                                    </HBox>
-                                 </content>
-                                 <HBox.margin>
-                                    <Insets left="5.0"/>
                                  </HBox.margin>
                               </TitledPane>
                            </children>
@@ -131,34 +112,6 @@
                                  </content>
                                  <HBox.margin>
                                     <Insets left="5.0" right="5.0"/>
-                                 </HBox.margin>
-                              </TitledPane>
-                              <TitledPane collapsible="false" text="%list.title.parameters" textOverrun="CLIP">
-                                 <content>
-                                    <HBox>
-                                       <children>
-                                          <ListView fx:id="parameterListSelected" maxHeight="240.0" maxWidth="150.0"
-                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
-                                                    prefWidth="150.0"/>
-                                       </children>
-                                    </HBox>
-                                 </content>
-                                 <HBox.margin>
-                                    <Insets left="5.0" right="5.0"/>
-                                 </HBox.margin>
-                              </TitledPane>
-                              <TitledPane collapsible="false" text="%list.title.changemu" textOverrun="CLIP">
-                                 <content>
-                                    <HBox>
-                                       <children>
-                                          <ListView fx:id="changeMuListSelected" maxHeight="240.0" maxWidth="150.0"
-                                                    minHeight="240.0" minWidth="150.0" prefHeight="240.0"
-                                                    prefWidth="150.0"/>
-                                       </children>
-                                    </HBox>
-                                 </content>
-                                 <HBox.margin>
-                                    <Insets left="5.0"/>
                                  </HBox.margin>
                               </TitledPane>
                            </children>

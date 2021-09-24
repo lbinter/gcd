@@ -19,7 +19,8 @@ public class GCDModel extends GCDBaseModel {
     private ObservableList<GCDPlot> plots = FXCollections.observableArrayList();
 
     private File file;
-    private File fileMathematica;
+    private File fileMathematicaNDSolve;
+    private File fileMathematicaModelica;
     private File fileMathematicaControl;
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
@@ -306,12 +307,20 @@ public class GCDModel extends GCDBaseModel {
         return true;
     }
 
-    public File getFileMathematica() {
-        return fileMathematica;
+    public File getFileMathematicaNDSolve() {
+        return fileMathematicaNDSolve;
     }
 
-    public void setFileMathematica(File fileMathematica) {
-        this.fileMathematica = fileMathematica;
+    public void setFileMathematicaNDSolve(File fileMathematicaNDSolve) {
+        this.fileMathematicaNDSolve = fileMathematicaNDSolve;
+    }
+
+    public File getFileMathematicaModelica() {
+        return fileMathematicaModelica;
+    }
+
+    public void setFileMathematicaModelica(File fileMathematicaModelica) {
+        this.fileMathematicaModelica = fileMathematicaModelica;
     }
 
     public File getFileMathematicaControl() {

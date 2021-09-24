@@ -238,17 +238,14 @@ public class GCDPlot extends GCDBaseModel {
         }
         algebraicVariables.add(algebraicVariable);
         addVariables(algebraicVariable.getVariables());
-        addParameters(algebraicVariable.getParameters());
     }
 
     public void removeAlgebraicVariable(AlgebraicVariable algebraicVariable,
                                         AlgebraicVariable[] selectedAlgebraicVariables,
                                         Agent[] selectedAgents,
-                                        Variable[] selectedVariables,
-                                        Parameter[] selectedParameters) {
+                                        Variable[] selectedVariables) {
         algebraicVariables.remove(algebraicVariable);
-        removeVariables(algebraicVariable.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
-        removeParameters(algebraicVariable.getParameters(), selectedParameters);
+        removeVariables(algebraicVariable.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables);
     }
 
     public void addAgent(Agent agent) {
@@ -257,17 +254,14 @@ public class GCDPlot extends GCDBaseModel {
         }
         agents.add(agent);
         addVariables(agent.getVariables());
-        addParameters(agent.getParameters());
     }
 
     public void removeAgent(Agent agent,
                             AlgebraicVariable[] selectedAlgebraicVariables,
                             Agent[] selectedAgents,
-                            Variable[] selectedVariables,
-                            Parameter[] selectedParameters) {
+                            Variable[] selectedVariables) {
         agents.remove(agent);
-        removeVariables(agent.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
-        removeParameters(agent.getParameters(), selectedParameters);
+        removeVariables(agent.getVariables(), selectedAlgebraicVariables, selectedAgents, selectedVariables);
     }
 
     public void addVariable(Variable variable) {
@@ -368,13 +362,11 @@ public class GCDPlot extends GCDBaseModel {
      * @param variables                  variable names to remove
      * @param selectedAlgebraicVariables variables to skip from remove
      * @param selectedVariables          selected variables to skip from remove
-     * @param selectedParameters         selected parameters needed for removeAlgebraicVariable
      */
     private void removeVariables(List<String> variables,
                                  AlgebraicVariable[] selectedAlgebraicVariables,
                                  Agent[] selectedAgents,
-                                 Variable[] selectedVariables,
-                                 Parameter[] selectedParameters) {
+                                 Variable[] selectedVariables) {
         for (String name : variables) {
             if (model.hasVariable(name)) {
                 Variable variable = model.getVariable(name);
@@ -384,32 +376,7 @@ public class GCDPlot extends GCDBaseModel {
             } else if (model.hasAlgebraicVariable(name)) {
                 AlgebraicVariable algVar = model.getAlgebraicVariable(name);
                 if (!ArrayUtils.contains(selectedAlgebraicVariables, algVar)) {
-                    removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables, selectedParameters);
-                }
-            }
-        }
-    }
-
-    private void addParameters(List<String> parameters) {
-        for (String name : parameters) {
-            if (model.hasParameter(name)) {
-                Parameter parameter = model.getParameter(name);
-                addParameter(parameter);
-            }
-        }
-    }
-
-    /**
-     * @param parameters         parameter names to remove
-     * @param selectedParameters selected parameters needed for removeAlgebraicVariable
-     */
-    private void removeParameters(List<String> parameters,
-                                  Parameter[] selectedParameters) {
-        for (String name : parameters) {
-            if (model.hasParameter(name)) {
-                Parameter parameter = model.getParameter(name);
-                if (!ArrayUtils.contains(selectedParameters, parameter)) {
-                    removeParameter(parameter);
+                    removeAlgebraicVariable(algVar, selectedAlgebraicVariables, selectedAgents, selectedVariables);
                 }
             }
         }
