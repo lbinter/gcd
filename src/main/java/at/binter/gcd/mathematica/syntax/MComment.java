@@ -8,6 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MComment extends MExpression {
+    private static final IExpression space = new MExpression("\" \"");
+    private static final IExpression delimiter = new MExpression(",");
+    private static final IExpression openComment = new MExpression("\"(*\"");
+    private static final IExpression closeComment = new MExpression("\"*)\"");
+    private static final IExpression linebreak = new MExpression("\"\\[IndentingNewLine]\"");
+
     private final List<IExpression> lines = new ArrayList<>();
 
     public MComment(String comment) {
@@ -55,5 +61,35 @@ public class MComment extends MExpression {
         }
         builder.write(" *)");
         builder.closeSpan();
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        List<String[]> commentLines = new ArrayList<>();
+
+        RowBox inner = new RowBox();
+
+        commentLines.add(super.getMathematicaExpression().split(" "));
+        for (IExpression line : lines) {
+            commentLines.add(line.getMathematicaExpression().split(" "));
+        }
+
+        Iterator<String[]> it = commentLines.iterator();
+        while (it.hasNext()) {
+            String[] split = it.next();
+            for (int i = 0; i < split.length; i++) {
+                inner.addExpressions(new MExpression("\"" + split[i] + "\""));
+                if (i + 1 < split.length) {
+                    inner.addExpressions(space);
+                }
+            }
+            if (it.hasNext()) {
+                inner.addExpressions(linebreak);
+            }
+        }
+
+        RowBox outer = new RowBox();
+        outer.addExpressions(openComment, inner, closeComment);
+        return outer.getMathematicaExpression();
     }
 }

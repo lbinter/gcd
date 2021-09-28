@@ -161,7 +161,7 @@ public class GCDPlot {
     }
 
     private void removeAlgebraicVariable(AlgebraicVariable algVar) {
-        // TODO implement me
+        // TODO implement men
     }
 
     public void removeAgent(GCDPlotItem<Agent> agent) {

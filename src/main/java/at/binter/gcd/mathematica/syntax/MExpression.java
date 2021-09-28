@@ -50,6 +50,11 @@ public class MExpression extends MBase implements IExpression {
     }
 
     @Override
+    public String getMathematicaExpression() {
+        return expression;
+    }
+
+    @Override
     public void toHTML(HTMLBuilder builder) {
         if (cssClass != null) {
             builder.write(getCssClass(), Tools.transformMathematicaGreekToGreekHtmlLetters(getExpression()));

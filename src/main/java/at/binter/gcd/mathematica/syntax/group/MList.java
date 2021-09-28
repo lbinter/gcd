@@ -3,6 +3,7 @@ package at.binter.gcd.mathematica.syntax.group;
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,7 +13,7 @@ public class MList extends MGroup implements IExpression {
     public static final String symbolSpecial = "List";
     public static final String groupStartSymbol = "{";
     public static final String groupCloseSymbol = "}";
-    public String delimiter = ", ";
+    public String delimiter = ",";
     private int elementsLinebreak = -1;
     private int elementsBlock = -1;
     protected final List<IExpression> elements = new ArrayList<>();
@@ -124,5 +125,26 @@ public class MList extends MGroup implements IExpression {
         HTMLBuilder builder = new HTMLBuilder();
         toHTML(builder);
         return builder.toString();
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        RowBox inner = new RowBox();
+
+        Iterator<IExpression> it = elements.iterator();
+        while (it.hasNext()) {
+            IExpression element = it.next();
+            inner.addExpressions(new MExpression("\"" + element.getMathematicaExpression() + "\""));
+            if (it.hasNext()) {
+                inner.addExpressions(new MExpression("\",\""));
+            }
+        }
+
+        RowBox outer = new RowBox();
+        outer.addExpressions(new MExpression("\"" + getGroupStartSymbol() + "\""));
+        outer.addExpressions(inner);
+        outer.addExpressions(new MExpression("\"" + getGroupCloseSymbol() + "\""));
+
+        return outer.getMathematicaExpression();
     }
 }

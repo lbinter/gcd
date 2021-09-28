@@ -39,4 +39,10 @@ public class MParentheses extends MGroup {
     public String getExpression() {
         return toHTML();
     }
+
+    @Override
+    public String getMathematicaExpression() {
+        // TODO implement me
+        return "";
+    }
 }

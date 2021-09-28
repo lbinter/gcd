@@ -3,6 +3,8 @@ package at.binter.gcd.mathematica.syntax.binary;
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.mathematica.syntax.IExpression;
+import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 
 public abstract class MBinaryOperator extends MBase implements IExpression {
     public abstract String getSymbolKeyboard();
@@ -66,5 +68,14 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
     @Override
     public String getExpression() {
         return toHTML();
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        RowBox box = new RowBox();
+        box.addExpressions(new MExpression(expr1.getMathematicaExpression()));
+        box.addExpressions(new MExpression("\"" + getSymbolKeyboard() + "\""));
+        box.addExpressions(new MExpression(expr2.getMathematicaExpression()));
+        return box.getMathematicaExpression();
     }
 }

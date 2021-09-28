@@ -17,46 +17,65 @@ public class GCDWriterHTML implements GCDMathematica {
     private static final Logger log = LoggerFactory.getLogger(GCDWriterHTML.class);
     private final GCDModel gcdModel;
     private final MathematicaModel model;
+    private final GCDMode mode;
+    private HTMLBuilder builder = new HTMLBuilder();
+    private final List<IExpression> elements = new ArrayList<>();
 
-    public GCDWriterHTML(GCDModel gcdModel) {
+    public GCDWriterHTML(GCDModel gcdModel, GCDMode mode) {
         this.gcdModel = gcdModel;
+        this.mode = mode;
         model = new MathematicaModel(gcdModel);
     }
 
     @Override
-    public String generate() {
-        HTMLBuilder builder = new HTMLBuilder();
+    public GCDMode getGCDMode(GCDMode mode) {
+        return mode;
+    }
+
+    @Override
+    public String toString() {
+        generate();
+        writeList(elements);
+        return builder.toString();
+    }
+
+    @Override
+    public void writeToFile() {
+        throw new UnsupportedOperationException("GCDWriterHTML cannot write to file");
+    }
+
+    @Override
+    public void generate() {
+        elements.clear();
+        builder = new HTMLBuilder();
         builder.comment("Erstellt am: " + new Date().toString());
         builder.linebreak();
         if (gcdModel.isClearGlobal()) {
             builder.writeln("ClearAll[\"Global`*\"]");
             builder.linebreak();
         }
-        builder.writeln(generatePlotStyles());
-        builder.writeln(generateVariableDefinition());
-        builder.writeln(generateAgentDefinition());
-        builder.writeln(generateSubstitutes());
-        builder.writeln(generateConstraintDefinition());
-        builder.writeln(generateChangeMus());
-        builder.writeln(generateTransformVariables());
-        builder.writeln(generateIndexedVariables());
-        builder.writeln(generateSubstituteVariables());
-        builder.writeln(generateSubstituteFunctions());
-        builder.writeln(generateBehavioralEquation());
-        builder.writeln(generateInitialConditions());
-        builder.writeln(generateSystemOfEquation());
-        builder.writeln(generateManipulate());
-        return builder.toString();
+        generatePlotStyles();
+        generateVariableDefinition();
+        generateAgentDefinition();
+        generateSubstitutes();
+        generateConstraintDefinition();
+        generateChangeMus();
+        generateTransformVariables();
+        generateIndexedVariables();
+        generateSubstituteVariables();
+        generateSubstituteFunctions();
+        generateBehavioralEquation();
+        generateInitialConditions();
+        generateSystemOfEquation();
+        generateManipulate();
     }
 
     @Override
-    public String generatePlotStyles() {
-        HTMLBuilder builder = new HTMLBuilder();
+    public void generatePlotStyles() {
         builder.writeln("defaultColor = Black;");
         builder.writeln("defaultThickness = AbsoluteThickness[1];");
         gcdModel.getAgents().sorted().forEach(agent -> builder.writeln(new MPlotStyle(gcdModel, agent).toHTML()));
         builder.writeln(new MPlotStyle(gcdModel).toHTML());
-        return builder.toString();
     }
 
     private String generatePlotStyle(String plotName, List<HasPlotStyle> plotStyles, List<String> plotStyleComments) {
@@ -99,192 +118,139 @@ public class GCDWriterHTML implements GCDMathematica {
     }
 
     @Override
-    public String generateVariableDefinition() {
-        List<IExpression> list = new ArrayList<>();
-        list.add(model.getDiffvarComment());
-        list.add(model.getSetDiffVar());
-        list.add(model.getSetnDiffVar());
-        list.add(model.getAlgvarComment());
-        list.add(model.getSetAlgVar());
-        list.add(model.getSetnAlgVar());
-        list.add(model.getVarComment());
-        list.add(model.getSetVar());
-        list.add(model.getSetnVar());
-
-        return writeList(list);
+    public void generateVariableDefinition() {
+        elements.add(model.getDiffvarComment());
+        elements.add(model.getSetDiffVar());
+        elements.add(model.getSetnDiffVar());
+        elements.add(model.getAlgvarComment());
+        elements.add(model.getSetAlgVar());
+        elements.add(model.getSetnAlgVar());
+        elements.add(model.getVarComment());
+        elements.add(model.getSetVar());
+        elements.add(model.getSetnVar());
     }
 
     @Override
-    public String generateAgentDefinition() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getAGComment());
-        list.add(model.getSetAG());
-        list.add(model.getSetnAG());
-
-        return writeList(list);
+    public void generateAgentDefinition() {
+        elements.add(model.getAGComment());
+        elements.add(model.getSetAG());
+        elements.add(model.getSetnAG());
     }
 
     @Override
-    public String generateSubstitutes() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getSubstituteComment());
-        list.add(model.getSetSubstitute());
-        list.addAll(model.getSetDelayedDefalgvar());
-        list.addAll(model.getSetDelayedDefAlgVarSubstitute());
-        list.addAll(model.getParameterListDefAlgVar());
-        list.addAll(model.getParameterListDefAlgVarSubstitute());
-        list.add(model.getLinebreak());
-        list.add(model.getDefuvarComment());
-        list.addAll(model.getSetDelayedDefuVar());
-        list.addAll(model.getSetDelayedDefuVarSubstitute());
-        list.addAll(model.getParameterListDefuVar());
-        list.addAll(model.getParameterListDefuVarSubstitute());
-
-        return writeList(list);
+    public void generateSubstitutes() {
+        elements.add(model.getSubstituteComment());
+        elements.add(model.getSetSubstitute());
+        elements.addAll(model.getSetDelayedDefalgvar());
+        elements.addAll(model.getSetDelayedDefAlgVarSubstitute());
+        elements.addAll(model.getParameterListDefAlgVar());
+        elements.addAll(model.getParameterListDefAlgVarSubstitute());
+        elements.add(model.getLinebreak());
+        elements.add(model.getDefuvarComment());
+        elements.addAll(model.getSetDelayedDefuVar());
+        elements.addAll(model.getSetDelayedDefuVarSubstitute());
+        elements.addAll(model.getParameterListDefuVar());
+        elements.addAll(model.getParameterListDefuVarSubstitute());
     }
 
     @Override
-    public String generateConstraintDefinition() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getnZwangBComment());
-        list.add(model.getSetnZwangB());
-        list.addAll(model.getSetDelayedDefzVar());
-        list.addAll(model.getSetDelayedDefzVarSubstitute());
-        list.addAll(model.getParameterListDefzVar());
-        list.addAll(model.getParameterListDefzVarSubstitute());
-
-        return writeList(list);
+    public void generateConstraintDefinition() {
+        elements.add(model.getnZwangBComment());
+        elements.add(model.getSetnZwangB());
+        elements.addAll(model.getSetDelayedDefzVar());
+        elements.addAll(model.getSetDelayedDefzVarSubstitute());
+        elements.addAll(model.getParameterListDefzVar());
+        elements.addAll(model.getParameterListDefzVarSubstitute());
     }
 
     @Override
-    public String generateChangeMus() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getMfiComment());
-        list.add(model.getSetMFi());
-        list.add(model.getMFiMatrix());
-        list.add(model.getMachtfaktorenComment());
-        list.add(model.getFlattenMFiComment());
-        list.add(model.getSetFlattenMFi());
-        list.add(model.getSetChangeMu());
-        list.add(model.getMFexComment());
-        list.add(model.getSetMFex());
-
-        return writeList(list);
+    public void generateChangeMus() {
+        elements.add(model.getMfiComment());
+        elements.add(model.getSetMFi());
+        elements.add(model.getMFiMatrix());
+        elements.add(model.getMachtfaktorenComment());
+        elements.add(model.getFlattenMFiComment());
+        elements.add(model.getSetFlattenMFi());
+        elements.add(model.getSetChangeMu());
+        elements.add(model.getMFexComment());
+        elements.add(model.getSetMFex());
     }
 
     @Override
-    public String generateTransformVariables() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getLambdaFComment());
-        list.add(model.getSetLambdaF());
-        list.add(model.getLinebreak());
-        list.add(model.getDiffvarxComment());
-        list.add(model.getSetDiffVarX());
-        list.add(model.getSetAlgVarXX());
-        list.add(model.getSetVarXXX());
-
-        return writeList(list);
+    public void generateTransformVariables() {
+        elements.add(model.getLambdaFComment());
+        elements.add(model.getSetLambdaF());
+        elements.add(model.getLinebreak());
+        elements.add(model.getDiffvarxComment());
+        elements.add(model.getSetDiffVarX());
+        elements.add(model.getSetAlgVarXX());
+        elements.add(model.getSetVarXXX());
     }
 
     @Override
-    public String generateIndexedVariables() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getSetChangeDiffaX());
-        list.add(model.getSetChangeDiffXa());
-        list.add(model.getSetChangeAlgbXX());
-        list.add(model.getSetChangeAlgXXb());
-
-        return writeList(list);
+    public void generateIndexedVariables() {
+        elements.add(model.getSetChangeDiffaX());
+        elements.add(model.getSetChangeDiffXa());
+        elements.add(model.getSetChangeAlgbXX());
+        elements.add(model.getSetChangeAlgXXb());
     }
 
     @Override
-    public String generateSubstituteVariables() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getSetDelayedDefAlgVarSubstituteXXX());
-        list.add(model.getSetDelayedDefUVarSubstituteXXX());
-        list.add(model.getSetDelayedDefZVarSubstituteXXX());
-
-        return writeList(list);
+    public void generateSubstituteVariables() {
+        elements.add(model.getSetDelayedDefAlgVarSubstituteXXX());
+        elements.add(model.getSetDelayedDefUVarSubstituteXXX());
+        elements.add(model.getSetDelayedDefZVarSubstituteXXX());
     }
 
     @Override
-    public String generateSubstituteFunctions() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.addAll(model.getParameterListDefUVarSubstituteXXX());
-        list.addAll(model.getParameterListDefZVarSubstituteXXX());
-
-        return writeList(list);
+    public void generateSubstituteFunctions() {
+        elements.addAll(model.getParameterListDefUVarSubstituteXXX());
+        elements.addAll(model.getParameterListDefZVarSubstituteXXX());
     }
 
     @Override
-    public String generateBehavioralEquation() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getSetDgldiffxxx());
-        list.add(model.getSetAglalgxxx());
-        list.add(model.getLinebreak());
-        list.add(model.getDglzxxxComment());
-        list.add(model.getSetDglzxxx());
-        list.add(model.getSetDglxxx());
-        list.add(model.getLinebreak());
-        list.add(model.getDglComment());
-        list.add(model.getSetDgl());
-
-        return writeList(list);
+    public void generateBehavioralEquation() {
+        elements.add(model.getSetDgldiffxxx());
+        elements.add(model.getSetAglalgxxx());
+        elements.add(model.getLinebreak());
+        elements.add(model.getDglzxxxComment());
+        elements.add(model.getSetDglzxxx());
+        elements.add(model.getSetDglxxx());
+        elements.add(model.getLinebreak());
+        elements.add(model.getDglComment());
+        elements.add(model.getSetDgl());
     }
 
     @Override
-    public String generateInitialConditions() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getInitComment());
-        list.add(model.getSetInit());
-
-        return writeList(list);
+    public void generateInitialConditions() {
+        elements.add(model.getInitComment());
+        elements.add(model.getSetInit());
     }
 
     @Override
-    public String generateSystemOfEquation() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getUglComment());
-        list.add(model.getSetUgl());
-        list.add(model.getGlComment());
-        list.add(model.getSetGl());
-        list.add(model.getGlvarComment());
-        list.add(model.getSetGlvar());
-        list.add(model.getGLComment());
-        list.add(model.getSetGL());
-        list.add(model.getAfterGl());
-
-        return writeList(list);
+    public void generateSystemOfEquation() {
+        elements.add(model.getUglComment());
+        elements.add(model.getSetUgl());
+        elements.add(model.getGlComment());
+        elements.add(model.getSetGl());
+        elements.add(model.getGlvarComment());
+        elements.add(model.getSetGlvar());
+        elements.add(model.getGLComment());
+        elements.add(model.getSetGL());
+        elements.add(model.getAfterGl());
     }
 
     @Override
-    public String generateManipulate() {
-        List<IExpression> list = new ArrayList<>();
-
-        list.add(model.getManipulate());
-
-        return writeList(list);
+    public void generateManipulate() {
+        elements.add(model.getManipulate());
     }
 
     @Override
-    public String generatePlot(String plotName, String plotStyleName, List<String> plotVariables, List<String> legendNames) {
-        HTMLBuilder builder = new HTMLBuilder();
-        return builder.toString();
+    public void generatePlot(String plotName, String plotStyleName, List<String> plotVariables, List<String> legendNames) {
+        // TODO impl. me
     }
 
     private String writeList(List<IExpression> list) {
-        HTMLBuilder builder = new HTMLBuilder();
         writeToBuilder(builder, list, true);
         return builder.toString();
     }

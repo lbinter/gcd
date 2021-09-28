@@ -19,9 +19,9 @@ public class GCDModel extends GCDBaseModel {
     private ObservableList<GCDPlot> plots = FXCollections.observableArrayList();
 
     private File file;
-    private File fileMathematicaNDSolve;
-    private File fileMathematicaModelica;
-    private File fileMathematicaControl;
+    private File mathematicaNDSolveFile;
+    private File mathematicaModelicaFile;
+    private File mathematicaControlFile;
     private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean clearGlobal = true;
@@ -307,30 +307,6 @@ public class GCDModel extends GCDBaseModel {
         return true;
     }
 
-    public File getFileMathematicaNDSolve() {
-        return fileMathematicaNDSolve;
-    }
-
-    public void setFileMathematicaNDSolve(File fileMathematicaNDSolve) {
-        this.fileMathematicaNDSolve = fileMathematicaNDSolve;
-    }
-
-    public File getFileMathematicaModelica() {
-        return fileMathematicaModelica;
-    }
-
-    public void setFileMathematicaModelica(File fileMathematicaModelica) {
-        this.fileMathematicaModelica = fileMathematicaModelica;
-    }
-
-    public File getFileMathematicaControl() {
-        return fileMathematicaControl;
-    }
-
-    public void setFileMathematicaControl(File fileMathematicaControl) {
-        this.fileMathematicaControl = fileMathematicaControl;
-    }
-
     public void setClearGlobal(boolean clearGlobal) {
         this.clearGlobal = clearGlobal;
     }
@@ -416,6 +392,83 @@ public class GCDModel extends GCDBaseModel {
 
     public File getFile() {
         return file;
+    }
+
+    public String getFilePath() {
+        if (file == null) return "";
+        return file.getAbsolutePath();
+    }
+
+    public File getMathematicaNDSolveFile() {
+        if (mathematicaNDSolveFile == null && file != null) {
+            return new File(file.getParentFile(), getDefaultNDSolveFileName());
+        }
+        return mathematicaNDSolveFile;
+    }
+
+    public String getFileMathematicaNDSolvePath() {
+        File f = getMathematicaNDSolveFile();
+        if (f == null) return "";
+        return f.getAbsolutePath();
+    }
+
+    public String getDefaultNDSolveFileName() {
+        if (file != null) {
+            return file.getName().replace(".gcd", ".ndsolve.nb");
+        }
+        return ".ndsolve.nb";
+    }
+
+    public void setMathematicaNDSolveFile(File mathematicaNDSolveFile) {
+        this.mathematicaNDSolveFile = mathematicaNDSolveFile;
+    }
+
+    public File getMathematicaModelicaFile() {
+        if (mathematicaModelicaFile == null && file != null) {
+            return new File(file.getParentFile(), getDefaultModelicaFileName());
+        }
+        return mathematicaModelicaFile;
+    }
+
+    public String getFileMathematicaModelicaPath() {
+        File f = getMathematicaModelicaFile();
+        if (f == null) return "";
+        return f.getAbsolutePath();
+    }
+
+    public String getDefaultModelicaFileName() {
+        if (file != null) {
+            return file.getName().replace(".gcd", ".modelica.nb");
+        }
+        return ".modelica.nb";
+    }
+
+    public void setMathematicaModelicaFile(File mathematicaModelicaFile) {
+        this.mathematicaModelicaFile = mathematicaModelicaFile;
+    }
+
+    public File getMathematicaControlFile() {
+        if (mathematicaControlFile == null && file != null) {
+            return new File(file.getParentFile(), getDefaultControlFileName());
+        }
+        return mathematicaControlFile;
+    }
+
+    public String getFileMathematicaControlPath() {
+        File f = getMathematicaControlFile();
+        if (f == null) return "";
+        return f.getAbsolutePath();
+    }
+
+    public String getDefaultControlFileName() {
+        if (file != null) {
+            return file.getName().replace(".gcd", ".control.nb");
+        }
+        return ".control.nb";
+    }
+
+    public void setMathematicaControlFile(File mathematicaControlFile) {
+        this.mathematicaControlFile = mathematicaControlFile;
     }
 
     public boolean isSavedToFile() {

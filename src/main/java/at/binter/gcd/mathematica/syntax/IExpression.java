@@ -6,4 +6,6 @@ public interface IExpression extends HTMLWrapper {
     String getCssClass();
 
     String getExpression();
+
+    String getMathematicaExpression();
 }

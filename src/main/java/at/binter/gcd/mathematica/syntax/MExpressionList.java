@@ -74,4 +74,10 @@ public class MExpressionList extends MBase implements IExpression {
             }
         }
     }
+
+    @Override
+    public String getMathematicaExpression() {
+        // TODO implement me
+        return "";
+    }
 }

@@ -53,6 +53,7 @@ javafx {
 }
 
 dependencies {
+    implementation files('C:/Program Files/Wolfram Research/Mathematica/12.1/SystemFiles/Links/JLink/JLink.jar');
     implementation 'org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0'
     //implementation 'org.controlsfx:controlsfx:11.1.0'
 

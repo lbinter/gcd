@@ -4,6 +4,7 @@ import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -130,5 +131,29 @@ public abstract class MFunction extends MBase implements IExpression {
             builder.decreaseIndent(4);
         }
         builder.write("]");
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        RowBox box = new RowBox();
+        box.addExpressions(new MExpression(getFunction()));
+        box.addExpressions(new MExpression("\"[\""));
+        Iterator<IExpression> it = getParameters().iterator();
+        boolean addDelimiter = false;
+        while (it.hasNext()) {
+            IExpression expression = it.next();
+            if (addDelimiter) {
+                box.addExpressions(new MExpression("\",\""));
+            }
+            if (linebreak == expression) {
+                box.addExpressions(new MExpression(","));
+                box.addExpressions(new MExpression("\"\\[IndentingNewLine]\""));
+            } else {
+                box.addExpressions(expression);
+                addDelimiter = true;
+            }
+        }
+        box.addExpressions(new MExpression("\"]\""));
+        return box.getMathematicaExpression();
     }
 }

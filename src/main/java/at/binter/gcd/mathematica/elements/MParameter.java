@@ -95,4 +95,10 @@ public class MParameter extends MBase implements IExpression {
     public String getExpression() {
         return toHTML();
     }
+
+    @Override
+    public String getMathematicaExpression() {
+        // TODO implement me
+        return "";
+    }
 }

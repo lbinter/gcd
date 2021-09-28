@@ -20,4 +20,9 @@ public class MVariable extends MExpression {
     public void toHTML(HTMLBuilder builder) {
         super.toHTML(builder);
     }
+
+    @Override
+    public String getMathematicaExpression() {
+        return "\"" + super.getMathematicaExpression() + "\"";
+    }
 }

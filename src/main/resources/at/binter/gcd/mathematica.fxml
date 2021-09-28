@@ -1,15 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
          prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/16"
          xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.binter.gcd.controller.MathematicaController">
     <tabs>
-        <Tab text="%mathematica.window.title">
+        <Tab text="%mathematica.settings.title">
             <content>
-                <WebView fx:id="mathematicaCode" prefHeight="200.0" prefWidth="200.0"/>
+                <VBox>
+                    <children>
+                        <HBox>
+                            <children>
+                                <GridPane>
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="120.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="95.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="95.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints vgrow="SOMETIMES"/>
+                                        <RowConstraints vgrow="SOMETIMES"/>
+                                        <RowConstraints vgrow="SOMETIMES"/>
+                                        <RowConstraints vgrow="SOMETIMES"/>
+                                        <RowConstraints vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <Label text="%mathematica.settings.gcd.file">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label text="%mathematica.settings.nb.ndsolve.file" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label text="%mathematica.settings.nb.control.file" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <TextField fx:id="gcdFilePath" editable="false" GridPane.columnIndex="1"
+                                                   GridPane.columnSpan="3">
+                                            <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <TextField fx:id="ndsolveFilePath" editable="false" minWidth="270.0"
+                                                   GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <TextField fx:id="controlFilePath" editable="false" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Button mnemonicParsing="false" onAction="#chooseNDSolveFile"
+                                                text="%mathematica.settings.nb.ndsolve.file.set"
+                                                GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#chooseControlFile"
+                                                text="%mathematica.settings.nb.control.file.set"
+                                                GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#generateNDSolveFile"
+                                                text="%mathematica.settings.nb.ndsolve.file.generate"
+                                                GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#generateControlFile"
+                                                text="%mathematica.settings.nb.control.file.generate"
+                                                GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Label text="%mathematica.settings.nb.modelica.file" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Label>
+                                        <TextField fx:id="modelicaFilePath" editable="false" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
+                                        <Button mnemonicParsing="false" onAction="#chooseModelicaFile"
+                                                text="%mathematica.settings.nb.modelica.file.set"
+                                                GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#generateModelicaFile"
+                                                text="%mathematica.settings.nb.modelica.file.generate"
+                                                GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="5.0" right="5.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                        <Button mnemonicParsing="false" onAction="#generateAllNBFiles"
+                                                text="%mathematica.settings.generate.all" GridPane.columnSpan="4"
+                                                GridPane.halignment="CENTER" GridPane.rowIndex="4"
+                                                GridPane.valignment="CENTER">
+                                            <GridPane.margin>
+                                                <Insets top="10.0"/>
+                                            </GridPane.margin>
+                                        </Button>
+                                    </children>
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </GridPane>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets top="5.0"/>
+                    </padding>
+                </VBox>
+            </content>
+        </Tab>
+        <Tab text="%mathematica.web.view.title">
+            <content>
+                <WebView fx:id="mathematicaCode" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+                         prefWidth="200.0"/>
             </content>
         </Tab>
     </tabs>

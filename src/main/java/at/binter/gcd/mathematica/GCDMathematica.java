@@ -9,6 +9,12 @@ import at.binter.gcd.model.elements.Variable;
 import java.util.List;
 
 public interface GCDMathematica {
+    GCDMode getGCDMode(GCDMode mode);
+
+    String toString();
+
+    void writeToFile();
+
     /**
      * <pre>
      *     (* Erstellt am &lt;Date&gt; *)
@@ -27,10 +33,8 @@ public interface GCDMathematica {
      *     {@link #generateInitialConditions()}
      *     {@link #generateSystemOfEquation()}
      * </pre>
-     *
-     * @return
      */
-    String generate();
+    void generate();
 
     /**
      * Block 1:
@@ -40,10 +44,8 @@ public interface GCDMathematica {
      *          &lt;List of directives&gt;
      *     };
      * </pre>
-     *
-     * @return
      */
-    String generatePlotStyles();
+    void generatePlotStyles();
 
     /**
      * Block 1:
@@ -58,10 +60,8 @@ public interface GCDMathematica {
      *     var = Join[diffvar, algvar]
      *     nvar = Length[var]
      * </pre>
-     *
-     * @return
      */
-    String generateVariableDefinition();
+    void generateVariableDefinition();
 
     /**
      * Block 2:
@@ -70,10 +70,8 @@ public interface GCDMathematica {
      *     AG = {<i>&lt;List of {@link Agent#getName()}&gt;</i>}
      *     nAG = Length[AG]
      * </pre>
-     *
-     * @return
      */
-    String generateAgentDefinition();
+    void generateAgentDefinition();
 
     /**
      * Block 4:
@@ -109,10 +107,8 @@ public interface GCDMathematica {
      *     <i>&lt;for each {@link Agent}&gt;</i>
      *     defuvarsubstitute[<i>&lt;{@link Agent#getName()}&gt;</i>, t, var]
      * </pre>
-     *
-     * @return
      */
-    String generateSubstitutes();
+    void generateSubstitutes();
 
     /**
      * Block 3:
@@ -133,10 +129,8 @@ public interface GCDMathematica {
      *     <i>&lt;for each {@link Constraint}&gt;</i>
      *     defzvarsubstitute[<i>&lt;{@link Constraint#getId()} ()}&gt;</i>, t, var]
      * </pre>
-     *
-     * @return
      */
-    String generateConstraintDefinition();
+    void generateConstraintDefinition();
 
     /**
      * Block 5
@@ -158,10 +152,8 @@ public interface GCDMathematica {
      *     (* Machtfaktoren als nichtindizierte Variable *)
      *     MFex = flattenMFi /. change&mu;
      * </pre>
-     *
-     * @return
      */
-    String generateChangeMus();
+    void generateChangeMus();
 
     /**
      * Block 6:
@@ -179,10 +171,8 @@ public interface GCDMathematica {
      *     algvarxx = Array[Subscript[xx, #] &, {nalgvar}];
      *     varxxx = Join[diffvarx, algvarxx]
      * </pre>
-     *
-     * @return
      */
-    String generateTransformVariables();
+    void generateTransformVariables();
 
     /**
      * Block 7:
@@ -209,10 +199,8 @@ public interface GCDMathematica {
      *         Subscript[xx, <i>&lt;index&gt;</i>] -> <i>&lt;{@link AlgebraicVariable#getName()}&gt;</i>
      *     }
      * </pre>
-     *
-     * @return
      */
-    String generateIndexedVariables();
+    void generateIndexedVariables();
 
     /**
      * Block 8:
@@ -221,10 +209,8 @@ public interface GCDMathematica {
      *     defuvarsubstitutexxx[j_, t_, varxxx_] := defuvarsubstitute[j, t, var] /. changediffax /. changealgbxx;
      *     defzvarsubstitutexxx[q_, t_, varxxx_] := defzvarsubstitute[q, t, var] /. changediffax /. changealgbxx;
      * </pre>
-     *
-     * @return
      */
-    String generateSubstituteVariables();
+    void generateSubstituteVariables();
 
     /**
      * Block 9:
@@ -235,10 +221,8 @@ public interface GCDMathematica {
      *     <i>&lt;for each {@link Constraint}&gt;</i>
      *     defzvarsubstitutexxx[<i>&lt;{@link Constraint#getId()} ()}&gt;</i>, t, varxxx]
      * </pre>
-     *
-     * @return
      */
-    String generateSubstituteFunctions();
+    void generateSubstituteFunctions();
 
     /**
      * Block 10:
@@ -270,10 +254,8 @@ public interface GCDMathematica {
      *     (* Verhaltensgleichungen für allgemeines GCD Modell mit indizierten Variablen x *)
      *     dgldiffxxx = Table[Subscript[x, i]'[t] ==
      * </pre>
-     *
-     * @return
      */
-    String generateBehavioralEquation();
+    void generateBehavioralEquation();
 
     /**
      * Block 11:
@@ -283,10 +265,8 @@ public interface GCDMathematica {
      *         <i>&lt;{@link Variable#getName()}&gt;</i>[0] == <i>&lt;{@link Variable#getInitialCondition()}&gt;</i>
      *     }
      * </pre>
-     *
-     * @return
      */
-    String generateInitialConditions();
+    void generateInitialConditions();
 
     /**
      * Block 12:
@@ -314,10 +294,8 @@ public interface GCDMathematica {
      *      *     man nur "GL" in NDSolve schreibt, das kann Manipulate nicht
      *      *     verarbeiten). Dann das Lösungsprogramm gesondert gestartet werden *)
      * </pre>
-     *
-     * @return
      */
-    String generateSystemOfEquation();
+    void generateSystemOfEquation();
 
     /**
      * <pre>
@@ -330,10 +308,8 @@ public interface GCDMathematica {
      *     &lt;List of parameter initialization&gt;,
      *     {{tmax, 30}, 0, 100}, {{plotmax, 2.5}, 0, 20}]
      * </pre>
-     *
-     * @return
      */
-    String generateManipulate();
+    void generateManipulate();
 
     /**
      * <pre>
@@ -345,8 +321,6 @@ public interface GCDMathematica {
      *          LegendLabel -> "&lt;plot name&gt;"]
      *     ]
      * </pre>
-     *
-     * @return
      */
-    String generatePlot(String plotName, String plotStyleName, List<String> plotVariables, List<String> legendNames);
+    void generatePlot(String plotName, String plotStyleName, List<String> plotVariables, List<String> legendNames);
 }
