@@ -48,7 +48,7 @@ public class GCDWriterHTML implements GCDMathematica {
     public void generate() {
         elements.clear();
         builder = new HTMLBuilder();
-        builder.comment("Erstellt am: " + new Date().toString());
+        builder.comment("Erstellt am: " + new Date());
         builder.linebreak();
         if (gcdModel.isClearGlobal()) {
             builder.writeln("ClearAll[\"Global`*\"]");

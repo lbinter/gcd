@@ -73,9 +73,12 @@ public abstract class MBinaryOperator extends MBase implements IExpression {
     @Override
     public String getMathematicaExpression() {
         RowBox box = new RowBox();
-        box.addExpressions(new MExpression(expr1.getMathematicaExpression()));
-        box.addExpressions(new MExpression("\"" + getSymbolKeyboard() + "\""));
-        box.addExpressions(new MExpression(expr2.getMathematicaExpression()));
+        box.add(new MExpression(expr1.getMathematicaExpression()));
+        box.add(new MExpression("\"" + getSymbolKeyboard() + "\""));
+        box.add(new MExpression(expr2.getMathematicaExpression()));
+        if (isAddSemicolon()) {
+            box.add(new MExpression("\";\""));
+        }
         return box.getMathematicaExpression();
     }
 }

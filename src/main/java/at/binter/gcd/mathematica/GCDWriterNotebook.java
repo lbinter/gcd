@@ -1,9 +1,9 @@
 package at.binter.gcd.mathematica;
 
 import at.binter.gcd.mathematica.syntax.*;
+import at.binter.gcd.mathematica.syntax.function.MClearAll;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.MathematicaModel;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static at.binter.gcd.util.MathematicaUtils.transformToFullForm;
-
 public class GCDWriterNotebook implements GCDMathematica {
     private static final Logger log = LoggerFactory.getLogger(GCDWriterNotebook.class);
     private final GCDModel gcdModel;
@@ -23,6 +21,7 @@ public class GCDWriterNotebook implements GCDMathematica {
     private final OutputStreamWriter writer;
     private final MathematicaModel model;
     private final List<IExpression> elements = new ArrayList<>();
+    private Notebook nb;
 
     public GCDWriterNotebook(GCDModel gcdModel, GCDMode mode) {
         this.gcdModel = gcdModel;
@@ -52,10 +51,8 @@ public class GCDWriterNotebook implements GCDMathematica {
     public void writeToFile() {
         log.info("Generating {}", outputFile.getAbsolutePath());
         try {
-            writer.write("Notebook[{\r\n");
             generate();
-            writeElements();
-            writer.write("}]");
+            writeNotebook();
             writer.flush();
             writer.close();
             log.info("file output stream closed");
@@ -67,7 +64,22 @@ public class GCDWriterNotebook implements GCDMathematica {
     @Override
     public void generate() {
         elements.clear();
+        nb = new Notebook();
+        nb.add(new Cell(new RowBox(new MClearAll("\"\\\"\\<Global`*\\>\\\"\""))));
+        //generatePlotStyles(); TODO fix me
         generateVariableDefinition();
+        generateAgentDefinition();
+        generateSubstitutes();
+        generateConstraintDefinition();
+        generateChangeMus();
+        generateTransformVariables();
+        generateIndexedVariables();
+        generateSubstituteVariables();
+        generateSubstituteFunctions();
+        generateBehavioralEquation();
+        generateInitialConditions();
+        generateSystemOfEquation();
+        generateManipulate();
     }
 
     @Override
@@ -77,24 +89,15 @@ public class GCDWriterNotebook implements GCDMathematica {
     @Override
     public void generateVariableDefinition() {
 
-        RowBox diffVarComment = new RowBox(model.getDiffvarComment());
-        RowBox diffVar = new RowBox(model.getSetDiffVar());
-        RowBox nDiffVar = new RowBox(model.getSetnDiffVar());
-        RowBox algVarComment = new RowBox(model.getAlgvarComment());
-        RowBox algVar = new RowBox(model.getSetAlgVar());
-        RowBox nAlgVar = new RowBox(model.getSetnAlgVar());
-        RowBox varComment = new RowBox(model.getVarComment());
-        RowBox var = new RowBox(model.getSetVar());
-        RowBox nVar = new RowBox(model.getSetnVar());
-        diffVarComment.setDoLinebreaks(true);
-        diffVar.setDoLinebreaks(true);
-        nDiffVar.setDoLinebreaks(true);
-        algVarComment.setDoLinebreaks(true);
-        algVar.setDoLinebreaks(true);
-        nAlgVar.setDoLinebreaks(true);
-        varComment.setDoLinebreaks(true);
-        var.setDoLinebreaks(true);
-        nVar.setDoLinebreaks(true);
+        RowBox diffVarComment = new RowBox(true, model.getDiffvarComment());
+        RowBox diffVar = new RowBox(true, model.getSetDiffVar());
+        RowBox nDiffVar = new RowBox(true, model.getSetnDiffVar());
+        RowBox algVarComment = new RowBox(true, model.getAlgvarComment());
+        RowBox algVar = new RowBox(true, model.getSetAlgVar());
+        RowBox nAlgVar = new RowBox(true, model.getSetnAlgVar());
+        RowBox varComment = new RowBox(true, model.getVarComment());
+        RowBox var = new RowBox(true, model.getSetVar());
+        RowBox nVar = new RowBox(true, model.getSetnVar());
 
         RowBox inner = new RowBox(
                 diffVarComment, diffVar, nDiffVar,
@@ -102,7 +105,7 @@ public class GCDWriterNotebook implements GCDMathematica {
                 varComment, var, nVar
         );
 
-        elements.add(new Cell(new BoxData(inner)));
+        nb.add(new Cell(new BoxData(inner)));
     }
 
     @Override
@@ -110,14 +113,18 @@ public class GCDWriterNotebook implements GCDMathematica {
         elements.add(model.getAGComment());
         elements.add(model.getSetAG());
         elements.add(model.getSetnAG());
+
+        RowBox agComment = new RowBox(true, model.getAGComment());
+        RowBox ag = new RowBox(true, model.getSetAG());
+        RowBox nAg = new RowBox(true, model.getSetnAG());
+
+        RowBox inner = new RowBox(agComment, ag, nAg);
+
+        nb.add(new Cell(new BoxData(inner)));
     }
 
     @Override
     public void generateSubstitutes() {
-        elements.add(model.getSubstituteComment());
-        elements.add(model.getSetSubstitute());
-        elements.addAll(model.getSetDelayedDefalgvar());
-        elements.addAll(model.getSetDelayedDefAlgVarSubstitute());
         elements.addAll(model.getParameterListDefAlgVar());
         elements.addAll(model.getParameterListDefAlgVarSubstitute());
         elements.add(model.getLinebreak());
@@ -126,6 +133,15 @@ public class GCDWriterNotebook implements GCDMathematica {
         elements.addAll(model.getSetDelayedDefuVarSubstitute());
         elements.addAll(model.getParameterListDefuVar());
         elements.addAll(model.getParameterListDefuVarSubstitute());
+
+        RowBox inner = new RowBox();
+
+        inner.add(new RowBox(true, model.getSubstituteComment()));
+        inner.add(new RowBox(true, model.getRowBoxSetSubstitute()));
+        inner.add(model.getRowBoxDefalgvar());
+        inner.add(model.getRowBoxDefAlgVarSubstitute());
+
+        nb.add(new Cell(new BoxData(inner)));
     }
 
     @Override
@@ -225,30 +241,12 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     }
 
-    private String writeList(List<IExpression> list) {
-        StringBuilder b = new StringBuilder();
-        for (IExpression expr : list) {
-            try {
-                String e;
-                if (expr instanceof MComment) {
-                    e = expr.getMathematicaExpression();
-                } else {
-                    e = transformToFullForm(expr.getMathematicaExpression(), true);
-                }
-                b.append(e);
-                if (StringUtils.isBlank(e)) {
-                    continue;
-                }
-                if (log.isTraceEnabled()) {
-                    log.trace(e);
-                }
-                writer.write(e);
-                writer.write("\r\n");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+    private void writeNotebook() {
+        try {
+            writer.write(nb.getMathematicaExpression());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return b.toString();
     }
 
     private void writeElements() {
@@ -258,7 +256,7 @@ public class GCDWriterNotebook implements GCDMathematica {
             try {
                 writer.write(expr.getMathematicaExpression());
                 if (it.hasNext()) {
-                    writer.write(", \"\\[IndentingNewLine]\"\r\n");
+                    writer.write(", \r\n");
                 }
             } catch (IOException e) {
                 log.error("could not write {}", expr.getMathematicaExpression(), e);

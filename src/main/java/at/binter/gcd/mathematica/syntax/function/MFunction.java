@@ -136,24 +136,24 @@ public abstract class MFunction extends MBase implements IExpression {
     @Override
     public String getMathematicaExpression() {
         RowBox box = new RowBox();
-        box.addExpressions(new MExpression(getFunction()));
-        box.addExpressions(new MExpression("\"[\""));
+        box.add(new MExpression(getFunction()));
+        box.add(new MExpression("\"[\""));
         Iterator<IExpression> it = getParameters().iterator();
         boolean addDelimiter = false;
         while (it.hasNext()) {
             IExpression expression = it.next();
             if (addDelimiter) {
-                box.addExpressions(new MExpression("\",\""));
+                box.add(new MExpression("\",\""));
             }
             if (linebreak == expression) {
-                box.addExpressions(new MExpression(","));
-                box.addExpressions(new MExpression("\"\\[IndentingNewLine]\""));
+                box.add(new MExpression(","));
+                box.add(new MExpression("\"\\[IndentingNewLine]\""));
             } else {
-                box.addExpressions(expression);
+                box.add(expression);
                 addDelimiter = true;
             }
         }
-        box.addExpressions(new MExpression("\"]\""));
+        box.add(new MExpression("\"]\""));
         return box.getMathematicaExpression();
     }
 }

@@ -2,12 +2,13 @@ package at.binter.gcd.mathematica.syntax;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.mathematica.syntax.function.MFunction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static at.binter.gcd.util.MathematicaUtils.linebreak;
+import static at.binter.gcd.util.MathematicaUtils.linebreakString;
 
 public class RowBox extends MBase implements IExpression {
     private final List<IExpression> expressions = new ArrayList<>();
@@ -16,14 +17,30 @@ public class RowBox extends MBase implements IExpression {
     }
 
     public RowBox(IExpression... expressions) {
-        addExpressions(expressions);
+        add(expressions);
     }
 
-    public void addExpressions(IExpression... expressions) {
+    public RowBox(boolean doLinebreakAfter, IExpression... expressions) {
+        this(expressions);
+        setDoLinebreakAfter(doLinebreakAfter);
+    }
+
+    public RowBox(boolean doLinebreakAfter, boolean doLinebreaks, IExpression... expressions) {
+        this(doLinebreakAfter, expressions);
+        setDoLinebreaks(doLinebreaks);
+    }
+
+    public void add(IExpression... expressions) {
         for (IExpression expr : expressions) {
             if (expr != null) {
                 this.expressions.add(expr);
             }
+        }
+    }
+
+    public void add(List<RowBox> list) {
+        for (RowBox box : list) {
+            add(box);
         }
     }
 
@@ -47,16 +64,27 @@ public class RowBox extends MBase implements IExpression {
         StringBuilder b = new StringBuilder();
         b.append("RowBox[{");
         Iterator<IExpression> it = expressions.iterator();
+        boolean appendDelimiter = false;
         while (it.hasNext()) {
             IExpression box = it.next();
-            b.append(box.getMathematicaExpression());
-            if (it.hasNext()) {
-                b.append(", ");
+            if (box == MFunction.linebreak) {
+                if (appendDelimiter) {
+                    b.append(",");
+                }
+                b.append(linebreakString);
+                appendDelimiter = true;
+                continue;
             }
+            if (appendDelimiter) {
+                b.append(",");
+            }
+            b.append(box.getMathematicaExpression());
+            appendDelimiter = true;
         }
         b.append("}]");
-        if (isDoLinebreaks()) {
-            b.append(linebreak);
+        if (isDoLinebreakAfter()) {
+            b.append(",");
+            b.append(linebreakString);
         }
         return b.toString();
     }

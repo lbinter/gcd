@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static at.binter.gcd.mathematica.syntax.function.MFunction.linebreak;
+
 public class MList extends MGroup implements IExpression {
     public static final String symbolSpecial = "List";
     public static final String groupStartSymbol = "{";
@@ -132,18 +134,33 @@ public class MList extends MGroup implements IExpression {
         RowBox inner = new RowBox();
 
         Iterator<IExpression> it = elements.iterator();
+        int count = 0;
+        boolean addLineBreaks = elementsLinebreak != -1;
         while (it.hasNext()) {
-            IExpression element = it.next();
-            inner.addExpressions(new MExpression("\"" + element.getMathematicaExpression() + "\""));
-            if (it.hasNext()) {
-                inner.addExpressions(new MExpression("\",\""));
+            if (addLineBreaks) {
+                if (count % elementsLinebreak == 0) {
+                    inner.add(linebreak);
+                }
+                if (count == elementsBlock) {
+                    inner.add(linebreak);
+                    inner.add(linebreak);
+                    count = 0;
+                }
             }
+            IExpression element = it.next();
+            inner.add(new MExpression(element.getMathematicaExpression()));
+            if (it.hasNext()) {
+                inner.add(new MExpression("\",\""));
+            } else if (addLineBreaks) {
+                inner.add(linebreak);
+            }
+            count++;
         }
 
         RowBox outer = new RowBox();
-        outer.addExpressions(new MExpression("\"" + getGroupStartSymbol() + "\""));
-        outer.addExpressions(inner);
-        outer.addExpressions(new MExpression("\"" + getGroupCloseSymbol() + "\""));
+        outer.add(new MExpression("\"" + getGroupStartSymbol() + "\""));
+        outer.add(inner);
+        outer.add(new MExpression("\"" + getGroupCloseSymbol() + "\""));
 
         return outer.getMathematicaExpression();
     }

@@ -1,6 +1,7 @@
 package at.binter.gcd.mathematica;
 
 public abstract class MBase implements HTMLWrapper {
+    private boolean doLinebreakAfter = false;
     private boolean doLinebreaks = false;
     private boolean addSemicolon = false;
 
@@ -10,6 +11,14 @@ public abstract class MBase implements HTMLWrapper {
 
     public void setDoLinebreaks(boolean doLinebreaks) {
         this.doLinebreaks = doLinebreaks;
+    }
+
+    public boolean isDoLinebreakAfter() {
+        return doLinebreakAfter;
+    }
+
+    public void setDoLinebreakAfter(boolean doLinebreakAfter) {
+        this.doLinebreakAfter = doLinebreakAfter;
     }
 
     public boolean isAddSemicolon() {

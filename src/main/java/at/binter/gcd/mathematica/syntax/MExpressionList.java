@@ -77,7 +77,14 @@ public class MExpressionList extends MBase implements IExpression {
 
     @Override
     public String getMathematicaExpression() {
-        // TODO implement me
-        return "";
+        RowBox inner = new RowBox();
+        Iterator<IExpression> it = expressions.iterator();
+        while (it.hasNext()) {
+            inner.add(new MExpression(it.next().getMathematicaExpression()));
+            if (delimiter != null && it.hasNext()) {
+                // TODO ?
+            }
+        }
+        return inner.getMathematicaExpression();
     }
 }

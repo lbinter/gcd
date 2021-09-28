@@ -2,16 +2,14 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.mathematica.elements.MParameter;
 import at.binter.gcd.mathematica.elements.MVariable;
-import at.binter.gcd.mathematica.syntax.IExpression;
-import at.binter.gcd.mathematica.syntax.MComment;
-import at.binter.gcd.mathematica.syntax.MExpression;
-import at.binter.gcd.mathematica.syntax.MExpressionList;
+import at.binter.gcd.mathematica.syntax.*;
 import at.binter.gcd.mathematica.syntax.binary.*;
 import at.binter.gcd.mathematica.syntax.function.*;
 import at.binter.gcd.mathematica.syntax.group.MList;
 import at.binter.gcd.mathematica.syntax.group.MParentheses;
 import at.binter.gcd.mathematica.syntax.unary.MReplaceAll;
 import at.binter.gcd.model.elements.*;
+import at.binter.gcd.util.MathematicaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +20,7 @@ import java.util.List;
 public class MathematicaModel {
     private static final Logger log = LoggerFactory.getLogger(MathematicaModel.class);
     private final GCDModel model;
+    private final MathematicaUtils utils = new MathematicaUtils();
 
     public MathematicaModel(GCDModel model) {
         this.model = model;
@@ -282,11 +281,20 @@ public class MathematicaModel {
         for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
             MExpressionList l = new MExpressionList();
             l.add(new MParameter(aV.getName(), aV.getParameter()));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MExpression(aV.getFunction()));
             list.add(l);
         }
         return new MSet(substitute, list, true);
+    }
+
+    public RowBox getRowBoxSetSubstitute() {
+        MList list = new MList();
+        list.setElementsLinebreak(1);
+        for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
+            list.add(new MExpression(utils.transformToFullForm(aV.toStringRaw(), false)));
+        }
+        return new RowBox(true, new MSet(substitute, list, true));
     }
 
     public List<MSetDelayed> getSetDelayedDefalgvar() {
@@ -302,6 +310,14 @@ public class MathematicaModel {
                     true);
             list.add(delayed);
             ii++;
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxDefalgvar() {
+        List<RowBox> list = new ArrayList<>();
+        for (MSetDelayed s : getSetDelayedDefalgvar()) {
+            list.add(new RowBox(true, s));
         }
         return list;
     }
@@ -331,6 +347,14 @@ public class MathematicaModel {
                     ),
                     true);
             list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxDefAlgVarSubstitute() {
+        List<RowBox> list = new ArrayList<>();
+        for (MSetDelayed s : getSetDelayedDefAlgVarSubstitute()) {
+            list.add(new RowBox(true, s));
         }
         return list;
     }
@@ -512,7 +536,7 @@ public class MathematicaModel {
                     new MVariable(mu.getAgent().getName()),
                     new MExpression(mu.getIndex())
             ));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MVariable(mu.getIdentifier()));
             list.add(l);
         }
@@ -546,7 +570,7 @@ public class MathematicaModel {
         for (Variable v : model.getVariablesSorted()) {
             MExpressionList l = new MExpressionList();
             l.add(new MVariable(v.getName()));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MSubscript(variableX, new MExpression(count)));
             list.add(l);
             count++;
@@ -561,7 +585,7 @@ public class MathematicaModel {
         for (Variable v : model.getVariablesSorted()) {
             MExpressionList l = new MExpressionList();
             l.add(new MSubscript(variableX, new MExpression(count)));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MVariable(v.getName()));
             list.add(l);
             count++;
@@ -576,7 +600,7 @@ public class MathematicaModel {
         for (AlgebraicVariable v : model.getAlgebraicVariablesSorted()) {
             MExpressionList l = new MExpressionList();
             l.add(new MVariable(v.getName()));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MSubscript(variableXX, new MExpression(count)));
             list.add(l);
             count++;
@@ -591,7 +615,7 @@ public class MathematicaModel {
         for (AlgebraicVariable v : model.getAlgebraicVariablesSorted()) {
             MExpressionList l = new MExpressionList();
             l.add(new MSubscript(variableXX, new MExpression(count)));
-            l.add(new MExpression("&#8594;"));
+            l.add(new MArrow());
             l.add(new MVariable(v.getName()));
             list.add(l);
             count++;
@@ -799,15 +823,15 @@ public class MathematicaModel {
 
         MExpressionList conMethod = new MExpressionList();
         conMethod.add(new MExpression("\"ConstraintMethod\""));
-        conMethod.add(new MExpression("&#8594;"));
+        conMethod.add(new MArrow());
         conMethod.add(new MExpression("\"Projection\""));
         MExpressionList indexReductionList = new MExpressionList();
         indexReductionList.add(new MExpression("\"IndexReduction\""));
-        indexReductionList.add(new MExpression("&#8594;"));
+        indexReductionList.add(new MArrow());
         indexReductionList.add(new MList(new MExpression("True"), conMethod));
         MExpressionList methodList = new MExpressionList();
         methodList.add(new MExpression("Method"));
-        methodList.add(new MExpression("&#8594;"));
+        methodList.add(new MArrow());
         methodList.add(new MList(indexReductionList));
 
         MList glvarList = new MList();

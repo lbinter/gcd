@@ -78,18 +78,18 @@ public class MComment extends MExpression {
         while (it.hasNext()) {
             String[] split = it.next();
             for (int i = 0; i < split.length; i++) {
-                inner.addExpressions(new MExpression("\"" + split[i] + "\""));
+                inner.add(new MExpression("\"" + split[i].replace("\"", "\\\"") + "\""));
                 if (i + 1 < split.length) {
-                    inner.addExpressions(space);
+                    inner.add(space);
                 }
             }
             if (it.hasNext()) {
-                inner.addExpressions(linebreak);
+                inner.add(linebreak);
             }
         }
 
         RowBox outer = new RowBox();
-        outer.addExpressions(openComment, inner, closeComment);
+        outer.add(openComment, inner, closeComment);
         return outer.getMathematicaExpression();
     }
 }

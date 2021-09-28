@@ -4,6 +4,7 @@ import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -98,7 +99,22 @@ public class MParameter extends MBase implements IExpression {
 
     @Override
     public String getMathematicaExpression() {
-        // TODO implement me
-        return "";
+        RowBox inner = new RowBox();
+
+        Iterator<IExpression> it = parameter.iterator();
+        while (it.hasNext()) {
+            IExpression element = it.next();
+            inner.add(new MExpression("\"" + element.getMathematicaExpression() + "\""));
+            if (it.hasNext()) {
+                inner.add(new MExpression("\",\""));
+            }
+        }
+
+        RowBox outer = new RowBox();
+        outer.add(new MExpression(name.getMathematicaExpression()));
+        outer.add(new MExpression("\"[\""));
+        outer.add(inner);
+        outer.add(new MExpression("\"]\""));
+        return outer.getMathematicaExpression();
     }
 }
