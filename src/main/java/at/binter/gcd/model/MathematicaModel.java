@@ -26,6 +26,10 @@ public class MathematicaModel {
         this.model = model;
     }
 
+    public MathematicaUtils getUtils() {
+        return utils;
+    }
+
     public GCDModel getModel() {
         return model;
     }
@@ -314,14 +318,6 @@ public class MathematicaModel {
         return list;
     }
 
-    public List<RowBox> getRowBoxDefalgvar() {
-        List<RowBox> list = new ArrayList<>();
-        for (MSetDelayed s : getSetDelayedDefalgvar()) {
-            list.add(new RowBox(true, s));
-        }
-        return list;
-    }
-
     private MParameter getDefalgVar(int ii) {
         if (ii > model.getAlgebraicVariables().size()) {
             log.error("Called getDefalgvar with ii of {}", ii);
@@ -353,8 +349,8 @@ public class MathematicaModel {
 
     public List<RowBox> getRowBoxDefAlgVarSubstitute() {
         List<RowBox> list = new ArrayList<>();
-        for (MSetDelayed s : getSetDelayedDefAlgVarSubstitute()) {
-            list.add(new RowBox(true, s));
+        for (MSetDelayed setDelayed : getSetDelayedDefAlgVarSubstitute()) {
+            list.add(new RowBox(true, setDelayed));
         }
         return list;
     }
@@ -917,6 +913,14 @@ public class MathematicaModel {
         manipulate.addParameter(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
 
         return manipulate;
+    }
+
+    public static List<RowBox> convertToRowBoxList(List<MSetDelayed> setDelayedList) {
+        List<RowBox> list = new ArrayList<>();
+        for (MSetDelayed setDelayed : setDelayedList) {
+            list.add(new RowBox(true, setDelayed));
+        }
+        return list;
     }
 
     private MList getVariableConfig(IExpression name, IExpression startValue, IExpression minValue, IExpression maxValue) {

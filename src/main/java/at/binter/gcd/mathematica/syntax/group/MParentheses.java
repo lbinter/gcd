@@ -2,6 +2,8 @@ package at.binter.gcd.mathematica.syntax.group;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.syntax.IExpression;
+import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 
 public class MParentheses extends MGroup {
     public static final String groupStartSymbol = "(";
@@ -42,7 +44,10 @@ public class MParentheses extends MGroup {
 
     @Override
     public String getMathematicaExpression() {
-        // TODO implement me
-        return "";
+        RowBox outer = new RowBox();
+        outer.add(new MExpression("\"" + getGroupStartSymbol() + "\""));
+        outer.add(expr);
+        outer.add(new MExpression("\"" + getGroupCloseSymbol() + "\""));
+        return outer.getMathematicaExpression();
     }
 }

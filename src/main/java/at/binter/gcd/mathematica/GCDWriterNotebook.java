@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static at.binter.gcd.model.MathematicaModel.convertToRowBoxList;
+
 public class GCDWriterNotebook implements GCDMathematica {
     private static final Logger log = LoggerFactory.getLogger(GCDWriterNotebook.class);
     private final GCDModel gcdModel;
@@ -55,6 +57,7 @@ public class GCDWriterNotebook implements GCDMathematica {
             writeNotebook();
             writer.flush();
             writer.close();
+            model.getUtils().closeLink();
             log.info("file output stream closed");
         } catch (IOException e) {
             log.error("Could not generate file", e);
@@ -138,8 +141,8 @@ public class GCDWriterNotebook implements GCDMathematica {
 
         inner.add(new RowBox(true, model.getSubstituteComment()));
         inner.add(new RowBox(true, model.getRowBoxSetSubstitute()));
-        inner.add(model.getRowBoxDefalgvar());
-        inner.add(model.getRowBoxDefAlgVarSubstitute());
+        inner.add(convertToRowBoxList(model.getSetDelayedDefalgvar()));
+        inner.add(convertToRowBoxList(model.getSetDelayedDefAlgVarSubstitute()));
 
         nb.add(new Cell(new BoxData(inner)));
     }

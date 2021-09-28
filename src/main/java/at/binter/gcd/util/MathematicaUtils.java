@@ -27,6 +27,7 @@ public class MathematicaUtils {
             ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname 'C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe'");
             ml.discardAnswer();
             linkOpen = true;
+            log.info("Opened link to Mathematica Kernel");
         } catch (MathLinkException e) {
             throw new RuntimeException("Could not create MathLink", e);
         }
@@ -35,6 +36,7 @@ public class MathematicaUtils {
     public void closeLink() {
         ml.close();
         linkOpen = false;
+        log.info("Closed link to Mathematica Kernel");
     }
 
     public KernelLink getMl() {
