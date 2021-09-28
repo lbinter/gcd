@@ -2,9 +2,13 @@ package at.binter.gcd.mathematica.syntax.function;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.mathematica.elements.MVariable;
 import at.binter.gcd.mathematica.syntax.IExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static at.binter.gcd.mathematica.syntax.function.MFunction.linebreak;
 
 public class MIf extends MBase implements IExpression {
     private static final Logger log = LoggerFactory.getLogger(MIf.class);
@@ -142,7 +146,26 @@ public class MIf extends MBase implements IExpression {
 
     @Override
     public String getMathematicaExpression() {
-        // TODO implement me
-        return "";
+        RowBox inner = new RowBox();
+        inner.add(condition);
+        inner.add(new MVariable(","));
+        if (linebreakAfterCondition) {
+            inner.add(linebreak);
+        }
+        inner.add(expressionTrue);
+        if (expressionFalse != null) {
+            inner.add(new MVariable(","));
+            if (linebreakAfterTrue) {
+                inner.add(linebreak);
+            }
+            inner.add(expressionFalse);
+        }
+
+        RowBox outer = new RowBox();
+        outer.add(new MVariable("If"));
+        outer.add(new MVariable("["));
+        outer.add(inner);
+        outer.add(new MVariable("]"));
+        return outer.getMathematicaExpression();
     }
 }

@@ -2,6 +2,7 @@ package at.binter.gcd.mathematica.syntax.function;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.mathematica.elements.MVariable;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.mathematica.syntax.MExpression;
 import at.binter.gcd.mathematica.syntax.RowBox;
@@ -136,19 +137,29 @@ public abstract class MFunction extends MBase implements IExpression {
     @Override
     public String getMathematicaExpression() {
         RowBox box = new RowBox();
-        box.add(new MExpression(getFunction()));
+        if (this instanceof MQuietNDSolve) {
+            RowBox ndSolve = new RowBox();
+            ndSolve.add(new MVariable("Quiet"));
+            ndSolve.add(new MVariable("@"));
+            ndSolve.add(new MVariable("NDSolve"));
+            box.add(ndSolve);
+        } else {
+            box.add(new MExpression(getFunction()));
+        }
         box.add(new MExpression("\"[\""));
+        if (linebreakAfterFunction) {
+            box.add(linebreak);
+        }
         Iterator<IExpression> it = getParameters().iterator();
         boolean addDelimiter = false;
         while (it.hasNext()) {
             IExpression expression = it.next();
-            if (addDelimiter) {
-                box.add(new MExpression("\",\""));
-            }
             if (linebreak == expression) {
-                box.add(new MExpression(","));
-                box.add(new MExpression("\"\\[IndentingNewLine]\""));
+                box.add(linebreak);
             } else {
+                if (addDelimiter) {
+                    box.add(new MExpression("\",\""));
+                }
                 box.add(expression);
                 addDelimiter = true;
             }

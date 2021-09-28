@@ -39,6 +39,9 @@ public class MathematicaModel {
     private final MVariable variableXX = new MVariable("xx");
     private final MVariable variableLambda = new MVariable("\\[Lambda]");
     private final MVariable variablePartialD = new MVariable("\\[PartialD]");
+    private final MVariable variableSharp = new MVariable("#");
+    private final MVariable variableI = new MVariable("i");
+    private final MVariable variableII = new MVariable("ii");
     private final MExpression e0 = new MExpression(0);
     private final MExpression e2p5 = new MExpression("2.5");
     private final MExpression e20 = new MExpression(20);
@@ -46,7 +49,6 @@ public class MathematicaModel {
     private final MExpression e50 = new MExpression(50);
     private final MExpression e100 = new MExpression(100);
 
-    private final MExpression parameterI = new MExpression("parameter", "i");
     private final MExpression parameterII = new MExpression("parameter", "ii");
     private final MExpression parameterJ = new MExpression("parameter", "j");
     private final MExpression parameterQ = new MExpression("parameter", "q");
@@ -99,21 +101,21 @@ public class MathematicaModel {
     private final MVariable lambdaF = new MVariable("\\[Lambda]F");
     private final MArray lambdaFArray = new MArray(
             new MExpressionList(
-                    new MSubscript(variableLambda, parameterSharp),
-                    new MExpression("&")
+                    new MSubscript(variableLambda, variableSharp),
+                    new MVariable("&")
             ), new MList(nZwangB));
     private final MComment diffvarxComment = new MComment("Wandle die aktuellen Variablen diffvar um in ein Array diffvarx von indizierten Variablen x der Länge ndiffvar");
     private final MVariable diffvarx = new MVariable("diffvarx");
     private final MArray diffvarxArray = new MArray(
             new MExpressionList(
-                    new MSubscript(new MVariable("x"), parameterSharp),
-                    new MExpression("&")
+                    new MSubscript(new MVariable("x"), variableSharp),
+                    new MVariable("&")
             ), new MList(ndiffvar));
     private final MVariable algvarxx = new MVariable("algvarxx");
     private final MArray algvarxxArray = new MArray(
             new MExpressionList(
-                    new MSubscript(new MVariable("xx"), parameterSharp),
-                    new MExpression("&")
+                    new MSubscript(new MVariable("xx"), variableSharp),
+                    new MVariable("&")
             ), new MList(nalgvar));
     private final MVariable varxxx = new MVariable("varxxx");
     private final MJoin varxxxJoin = new MJoin(diffvarx, algvarxx);
@@ -124,6 +126,7 @@ public class MathematicaModel {
     private final MParameter defalgvarsubstitutexxx = new MParameter("defalgvarsubstitutexxx", "jj_", "t_", "varxxx_");
     private final MParameter defuvarsubstitutexxx = new MParameter("defuvarsubstitutexxx", "j_", "t_", "varxxx_");
     private final MParameter defzvarsubstitutexxx = new MParameter("defzvarsubstitutexxx", "q_", "t_", "varxxx_");
+    private final MComment dgldiffxxxComment = new MComment("Verhaltensgleichungen für allgemeines GCD Modell mit indizierten Variablen");
     private final MVariable dgldiffxxx = new MVariable("dgldiffxxx");
     private final MVariable dglalgxxx = new MVariable("dglalgxxx");
     private final MComment dglzxxxComment = new MComment("Zwangsbedingungen für allgemeines GCD Modell mit indizierten Variablen");
@@ -201,6 +204,10 @@ public class MathematicaModel {
 
     public MComment getDiffvarxComment() {
         return diffvarxComment;
+    }
+
+    public MComment getDgldiffxxxComment() {
+        return dgldiffxxxComment;
     }
 
     public MComment getDglzxxxComment() {
@@ -298,7 +305,7 @@ public class MathematicaModel {
         for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
             list.add(new MExpression(utils.transformToFullForm(aV.toStringRaw(), false)));
         }
-        return new RowBox(true, new MSet(substitute, list, true));
+        return new RowBox(false, new MSet(substitute, list, true));
     }
 
     public List<MSetDelayed> getSetDelayedDefalgvar() {
@@ -309,7 +316,7 @@ public class MathematicaModel {
             MSetDelayed delayed = new MSetDelayed(defalgvar,
                     new MCondition(
                             algVar,
-                            new MEqual(parameterII, new MExpression(ii))
+                            new MEqual(variableII, new MExpression(ii))
                     ),
                     true);
             list.add(delayed);
@@ -343,14 +350,6 @@ public class MathematicaModel {
                     ),
                     true);
             list.add(delayed);
-        }
-        return list;
-    }
-
-    public List<RowBox> getRowBoxDefAlgVarSubstitute() {
-        List<RowBox> list = new ArrayList<>();
-        for (MSetDelayed setDelayed : getSetDelayedDefAlgVarSubstitute()) {
-            list.add(new RowBox(true, setDelayed));
         }
         return list;
     }
@@ -403,6 +402,24 @@ public class MathematicaModel {
                                     new MExpression("variable", a.getName()))),
                     true);
             list.add(delayed);
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxDefuVar() {
+        List<RowBox> list = new ArrayList<>(model.getAgentsSorted().size());
+        for (Agent a : model.getAgentsSorted()) {
+            if (StringUtils.isNotBlank(a.getDescription())) {
+                list.add(new RowBox(true, new MComment(a.getDescription())));
+            }
+            MSetDelayed delayed = new MSetDelayed(defuvar,
+                    new MCondition(
+                            new MParentheses(new MExpression(utils.transformToFullForm(a.getFunction(), false))),
+                            new MEqual(
+                                    parameterJ,
+                                    new MExpression("variable", a.getName()))),
+                    true);
+            list.add(new RowBox(true, delayed));
         }
         return list;
     }
@@ -476,6 +493,25 @@ public class MathematicaModel {
         return list;
     }
 
+    public List<RowBox> getRowBoxDefzVar() {
+        List<RowBox> list = new ArrayList<>(model.getAgents().size());
+        for (Constraint c : model.getConstraints()) {
+            if (StringUtils.isNotBlank(c.getDescription())) {
+                list.add(new RowBox(true, new MComment(c.getDescription())));
+            }
+            MSetDelayed delayed = new MSetDelayed(defzvar,
+                    new MCondition(
+                            new MParentheses(new MExpression(utils.transformToFullForm(c.getCondition(), false))),
+                            new MEqual(
+                                    parameterQ,
+                                    new MExpression(c.getId())
+                            )),
+                    true);
+            list.add(new RowBox(true, delayed));
+        }
+        return list;
+    }
+
     public List<MSetDelayed> getSetDelayedDefzVarSubstitute() {
         List<MSetDelayed> list = new ArrayList<>(model.getAgents().size());
         for (Constraint c : model.getConstraints()) {
@@ -518,7 +554,7 @@ public class MathematicaModel {
     }
 
     public MSet getSetFlattenMFi() {
-        return new MSet(flattenMFi, new MFlatten(flattenMFi), true);
+        return new MSet(flattenMFi, new MFlatten(mfi), true);
     }
 
     public MSet getSetChangeMu() {
@@ -529,7 +565,7 @@ public class MathematicaModel {
             MExpressionList l = new MExpressionList();
             l.add(new MParameter(
                     "\\[Mu]",
-                    new MVariable(mu.getAgent().getName()),
+                    new MExpression(mu.getAgent().getName()),
                     new MExpression(mu.getIndex())
             ));
             l.add(new MArrow());
@@ -669,11 +705,11 @@ public class MathematicaModel {
     }
 
     public MSet getSetDgldiffxxx() {
-        MSubscript xi = new MSubscript(variableX, parameterI);
+        MSubscript xi = new MSubscript(variableX, variableI);
 
         MExpressionList xiApos = new MExpressionList(true);
         xiApos.add(xi);
-        xiApos.add(new MExpression("'"));
+        xiApos.add(new MVariable("'"));
 
         MParameter xiOfT = new MParameter(xi, variableT);
 
@@ -726,7 +762,7 @@ public class MathematicaModel {
         list3.add(lambdaQofT);
         list3.add(mIf);
 
-        MSum sum2 = new MSum(list3, new MList(parameterQ, nZwangB), new MList(parameterI, ndiffvar));
+        MSum sum2 = new MSum(list3, new MList(parameterQ, nZwangB));
 
         MAddition addition = new MAddition(sum1, sum2);
         addition.setLinebreakAfterOperator(true);
@@ -734,15 +770,15 @@ public class MathematicaModel {
         MEqual equal = new MEqual(xiAposOfT, addition);
         equal.setLinebreakAfterOperator(true);
 
-        MTable table = new MTable(equal);
+        MTable table = new MTable(equal, new MList(variableI, ndiffvar));
 
         return new MSet(dgldiffxxx, table, true);
     }
 
     public MSet getSetAglalgxxx() {
-        MSubscript xxii = new MSubscript(variableXX, parameterII);
+        MSubscript xxii = new MSubscript(variableXX, variableII);
         MParameter xxiiOfT = new MParameter(xxii, variableT);
-        MParameter def = new MParameter(defalgvarsubstitutexxx.getName(), parameterII, variableT, varxxx);
+        MParameter def = new MParameter(defalgvarsubstitutexxx.getName(), variableII, variableT, varxxx);
         MList list = new MList(parameterII, nalgvar);
         MEqual equal = new MEqual(xxiiOfT, def);
         MTable table = new MTable(equal, list);
@@ -814,7 +850,10 @@ public class MathematicaModel {
 
     public MManipulate getManipulate() {
 
-        MList plotList = new MList(new MExpression("replaceMe", "PLOT LIST"));
+        MVariable replaceMe = new MVariable("PLOT_LIST");
+        replaceMe.setCssClass("replaceMe");
+        MList plotList = new MList(replaceMe);
+        plotList.setElementsLinebreak(1);
         // TODO add plots
 
         MExpressionList conMethod = new MExpressionList();
@@ -842,7 +881,8 @@ public class MathematicaModel {
         }
         glvarList.add(lambdaF);
         MQuietNDSolve ndSolve = new MQuietNDSolve();
-        ndSolve.addParameter(new MExpression("replaceMe", "OUTPUT GL"));
+        replaceMe = new MVariable("OUTPUT_GL");
+        ndSolve.addParameter(replaceMe);
         ndSolve.addLinebreak();
         ndSolve.addParameter(glvarList);
         ndSolve.addLinebreak();
@@ -919,6 +959,14 @@ public class MathematicaModel {
         List<RowBox> list = new ArrayList<>();
         for (MSetDelayed setDelayed : setDelayedList) {
             list.add(new RowBox(true, setDelayed));
+        }
+        return list;
+    }
+
+    public static List<RowBox> convertParameterToRowBoxList(List<MParameter> parameters) {
+        List<RowBox> list = new ArrayList<>();
+        for (MParameter parameter : parameters) {
+            list.add(new RowBox(true, parameter));
         }
         return list;
     }

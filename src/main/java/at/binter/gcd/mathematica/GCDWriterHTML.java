@@ -210,6 +210,7 @@ public class GCDWriterHTML implements GCDMathematica {
 
     @Override
     public void generateBehavioralEquation() {
+        elements.add(model.getDgldiffxxxComment());
         elements.add(model.getSetDgldiffxxx());
         elements.add(model.getSetAglalgxxx());
         elements.add(model.getLinebreak());

@@ -104,7 +104,11 @@ public class MParameter extends MBase implements IExpression {
         Iterator<IExpression> it = parameter.iterator();
         while (it.hasNext()) {
             IExpression element = it.next();
-            inner.add(new MExpression("\"" + element.getMathematicaExpression() + "\""));
+            if (element instanceof MVariable) {
+                inner.add(new MExpression(element.getMathematicaExpression()));
+            } else {
+                inner.add(new MExpression("\"" + element.getMathematicaExpression() + "\""));
+            }
             if (it.hasNext()) {
                 inner.add(new MExpression("\",\""));
             }

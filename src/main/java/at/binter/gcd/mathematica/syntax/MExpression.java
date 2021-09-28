@@ -5,7 +5,7 @@ import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.util.Tools;
 
 public class MExpression extends MBase implements IExpression {
-    private final String cssClass;
+    private String cssClass;
     private final String expression;
 
     public MExpression(String expression) {
@@ -37,6 +37,10 @@ public class MExpression extends MBase implements IExpression {
     public MExpression(String cssClass, String expression) {
         this.cssClass = cssClass;
         this.expression = expression;
+    }
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
     }
 
     @Override

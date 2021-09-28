@@ -4,15 +4,16 @@ import at.binter.gcd.mathematica.syntax.*;
 import at.binter.gcd.mathematica.syntax.function.MClearAll;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.MathematicaModel;
+import at.binter.gcd.util.MathematicaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import static at.binter.gcd.model.MathematicaModel.convertParameterToRowBoxList;
 import static at.binter.gcd.model.MathematicaModel.convertToRowBoxList;
 
 public class GCDWriterNotebook implements GCDMathematica {
@@ -24,6 +25,8 @@ public class GCDWriterNotebook implements GCDMathematica {
     private final MathematicaModel model;
     private final List<IExpression> elements = new ArrayList<>();
     private Notebook nb;
+    private RowBox currentCell = new RowBox();
+    private final IExpression linebreakExpr = new MExpression(MathematicaUtils.linebreakString);
 
     public GCDWriterNotebook(GCDModel gcdModel, GCDMode mode) {
         this.gcdModel = gcdModel;
@@ -54,6 +57,7 @@ public class GCDWriterNotebook implements GCDMathematica {
         log.info("Generating {}", outputFile.getAbsolutePath());
         try {
             generate();
+            closeCurrentCell();
             writeNotebook();
             writer.flush();
             writer.close();
@@ -69,7 +73,7 @@ public class GCDWriterNotebook implements GCDMathematica {
         elements.clear();
         nb = new Notebook();
         nb.add(new Cell(new RowBox(new MClearAll("\"\\\"\\<Global`*\\>\\\"\""))));
-        //generatePlotStyles(); TODO fix me
+        generatePlotStyles();
         generateVariableDefinition();
         generateAgentDefinition();
         generateSubstitutes();
@@ -87,156 +91,150 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     @Override
     public void generatePlotStyles() {
+        // TODO implement me
     }
 
     @Override
     public void generateVariableDefinition() {
-
-        RowBox diffVarComment = new RowBox(true, model.getDiffvarComment());
-        RowBox diffVar = new RowBox(true, model.getSetDiffVar());
-        RowBox nDiffVar = new RowBox(true, model.getSetnDiffVar());
-        RowBox algVarComment = new RowBox(true, model.getAlgvarComment());
-        RowBox algVar = new RowBox(true, model.getSetAlgVar());
-        RowBox nAlgVar = new RowBox(true, model.getSetnAlgVar());
-        RowBox varComment = new RowBox(true, model.getVarComment());
-        RowBox var = new RowBox(true, model.getSetVar());
-        RowBox nVar = new RowBox(true, model.getSetnVar());
-
-        RowBox inner = new RowBox(
-                diffVarComment, diffVar, nDiffVar,
-                algVarComment, algVar, nAlgVar,
-                varComment, var, nVar
-        );
-
-        nb.add(new Cell(new BoxData(inner)));
+        addNewRowBox(model.getDiffvarComment());
+        addNewRowBox(model.getSetDiffVar());
+        addNewRowBox(model.getSetnDiffVar());
+        addNewRowBox(model.getAlgvarComment());
+        addNewRowBox(model.getSetAlgVar());
+        addNewRowBox(model.getSetnAlgVar());
+        addNewRowBox(model.getVarComment());
+        addNewRowBox(model.getSetVar());
+        addNewRowBox(model.getSetnVar());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateAgentDefinition() {
-        elements.add(model.getAGComment());
-        elements.add(model.getSetAG());
-        elements.add(model.getSetnAG());
-
-        RowBox agComment = new RowBox(true, model.getAGComment());
-        RowBox ag = new RowBox(true, model.getSetAG());
-        RowBox nAg = new RowBox(true, model.getSetnAG());
-
-        RowBox inner = new RowBox(agComment, ag, nAg);
-
-        nb.add(new Cell(new BoxData(inner)));
+        addNewRowBox(model.getAGComment());
+        addNewRowBox(model.getSetAG());
+        addNewRowBox(model.getSetnAG());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateSubstitutes() {
-        elements.addAll(model.getParameterListDefAlgVar());
-        elements.addAll(model.getParameterListDefAlgVarSubstitute());
-        elements.add(model.getLinebreak());
-        elements.add(model.getDefuvarComment());
-        elements.addAll(model.getSetDelayedDefuVar());
-        elements.addAll(model.getSetDelayedDefuVarSubstitute());
-        elements.addAll(model.getParameterListDefuVar());
-        elements.addAll(model.getParameterListDefuVarSubstitute());
-
-        RowBox inner = new RowBox();
-
-        inner.add(new RowBox(true, model.getSubstituteComment()));
-        inner.add(new RowBox(true, model.getRowBoxSetSubstitute()));
-        inner.add(convertToRowBoxList(model.getSetDelayedDefalgvar()));
-        inner.add(convertToRowBoxList(model.getSetDelayedDefAlgVarSubstitute()));
-
-        nb.add(new Cell(new BoxData(inner)));
+        addNewRowBox(model.getSubstituteComment());
+        addNewRowBox(model.getRowBoxSetSubstitute());
+        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefalgvar()));
+        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefAlgVarSubstitute()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefAlgVar()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefAlgVarSubstitute()));
+        addToCurrentCell(linebreakExpr);
+        addNewRowBox(model.getDefuvarComment());
+        addToCurrentCell(model.getRowBoxDefuVar());
+        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefuVarSubstitute()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefuVar()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefuVarSubstitute()));
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateConstraintDefinition() {
-        elements.add(model.getnZwangBComment());
-        elements.add(model.getSetnZwangB());
-        elements.addAll(model.getSetDelayedDefzVar());
+        addNewRowBox(model.getnZwangBComment());
+        addNewRowBox(model.getSetnZwangB());
+        addToCurrentCell(model.getRowBoxDefzVar());
+        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefzVarSubstitute()));
         elements.addAll(model.getSetDelayedDefzVarSubstitute());
-        elements.addAll(model.getParameterListDefzVar());
-        elements.addAll(model.getParameterListDefzVarSubstitute());
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVar()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVarSubstitute()));
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateChangeMus() {
-        elements.add(model.getMfiComment());
-        elements.add(model.getSetMFi());
-        elements.add(model.getMFiMatrix());
-        elements.add(model.getMachtfaktorenComment());
-        elements.add(model.getFlattenMFiComment());
-        elements.add(model.getSetFlattenMFi());
-        elements.add(model.getSetChangeMu());
-        elements.add(model.getMFexComment());
-        elements.add(model.getSetMFex());
+        addNewRowBox(model.getMfiComment());
+        addNewRowBox(model.getSetMFi());
+        addNewRowBox(model.getMFiMatrix());
+        addNewRowBox(model.getMachtfaktorenComment());
+        addNewRowBox(model.getFlattenMFiComment());
+        addNewRowBox(model.getSetFlattenMFi());
+        addNewRowBox(model.getSetChangeMu());
+        addNewRowBox(model.getMFexComment());
+        addNewRowBox(model.getSetMFex());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateTransformVariables() {
-        elements.add(model.getLambdaFComment());
-        elements.add(model.getSetLambdaF());
-        elements.add(model.getLinebreak());
-        elements.add(model.getDiffvarxComment());
-        elements.add(model.getSetDiffVarX());
-        elements.add(model.getSetAlgVarXX());
-        elements.add(model.getSetVarXXX());
+        addNewRowBox(model.getLambdaFComment());
+        addNewRowBox(model.getSetLambdaF());
+        addToCurrentCell(linebreakExpr);
+        addNewRowBox(model.getDiffvarxComment());
+        addNewRowBox(model.getSetDiffVarX());
+        addNewRowBox(model.getSetAlgVarXX());
+        addNewRowBox(model.getSetVarXXX());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateIndexedVariables() {
-        elements.add(model.getSetChangeDiffaX());
-        elements.add(model.getSetChangeDiffXa());
-        elements.add(model.getSetChangeAlgbXX());
-        elements.add(model.getSetChangeAlgXXb());
+        addNewRowBox(model.getSetChangeDiffaX());
+        addNewRowBox(model.getSetChangeDiffXa());
+        addNewRowBox(model.getSetChangeAlgbXX());
+        addNewRowBox(model.getSetChangeAlgXXb());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateSubstituteVariables() {
-        elements.add(model.getSetDelayedDefAlgVarSubstituteXXX());
-        elements.add(model.getSetDelayedDefUVarSubstituteXXX());
-        elements.add(model.getSetDelayedDefZVarSubstituteXXX());
+        addNewRowBox(model.getSetDelayedDefAlgVarSubstituteXXX());
+        addNewRowBox(model.getSetDelayedDefUVarSubstituteXXX());
+        addNewRowBox(model.getSetDelayedDefZVarSubstituteXXX());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateSubstituteFunctions() {
-        elements.addAll(model.getParameterListDefUVarSubstituteXXX());
-        elements.addAll(model.getParameterListDefZVarSubstituteXXX());
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefUVarSubstituteXXX()));
+        addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefZVarSubstituteXXX()));
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateBehavioralEquation() {
-        elements.add(model.getSetDgldiffxxx());
-        elements.add(model.getSetAglalgxxx());
-        elements.add(model.getLinebreak());
-        elements.add(model.getDglzxxxComment());
-        elements.add(model.getSetDglzxxx());
-        elements.add(model.getSetDglxxx());
-        elements.add(model.getLinebreak());
-        elements.add(model.getDglComment());
-        elements.add(model.getSetDgl());
+        addNewRowBox(model.getDgldiffxxxComment());
+        addNewRowBox(model.getSetDgldiffxxx());
+        addNewRowBox(model.getSetAglalgxxx());
+        addToCurrentCell(linebreakExpr);
+        addNewRowBox(model.getDglzxxxComment());
+        addNewRowBox(model.getSetDglzxxx());
+        addNewRowBox(model.getSetDglxxx());
+        addToCurrentCell(linebreakExpr);
+        addNewRowBox(model.getDglComment());
+        addNewRowBox(model.getSetDgl());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateInitialConditions() {
-        elements.add(model.getInitComment());
-        elements.add(model.getSetInit());
+        addNewRowBox(model.getInitComment());
+        addNewRowBox(model.getSetInit());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateSystemOfEquation() {
-        elements.add(model.getUglComment());
-        elements.add(model.getSetUgl());
-        elements.add(model.getGlComment());
-        elements.add(model.getSetGl());
-        elements.add(model.getGlvarComment());
-        elements.add(model.getSetGlvar());
-        elements.add(model.getGLComment());
-        elements.add(model.getSetGL());
-        elements.add(model.getAfterGl());
+        addNewRowBox(model.getUglComment());
+        addNewRowBox(model.getSetUgl());
+        addNewRowBox(model.getGlComment());
+        addNewRowBox(model.getSetGl());
+        addNewRowBox(model.getGlvarComment());
+        addNewRowBox(model.getSetGlvar());
+        addNewRowBox(model.getGLComment());
+        addNewRowBox(model.getSetGL());
+        addNewRowBox(model.getAfterGl());
+        addToCurrentCell(linebreakExpr);
     }
 
     @Override
     public void generateManipulate() {
-        elements.add(model.getManipulate());
+        closeCurrentCell();
+        addNewRowBox(model.getManipulate());
     }
 
     @Override
@@ -252,18 +250,25 @@ public class GCDWriterNotebook implements GCDMathematica {
         }
     }
 
-    private void writeElements() {
-        Iterator<IExpression> it = elements.iterator();
-        while (it.hasNext()) {
-            IExpression expr = it.next();
-            try {
-                writer.write(expr.getMathematicaExpression());
-                if (it.hasNext()) {
-                    writer.write(", \r\n");
-                }
-            } catch (IOException e) {
-                log.error("could not write {}", expr.getMathematicaExpression(), e);
-            }
+    private void addNewRowBox(IExpression expression) {
+        addToCurrentCell(new RowBox(true, expression));
+    }
+
+    private void addToCurrentCell(IExpression... expressions) {
+        currentCell.add(expressions);
+    }
+
+    private void addToCurrentCell(List<RowBox> list) {
+        for (RowBox box : list) {
+            currentCell.add(box);
         }
+    }
+
+    private void closeCurrentCell() {
+        if (currentCell.getExpressions().isEmpty()) {
+            return;
+        }
+        nb.add(new Cell(new BoxData(currentCell)));
+        currentCell = new RowBox();
     }
 }

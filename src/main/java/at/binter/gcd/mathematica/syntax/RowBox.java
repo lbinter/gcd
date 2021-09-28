@@ -44,6 +44,10 @@ public class RowBox extends MBase implements IExpression {
         }
     }
 
+    public List<IExpression> getExpressions() {
+        return expressions;
+    }
+
     @Override
     public void toHTML(HTMLBuilder builder) {
         builder.write(getMathematicaExpression());

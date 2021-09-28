@@ -19,6 +19,7 @@ module at.binter.gcd {
     opens at.binter.gcd.controller to javafx.fxml, javafx.controls;
 
     exports at.binter.gcd;
+    exports at.binter.gcd.util;
     exports at.binter.gcd.model;
     exports at.binter.gcd.model.xml;
     exports at.binter.gcd.model.elements;

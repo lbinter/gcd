@@ -78,7 +78,13 @@ public class MComment extends MExpression {
         while (it.hasNext()) {
             String[] split = it.next();
             for (int i = 0; i < split.length; i++) {
-                inner.add(new MExpression("\"" + split[i].replace("\"", "\\\"") + "\""));
+                // TODO implement better string esacape
+                inner.add(new MExpression("\"" +
+                        split[i].replace("\"", "\\\"")
+                                .replace("ä", "\\[ADoubleDot]")
+                                .replace("ö", "\\[ODoubleDot]")
+                                .replace("ü", "\\[UDoubleDot]")
+                        + "\""));
                 if (i + 1 < split.length) {
                     inner.add(space);
                 }

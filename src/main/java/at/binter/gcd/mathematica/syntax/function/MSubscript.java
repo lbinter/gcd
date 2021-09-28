@@ -47,4 +47,20 @@ public class MSubscript extends MFunction {
         }
         builder.write("</" + getHtmlTag() + ">");
     }
+
+    @Override
+    public String getMathematicaExpression() {
+        StringBuilder b = new StringBuilder();
+        b.append("SubscriptBox[");
+
+        Iterator<IExpression> it = getParameters().iterator();
+        while (it.hasNext()) {
+            b.append(it.next().getMathematicaExpression());
+            if (it.hasNext()) {
+                b.append(",");
+            }
+        }
+        b.append("]");
+        return b.toString();
+    }
 }
