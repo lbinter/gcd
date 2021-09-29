@@ -7,11 +7,13 @@ import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.GCDPlotItem;
 import at.binter.gcd.model.elements.Agent;
 import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.PlotVariable;
 import at.binter.gcd.model.elements.Variable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -50,7 +52,7 @@ public class PlotController extends BaseController implements Initializable {
     @FXML
     private ListView<GCDPlotItem<Agent>> agentListSelected;
     @FXML
-    private ListView<Variable> variableListSelected;
+    private ListView<PlotVariable> variableListSelected;
     @FXML
     private TextField plotName;
     @FXML
@@ -88,7 +90,7 @@ public class PlotController extends BaseController implements Initializable {
                     AlgebraicVariable item = cell.getItem();
                     if (!algVarListView.getSelectionModel().getSelectedIndices().contains(index)) {
                         algVarListView.getSelectionModel().select(index);
-                        plot.addAlgebraicVariable(item);
+                        plot.addAlgebraicVariable(true, item);
                     }
                     algebraicVariablesFilter.set(new SelectedMatcher<>(plot.getAlgebraicVariables()));
                     event.consume();
@@ -132,6 +134,29 @@ public class PlotController extends BaseController implements Initializable {
         setVariableFilter(viewableVariable.predicateProperty());
         variableListFilter.textProperty().addListener(this::filterVariable);
         variableListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        variableListView.setCellFactory(factory -> {
+            ListCell<Variable> cell = new ListCell<>() {
+                @Override
+                public void updateItem(Variable variable, boolean empty) {
+                    super.updateItem(variable, empty);
+                    setText(empty ? null : variable.toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                variableListView.requestFocus();
+                if (!cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    Variable item = cell.getItem();
+                    if (!variableListView.getSelectionModel().getSelectedIndices().contains(index)) {
+                        variableListView.getSelectionModel().select(index);
+                        plot.addVariable(true, item);
+                    }
+                    filterVariable(null, null, variableListFilter.getText());
+                    event.consume();
+                }
+            });
+            return cell;
+        });
         variableListView.itemsProperty().bind(new SimpleObjectProperty<>(viewableVariable));
 
         algVarListSelected.setCellFactory(factory -> {
@@ -183,12 +208,43 @@ public class PlotController extends BaseController implements Initializable {
             return cell;
         });
         agentListSelected.setItems(plot.getAgentsSorted());
-        variableListSelected.setItems(plot.getVariablesSorted());
 
-        plotName.setText(parentTab.getText());
+        variableListSelected.setCellFactory(factory -> {
+            ListCell<PlotVariable> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(PlotVariable item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.toString());
+                }
+            };
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                variableListSelected.requestFocus();
+                if (!(event.getTarget() instanceof StackPane) && !cell.isEmpty()) {
+                    PlotVariable item = cell.getItem();
+                    if (!variableListSelected.getSelectionModel().getSelectedItems().contains(item)) {
+                        variableListSelected.getSelectionModel().select(item);
+                        plot.removeVariable(item, false);
+                    }
+                    event.consume();
+                }
+            });
+            return cell;
+        });
+        variableListSelected.setItems(plot.getVariablesSorted());
+        plot.getVariablesSorted().addListener((ListChangeListener<? super PlotVariable>) c -> {
+            filterVariable(null, null, variableListFilter.getText());
+        });
+
+        plotName.setText(plot.getName());
         plotLegendLabel.setText(plot.getLegendLabel());
         plotStyle.setText(plot.getPlotStyle());
         plotRange.setText(plot.getPlotRange());
+
+        plotName.textProperty().addListener((observable, oldValue, newValue) -> plotStyle.setText(plot.getDefaultPlotStyleForName(newValue)));
+
+        algebraicVariablesFilter.set(new SelectedMatcher<>(plot.getAlgebraicVariables()));
+        agentsFilter.set(new SelectedMatcher<>(plot.getAgents()));
+        filterVariable(null, null, variableListFilter.getText());
     }
 
     private void setVariableFilter(ObjectProperty<Predicate<? super Variable>> predicateProperty) {
@@ -202,18 +258,20 @@ public class PlotController extends BaseController implements Initializable {
     public void setPlotModel(GCDPlot plot) {
         this.plot = plot;
         initializeGCDDepended();
-        // TODO select values based on plot
     }
 
+    @FXML
     public void saveSettings() {
         String defaultPlotStyle = plot.getPlotStyle();
         parentTab.setText("Plot: " + plotName.getText());
         plot.setName(plotName.getText());
         plot.setLegendLabel(plotLegendLabel.getText());
-        if (!plotStyle.getText().equals(defaultPlotStyle)) {
-            plot.setPlotStyle(plotStyle.getText());
-        } else {
+        String plotStyleText = plotStyle.getText();
+        if (StringUtils.isBlank(plotStyleText)) {
+            plot.setPlotStyle(plot.getDefaultPlotStyle());
             plotStyle.setText(plot.getPlotStyle());
+        } else {
+            plot.setPlotStyle(plotStyleText);
         }
         plot.setPlotRange(plotRange.getText());
     }
@@ -221,9 +279,9 @@ public class PlotController extends BaseController implements Initializable {
     void filterVariable(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         String filter = sanitizeString(newValue);
         if (StringUtils.isBlank(newValue)) {
-            variableFilter.set(new VariableMatcher("*"));
+            variableFilter.set(new VariableMatcher(plot.getVariablesSorted(), "*"));
         } else {
-            variableFilter.set(new VariableMatcher(filter));
+            variableFilter.set(new VariableMatcher(plot.getVariablesSorted(), filter));
         }
     }
 }

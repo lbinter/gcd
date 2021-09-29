@@ -268,11 +268,11 @@ public class GCDController extends BaseController implements Initializable {
         if (StringUtils.isBlank(plotName)) {
             return;
         }
-        if (log.isTraceEnabled()) {
-            log.trace("adding new plot with name {}", plotName);
-        }
         GCDPlot newPlot = new GCDPlot(model, plotName);
         if (model.addPlot(newPlot)) {
+            if (log.isTraceEnabled()) {
+                log.trace("adding plot: {}", plotName);
+            }
             addPlot(newPlot);
         }
     }
@@ -302,6 +302,11 @@ public class GCDController extends BaseController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isEmpty() || result.get() != ButtonType.YES) {
                 t.consume();
+            } else {
+                model.removePlot(plot);
+                if (log.isTraceEnabled()) {
+                    log.trace("removing plot: {}", plot.getName());
+                }
             }
         });
 

@@ -298,13 +298,24 @@ public class GCDModel extends GCDBaseModel {
     }
 
     public boolean addPlot(GCDPlot plot) {
-        for (GCDPlot p : plots) {
-            if (p.getName().equals(plot.getName())) {
-                return false;
-            }
+        if (hasPlot(plot.getName())) {
+            return false;
         }
         plots.add(plot);
         return true;
+    }
+
+    public boolean hasPlot(String plotName) {
+        for (GCDPlot p : plots) {
+            if (p.getName().equals(plotName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removePlot(GCDPlot plot) {
+        return plots.remove(plot);
     }
 
     public void setClearGlobal(boolean clearGlobal) {
@@ -354,20 +365,31 @@ public class GCDModel extends GCDBaseModel {
             p.setLegendLabel(plot.legendLabel);
             p.setPlotStyle(plot.plotStyle);
             p.setPlotRange(plot.plotRange);
-            for (GCDPlotItem<AlgebraicVariable> item : plot.algebraicVariables) {
-                AlgebraicVariable algVar = getAlgebraicVariable(item.getItem().getName());
+            for (XmlPlotItem item : plot.algebraicVariables) {
+                AlgebraicVariable algVar = getAlgebraicVariable(item.name);
                 if (algVar == null) {
-                    log.error("Could not find algebraic variable \"{}\" for plot \"{}\"", item.getItem().getName(), plot.name);
+                    log.error("Could not find algebraic variable \"{}\" for plot \"{}\"", item.name, plot.name);
                 } else {
-                    p.addAlgebraicVariable(algVar);
+                    GCDPlotItem<AlgebraicVariable> newItem = p.addAlgebraicVariable(true, algVar);
+                    if (newItem == null) {
+                        log.error("Could not add algebraic variable \"{}\" for plot \"{}\"", item.name, plot.name);
+                    } else {
+                        newItem.setAddDepended(item.addDepended);
+                    }
+
                 }
             }
-            for (GCDPlotItem<Agent> item : plot.agents) {
-                Agent agent = getAgent(item.getItem().getName());
+            for (XmlPlotItem item : plot.agents) {
+                Agent agent = getAgent(item.name);
                 if (agent == null) {
-                    log.error("Could not find agent \"{}\" for plot \"{}\"", item.getItem().getName(), plot.name);
+                    log.error("Could not find agent \"{}\" for plot \"{}\"", item.name, plot.name);
                 } else {
-                    p.addAgent(agent);
+                    GCDPlotItem<Agent> newItem = p.addAgent(agent);
+                    if (newItem == null) {
+                        log.error("Could not add agent \"{}\" for plot \"{}\"", item.name, plot.name);
+                    } else {
+                        newItem.setAddDepended(item.addDepended);
+                    }
                 }
             }
             for (String name : plot.variables) {
@@ -375,7 +397,7 @@ public class GCDModel extends GCDBaseModel {
                 if (variable == null) {
                     log.error("Could not find variable \"{}\" for plot \"{}\"", name, plot.name);
                 } else {
-                    p.addVariable(variable);
+                    p.addVariable(true, variable);
                 }
             }
             addPlot(p);

@@ -4,10 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class GCDPlotItem<T extends Comparable<T>> implements Comparable<GCDPlotItem<T>> {
+    public final boolean independent;
     private final BooleanProperty addDepended = new SimpleBooleanProperty(false);
     private final T item;
 
-    public GCDPlotItem(T item) {
+    public GCDPlotItem(boolean independent, T item) {
+        this.independent = independent;
         this.item = item;
     }
 

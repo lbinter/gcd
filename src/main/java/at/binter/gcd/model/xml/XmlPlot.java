@@ -4,7 +4,7 @@ import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.GCDPlotItem;
 import at.binter.gcd.model.elements.Agent;
 import at.binter.gcd.model.elements.AlgebraicVariable;
-import at.binter.gcd.model.elements.Variable;
+import at.binter.gcd.model.elements.PlotVariable;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -24,10 +24,10 @@ public class XmlPlot {
     public String plotRange;
     @XmlElementWrapper(name = "algebraic-variables")
     @XmlElement(name = "algVar")
-    public List<GCDPlotItem<AlgebraicVariable>> algebraicVariables = new ArrayList<>();
+    public List<XmlPlotItem> algebraicVariables = new ArrayList<>();
     @XmlElementWrapper(name = "agents")
     @XmlElement(name = "agent")
-    public List<GCDPlotItem<Agent>> agents = new ArrayList<>();
+    public List<XmlPlotItem> agents = new ArrayList<>();
     @XmlElementWrapper(name = "variables")
     @XmlElement(name = "variable")
     public List<String> variables = new ArrayList<>();
@@ -40,10 +40,18 @@ public class XmlPlot {
         legendLabel = plot.getLegendLabel();
         plotStyle = plot.getPlotStyle();
         plotRange = plot.getPlotRange();
-        algebraicVariables.addAll(plot.getAlgebraicVariablesSorted());
-        agents.addAll(plot.getAgentsSorted());
-        for (Variable v : plot.getVariablesSorted()) {
-            variables.add(v.getName());
+        for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
+            if (algVar.independent || algVar.isAddDepended()) {
+                algebraicVariables.add(new XmlPlotItem(algVar));
+            }
+        }
+        for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
+            agents.add(new XmlPlotItem(agent));
+        }
+        for (PlotVariable v : plot.getVariablesSorted()) {
+            if (v.independent) {
+                variables.add(v.variable.getName());
+            }
         }
     }
 }
