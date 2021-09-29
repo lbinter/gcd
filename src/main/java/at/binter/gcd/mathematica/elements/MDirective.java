@@ -2,12 +2,14 @@ package at.binter.gcd.mathematica.elements;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.model.HasPlotStyle;
 import org.apache.commons.lang3.StringUtils;
 
-public class MDirective extends MBase {
+public class MDirective extends MBase implements IExpression {
     private HasPlotStyle plotStyle;
     private String comment;
+    private String name;
 
     public MDirective() {
 
@@ -16,6 +18,14 @@ public class MDirective extends MBase {
     public MDirective(HasPlotStyle plotStyle, String comment) {
         this.plotStyle = plotStyle;
         this.comment = comment;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public HasPlotStyle getPlotStyle() {
@@ -64,5 +74,31 @@ public class MDirective extends MBase {
         builder.write(" ");
         builder.comment(comment);
         return builder;
+    }
+
+    @Override
+    public String getCssClass() {
+        return null;
+    }
+
+    @Override
+    public String getExpression() {
+        return toHTML();
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        String color = "defaultColor";
+        if (StringUtils.isNotBlank(plotStyle.getPlotColor())) {
+            color = plotStyle.getPlotColor();
+        }
+        String thickness = "defaultThickness";
+        if (plotStyle.getPlotThickness() != null) {
+            thickness = "AbsoluteThickness[" + plotStyle.getPlotThickness() + "]";
+        }
+        if (StringUtils.isNotBlank(plotStyle.getPlotLineStyle())) {
+            return new MParameter("Directive", color, thickness, plotStyle.getPlotLineStyle()).getMathematicaExpression();
+        }
+        return new MParameter("Directive", color, thickness).getMathematicaExpression();
     }
 }

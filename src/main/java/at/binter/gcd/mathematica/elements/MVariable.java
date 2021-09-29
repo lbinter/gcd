@@ -12,6 +12,10 @@ public class MVariable extends MExpression {
         super(cssClass, name);
     }
 
+    public MVariable(double startValue) {
+        super(startValue);
+    }
+
     public String getName() {
         return getExpression();
     }

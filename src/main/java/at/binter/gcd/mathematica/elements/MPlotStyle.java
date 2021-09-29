@@ -2,6 +2,11 @@ package at.binter.gcd.mathematica.elements;
 
 import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
+import at.binter.gcd.mathematica.syntax.IExpression;
+import at.binter.gcd.mathematica.syntax.MComment;
+import at.binter.gcd.mathematica.syntax.MExpression;
+import at.binter.gcd.mathematica.syntax.RowBox;
+import at.binter.gcd.mathematica.syntax.binary.MSetDelayed;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.PlotStyle;
 import at.binter.gcd.model.elements.Agent;
@@ -15,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MPlotStyle extends MBase {
+import static at.binter.gcd.mathematica.syntax.function.MFunction.linebreak;
+
+public class MPlotStyle extends MBase implements IExpression {
     private static final Logger log = LoggerFactory.getLogger(MPlotStyle.class);
 
     public static final PlotStyle defaultPlotStyle = new PlotStyle("Black", 1.0, null);
@@ -24,6 +31,18 @@ public class MPlotStyle extends MBase {
     private final List<MDirective> directives = new ArrayList<>();
 
     public MPlotStyle() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addDirective(MDirective directive) {
+        directives.add(directive);
     }
 
     public MPlotStyle(GCDModel model) {
@@ -86,5 +105,42 @@ public class MPlotStyle extends MBase {
         }
         builder.decreaseIndent(4);
         builder.writeln("};");
+    }
+
+    @Override
+    public String getCssClass() {
+        return null;
+    }
+
+    @Override
+    public String getExpression() {
+        return toHTML();
+    }
+
+    @Override
+    public String getMathematicaExpression() {
+        RowBox inner = new RowBox();
+        inner.add(linebreak);
+
+        Iterator<MDirective> it = directives.iterator();
+        while (it.hasNext()) {
+            MDirective element = it.next();
+            inner.add(element);
+            if (it.hasNext()) {
+                inner.add(new MExpression("\",\""));
+            }
+            MComment comment = new MComment(element.getComment());
+            inner.add(comment);
+            inner.add(linebreak);
+        }
+
+        RowBox outer = new RowBox();
+        outer.add(new MExpression("\"{\""));
+        outer.add(inner);
+        outer.add(new MExpression("\"}\""));
+
+        MSetDelayed set = new MSetDelayed(new MVariable(name), outer, true);
+        set.setDoLinebreakAfter(true);
+        return set.getMathematicaExpression();
     }
 }

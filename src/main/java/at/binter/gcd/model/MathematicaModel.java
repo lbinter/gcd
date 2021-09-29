@@ -2,6 +2,7 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.mathematica.elements.MParameter;
 import at.binter.gcd.mathematica.elements.MVariable;
+import at.binter.gcd.mathematica.elements.MathematicaPlot;
 import at.binter.gcd.mathematica.syntax.*;
 import at.binter.gcd.mathematica.syntax.binary.*;
 import at.binter.gcd.mathematica.syntax.function.*;
@@ -40,6 +41,8 @@ public class MathematicaModel {
     private final MVariable variableLambda = new MVariable("\\[Lambda]");
     private final MVariable variablePartialD = new MVariable("\\[PartialD]");
     private final MVariable variableSharp = new MVariable("#");
+    private final MVariable variableSol = new MVariable("sol");
+    private final MVariable variableTMax = new MVariable("tmax");
     private final MVariable variableI = new MVariable("i");
     private final MVariable variableII = new MVariable("ii");
     private final MExpression e0 = new MExpression(0);
@@ -809,8 +812,8 @@ public class MathematicaModel {
         list.setElementsLinebreak(4);
         for (Variable v : model.getVariablesSorted()) {
             MParameter p = new MParameter(v.getName(), e0);
-            if (StringUtils.isNotBlank(v.getInitialCondition())) {
-                list.add(new MEqual(p, new MExpression(v.getInitialCondition())));
+            if (StringUtils.isNotBlank(v.getInitialCondition()) && !v.getDefaultInitialCondition().equals(v.getInitialCondition())) {
+                list.add(new MEqual(p, new MExpression(utils.transformToFullForm(v.getInitialCondition(), false))));
             } else {
                 list.add(new MEqual(p, new MVariable(v.getDefaultInitialCondition())));
             }
@@ -849,12 +852,67 @@ public class MathematicaModel {
     }
 
     public MManipulate getManipulate() {
-
-        MVariable replaceMe = new MVariable("PLOT_LIST");
-        replaceMe.setCssClass("replaceMe");
-        MList plotList = new MList(replaceMe);
+        MList plotList = new MList();
         plotList.setElementsLinebreak(1);
-        // TODO add plots
+        for (GCDPlot p : model.getPlots()) {
+            MList fList = new MList();
+            for (GCDPlotItem<Agent> agent : p.getAgentsSorted()) {
+                fList.add(new MExpression(utils.transformToFullForm(agent.getItem().getFunction(), false)));
+            }
+            for (GCDPlotItem<AlgebraicVariable> algVar : p.getAlgebraicVariablesSorted()) {
+                fList.add(new MParameter(algVar.getItem().getName(), variableT));
+            }
+            for (PlotVariable pV : p.getVariablesSorted()) {
+                fList.add(new MParameter(pV.variable.getName(), variableT));
+            }
+            MExpressionList plotRange = new MExpressionList();
+            plotRange.add(new MVariable("PlotRange"));
+            plotRange.add(new MArrow());
+            plotRange.add(new MList(new MVariable("-plotmax"), new MVariable("plotmax")));
+
+            MExpressionList plotStyle = new MExpressionList();
+            plotStyle.add(new MVariable("PlotStyle"));
+            plotStyle.add(new MArrow());
+            plotStyle.add(new MVariable(p.getPlotStyle()));
+
+            MList legendList = new MList();
+            for (GCDPlotItem<Agent> agent : p.getAgentsSorted()) {
+                legendList.add(new MVariable(agent.getItem().getName()));
+            }
+            for (GCDPlotItem<AlgebraicVariable> algVar : p.getAlgebraicVariablesSorted()) {
+                legendList.add(new MVariable(algVar.getItem().getName()));
+            }
+            for (PlotVariable pV : p.getVariablesSorted()) {
+                legendList.add(new MVariable(pV.variable.getName()));
+            }
+
+            MExpressionList legendLabel = new MExpressionList();
+            legendLabel.add(new MVariable("LegendLabel"));
+            legendLabel.add(new MArrow());
+            legendLabel.add(new MVariable(p.getName()));
+
+            RowBox lineLegend = new RowBox();
+            lineLegend.add(new MVariable("LineLegend"));
+            lineLegend.add(new MVariable("["));
+            lineLegend.add(legendList);
+            lineLegend.add(new MVariable(","));
+            lineLegend.add(legendLabel);
+            lineLegend.add(new MVariable("]"));
+
+            MExpressionList plotLegende = new MExpressionList();
+            plotLegende.add(new MVariable("PlotLegends"));
+            plotLegende.add(new MArrow());
+            plotLegende.add(lineLegend);
+
+            MEvaluate evaluate = new MEvaluate(new MReplaceAll(fList, variableSol));
+            MathematicaPlot plot = new MathematicaPlot();
+            plot.setPlotFunction(evaluate);
+            plot.setPlotParameter(new MList(variableT, new MVariable("0"), variableTMax));
+            plot.setPlotRange(plotRange);
+            plot.setPlotStyle(plotStyle);
+            plot.setPlotLegends(plotLegende);
+            plotList.add(plot);
+        }
 
         MExpressionList conMethod = new MExpressionList();
         conMethod.add(new MExpression("\"ConstraintMethod\""));
@@ -881,8 +939,8 @@ public class MathematicaModel {
         }
         glvarList.add(lambdaF);
         MQuietNDSolve ndSolve = new MQuietNDSolve();
-        replaceMe = new MVariable("OUTPUT_GL");
-        ndSolve.addParameter(replaceMe);
+        MVariable outputGl = new MVariable("%");
+        ndSolve.addParameter(outputGl);
         ndSolve.addLinebreak();
         ndSolve.addParameter(glvarList);
         ndSolve.addLinebreak();
@@ -976,6 +1034,6 @@ public class MathematicaModel {
     }
 
     private MList getVariableConfig(String name, double startValue, double minValue, double maxValue) {
-        return new MList(new MList(new MExpression("parameter", name), new MExpression(startValue)), new MExpression(minValue), new MExpression(maxValue));
+        return new MList(new MList(new MExpression("parameter", name), new MVariable(startValue)), new MVariable(minValue), new MVariable(maxValue));
     }
 }

@@ -1,5 +1,7 @@
 package at.binter.gcd.model;
 
+import at.binter.gcd.mathematica.elements.MDirective;
+import at.binter.gcd.mathematica.elements.MPlotStyle;
 import at.binter.gcd.model.elements.Agent;
 import at.binter.gcd.model.elements.AlgebraicVariable;
 import at.binter.gcd.model.elements.PlotVariable;
@@ -21,9 +23,10 @@ public class GCDPlot {
 
     private final GCDModel model;
     private String name;
-    private String legendLabel;
-    private String plotStyle;
+    private String plotParameter;
     private String plotRange;
+    private String plotStyle;
+    private String legendLabel;
 
     private final ObservableList<GCDPlotItem<AlgebraicVariable>> algebraicVariables = FXCollections.observableArrayList();
     private final SortedList<GCDPlotItem<AlgebraicVariable>> algebraicVariablesSorted = algebraicVariables.sorted();
@@ -81,6 +84,17 @@ public class GCDPlot {
             return "{-plotmax, plotmax}";
         }
         return plotRange;
+    }
+
+    public String getPlotParameter() {
+        if (StringUtils.isBlank(plotRange)) {
+            return "{t, 0, tmax}";
+        }
+        return plotParameter;
+    }
+
+    public void setPlotParameter(String plotParameter) {
+        this.plotParameter = plotParameter;
     }
 
     public void setPlotRange(String plotRange) {
@@ -305,5 +319,21 @@ public class GCDPlot {
                 removeAlgebraicVariable(algVar, true);
             }
         }
+    }
+
+    public MPlotStyle createMathematicaPlotStyle() {
+        MPlotStyle style = new MPlotStyle();
+        style.setName(getPlotStyle());
+        for (GCDPlotItem<Agent> agent : getAgentsSorted()) {
+            style.addDirective(new MDirective(agent.getItem(), "Agent " + agent.getItem().getName()));
+        }
+        for (GCDPlotItem<AlgebraicVariable> algVar : getAlgebraicVariablesSorted()) {
+            style.addDirective(new MDirective(algVar.getItem(), algVar.getItem().getName()));
+        }
+        for (PlotVariable pV : getVariablesSorted()) {
+            style.addDirective(new MDirective(pV.variable, pV.variable.getName()));
+        }
+        style.setAddSemicolon(true);
+        return style;
     }
 }

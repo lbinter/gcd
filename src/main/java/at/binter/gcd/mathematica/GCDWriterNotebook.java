@@ -3,6 +3,7 @@ package at.binter.gcd.mathematica;
 import at.binter.gcd.mathematica.syntax.*;
 import at.binter.gcd.mathematica.syntax.function.MClearAll;
 import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.MathematicaModel;
 import at.binter.gcd.util.MathematicaUtils;
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import static at.binter.gcd.model.MathematicaModel.convertParameterToRowBoxList;
@@ -23,7 +23,6 @@ public class GCDWriterNotebook implements GCDMathematica {
     private final File outputFile;
     private final OutputStreamWriter writer;
     private final MathematicaModel model;
-    private final List<IExpression> elements = new ArrayList<>();
     private Notebook nb;
     private RowBox currentCell = new RowBox();
     private final IExpression linebreakExpr = new MExpression(MathematicaUtils.linebreakString);
@@ -72,7 +71,6 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     @Override
     public void generate() {
-        elements.clear();
         nb = new Notebook();
         nb.add(new Cell(new RowBox(new MClearAll("\"\\\"\\<Global`*\\>\\\"\""))));
         generatePlotStyles();
@@ -93,7 +91,11 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     @Override
     public void generatePlotStyles() {
-        // TODO implement me
+        for (GCDPlot plot : gcdModel.getPlots()) {
+            addToCurrentCell(plot.createMathematicaPlotStyle());
+            addToCurrentCell(linebreakExpr);
+        }
+        closeCurrentCell();
     }
 
     @Override
@@ -141,7 +143,6 @@ public class GCDWriterNotebook implements GCDMathematica {
         addNewRowBox(model.getSetnZwangB());
         addToCurrentCell(model.getRowBoxDefzVar());
         addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefzVarSubstitute()));
-        elements.addAll(model.getSetDelayedDefzVarSubstitute());
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVar()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVarSubstitute()));
         addToCurrentCell(linebreakExpr);
