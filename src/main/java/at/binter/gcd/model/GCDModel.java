@@ -380,6 +380,7 @@ public class GCDModel extends GCDBaseModel {
             }
             addPlot(p);
         }
+        setSavedToFile(true);
     }
 
     public boolean isClearGlobal() {

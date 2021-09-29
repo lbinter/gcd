@@ -40,7 +40,7 @@ public class GCDWriterHTML implements GCDMathematica {
     }
 
     @Override
-    public void writeToFile() {
+    public boolean writeToFile() {
         throw new UnsupportedOperationException("GCDWriterHTML cannot write to file");
     }
 

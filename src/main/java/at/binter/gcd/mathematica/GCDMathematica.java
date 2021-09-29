@@ -13,7 +13,7 @@ public interface GCDMathematica {
 
     String toString();
 
-    void writeToFile();
+    boolean writeToFile();
 
     /**
      * <pre>

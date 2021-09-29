@@ -53,7 +53,7 @@ public class GCDWriterNotebook implements GCDMathematica {
     }
 
     @Override
-    public void writeToFile() {
+    public boolean writeToFile() {
         log.info("Generating {}", outputFile.getAbsolutePath());
         try {
             generate();
@@ -63,8 +63,10 @@ public class GCDWriterNotebook implements GCDMathematica {
             writer.close();
             model.getUtils().closeLink();
             log.info("file output stream closed");
+            return true;
         } catch (IOException e) {
             log.error("Could not generate file", e);
+            return false;
         }
     }
 

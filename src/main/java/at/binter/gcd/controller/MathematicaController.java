@@ -4,10 +4,12 @@ import at.binter.gcd.mathematica.GCDMode;
 import at.binter.gcd.mathematica.GCDWriterHTML;
 import at.binter.gcd.mathematica.GCDWriterNotebook;
 import at.binter.gcd.model.GCDModel;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -16,7 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -30,6 +34,8 @@ public class MathematicaController extends BaseController implements Initializab
     private GCDModel model;
 
     @FXML
+    private TabPane tabPane;
+    @FXML
     private TextField gcdFilePath;
     @FXML
     private TextField ndsolveFilePath;
@@ -39,6 +45,9 @@ public class MathematicaController extends BaseController implements Initializab
     private TextField controlFilePath;
     @FXML
     private WebView mathematicaCode;
+
+    @FXML
+    private VBox progressIndicator;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,7 +86,12 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     @FXML
-    void chooseNDSolveFile(ActionEvent event) {
+    void gcdSaveAs() {
+        // TODO implement me
+    }
+
+    @FXML
+    void chooseNDSolveFile() {
         File f = showFileChooser(model.getMathematicaNDSolveFile());
         if (f != null) {
             model.setMathematicaNDSolveFile(f);
@@ -85,7 +99,7 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     @FXML
-    void chooseModelicaFile(ActionEvent event) {
+    void chooseModelicaFile() {
         File f = showFileChooser(model.getMathematicaModelicaFile());
         if (f != null) {
             model.setMathematicaModelicaFile(f);
@@ -93,7 +107,7 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     @FXML
-    void chooseControlFile(ActionEvent event) {
+    void chooseControlFile() {
         File f = showFileChooser(model.getMathematicaControlFile());
         if (f != null) {
             model.setMathematicaControlFile(f);
@@ -101,28 +115,52 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     @FXML
-    void generateNDSolveFile(ActionEvent event) {
-        GCDWriterNotebook ndSolveWriter = new GCDWriterNotebook(model, GCDMode.NDSOLVE);
-        ndSolveWriter.writeToFile();
+    synchronized void generateNDSolveFile() {
+        if (model.getMathematicaNDSolveFile() != null) {
+            new Thread(createFileGenerationTask(GCDMode.NDSOLVE, model.getMathematicaNDSolveFile())).start();
+        }
     }
 
     @FXML
-    void generateModelicaFile(ActionEvent event) {
-        GCDWriterNotebook modelicaWriter = new GCDWriterNotebook(model, GCDMode.MODELICA);
-        modelicaWriter.writeToFile();
+    synchronized void generateModelicaFile() {
+        if (model.getMathematicaModelicaFile() != null) {
+            new Thread(createFileGenerationTask(GCDMode.MODELICA, model.getMathematicaModelicaFile())).start();
+        }
     }
 
     @FXML
-    void generateControlFile(ActionEvent event) {
-        GCDWriterNotebook controlWriter = new GCDWriterNotebook(model, GCDMode.CONTROL);
-        controlWriter.writeToFile();
+    synchronized void generateControlFile() {
+        if (model.getMathematicaControlFile() != null) {
+            new Thread(createFileGenerationTask(GCDMode.CONTROL, model.getMathematicaControlFile())).start();
+        }
     }
 
     @FXML
-    void generateAllNBFiles(ActionEvent event) {
-        generateNDSolveFile(event);
-        generateModelicaFile(event);
-        generateControlFile(event);
+    void openNDSolveFile() {
+        openFile(model.getMathematicaNDSolveFile());
+    }
+
+    @FXML
+    void openModelicaFile() {
+        openFile(model.getMathematicaModelicaFile());
+    }
+
+    @FXML
+    void openControlFile() {
+        openFile(model.getMathematicaControlFile());
+    }
+
+    @FXML
+    void generateAllNBFiles() {
+        showProgress(true);
+        try {
+            generateFile(GCDMode.NDSOLVE);
+            generateFile(GCDMode.MODELICA);
+            generateFile(GCDMode.CONTROL);
+        } catch (Exception e) {
+            log.error("Could not generate mathematica files", e);
+        }
+        showProgress(false);
     }
 
     private File showFileChooser(File currentFile) {
@@ -144,5 +182,45 @@ public class MathematicaController extends BaseController implements Initializab
         fc.getExtensionFilters().add(nbFileExt);
         fc.setSelectedExtensionFilter(nbFileExt);
         return fc.showSaveDialog(gcd.primaryStage);
+    }
+
+    private void openFile(File file) {
+        if (file == null || !file.exists() || file.isDirectory()) {
+            return;
+        }
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (IOException | IllegalArgumentException e) {
+            log.error("Could not open file {}", file, e);
+        }
+    }
+
+    private void showProgress(boolean showProgressIndicator) {
+        progressIndicator.setVisible(showProgressIndicator);
+        tabPane.setDisable(showProgressIndicator);
+    }
+
+    private boolean generateFile(GCDMode mode) {
+        GCDWriterNotebook writer = new GCDWriterNotebook(model, mode);
+        return writer.writeToFile();
+    }
+
+    private Task<Boolean> createFileGenerationTask(GCDMode mode, File file) {
+        Task<Boolean> task = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                return new GCDWriterNotebook(model, mode).writeToFile();
+            }
+        };
+        task.setOnRunning(t -> showProgress(true));
+        task.setOnSucceeded(t -> {
+            showProgress(false);
+            if (task.getValue()) {
+                openFile(file);
+            }
+        });
+        task.setOnCancelled(t -> showProgress(false));
+        task.setOnFailed(t -> showProgress(false));
+        return task;
     }
 }

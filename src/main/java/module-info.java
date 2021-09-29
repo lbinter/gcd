@@ -13,6 +13,7 @@ module at.binter.gcd {
     requires com.sun.xml.bind;
 
     requires JLink;
+    requires java.desktop;
 
     opens at.binter.gcd to javafx.fxml, javafx.controls;
     opens at.binter.gcd.model.xml to jakarta.xml.bind;
