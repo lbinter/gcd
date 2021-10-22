@@ -19,6 +19,10 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
     private int id;
     private String name;
     private final StringProperty condition = new SimpleStringProperty();
+    private String mathematicaCondition;
+    private boolean mathematicaConditionSet = false;
+    private String mathematicaString;
+    private boolean mathematicaStringSet = false;
     private String description;
 
     private final VariableParameterList variableParameterList = new VariableParameterList();
@@ -65,6 +69,8 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
     }
 
     public void setCondition(String condition) {
+        mathematicaCondition = null;
+        mathematicaConditionSet = false;
         ParsedFunction parsedFunction;
         if (condition.contains(":=")) {
             String[] split = Tools.split(condition.replace("\"", "").trim(), ":=");
@@ -75,6 +81,22 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
         fillVariables(parsedFunction.variables);
         fillParameters(parsedFunction.parameters);
         conditionProperty().set(parsedFunction.function);
+    }
+
+    public String getMathematicaCondition() {
+        return mathematicaCondition;
+    }
+
+    public void setMathematicaCondition(String mathematicaCondition) {
+        if (StringUtils.isBlank(mathematicaCondition)) {
+            return;
+        }
+        this.mathematicaCondition = mathematicaCondition;
+        mathematicaConditionSet = true;
+    }
+
+    public boolean isMathematicaConditionSet() {
+        return mathematicaConditionSet;
     }
 
     public String getDescription() {
@@ -139,5 +161,25 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
             return compareTo((Constraint) obj) == 0;
         }
         return false;
+    }
+
+    public String toStringRaw() {
+        return id + ":=" + getCondition();
+    }
+
+    public String getMathematicaString() {
+        return mathematicaString;
+    }
+
+    public void setMathematicaString(String mathematicaString) {
+        if (StringUtils.isBlank(mathematicaString)) {
+            return;
+        }
+        this.mathematicaString = mathematicaString;
+        mathematicaStringSet = true;
+    }
+
+    public boolean isMathematicaStringSet() {
+        return mathematicaStringSet;
     }
 }

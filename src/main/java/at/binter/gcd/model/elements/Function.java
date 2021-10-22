@@ -18,6 +18,10 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
     private final StringProperty name = new SimpleStringProperty();
     private final StringProperty function = new SimpleStringProperty();
     private final VariableParameterList variableParameterList = new VariableParameterList();
+    private String mathematicaFunction;
+    private boolean mathematicaFunctionSet = false;
+    private String mathematicaString;
+    private boolean mathematicaStringSet = false;
     protected String parameter;
 
     public abstract String getAssignmentSymbol();
@@ -62,6 +66,8 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
     }
 
     public void setFunction(String function) {
+        mathematicaFunction = null;
+        mathematicaFunctionSet = false;
         if (StringUtils.isBlank(function)) {
             functionProperty().set("");
         } else {
@@ -77,6 +83,26 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
             fillParameters(parsedFunction.parameters);
             functionProperty().set(parsedFunction.function);
         }
+    }
+
+    public VariableParameterList getVariableParameterList() {
+        return variableParameterList;
+    }
+
+    public String getMathematicaFunction() {
+        return mathematicaFunction;
+    }
+
+    public void setMathematicaFunction(String mathematicaFunction) {
+        if (StringUtils.isBlank(mathematicaFunction)) {
+            return;
+        }
+        this.mathematicaFunction = mathematicaFunction;
+        mathematicaFunctionSet = true;
+    }
+
+    public boolean isMathematicaFunctionSet() {
+        return mathematicaFunctionSet;
     }
 
     public void fillParameters(Set<String> newParameters) {
@@ -116,4 +142,21 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
     public Set<String> getParametersAdded() {
         return variableParameterList.getParametersAdded();
     }
+
+    public String getMathematicaString() {
+        return mathematicaString;
+    }
+
+    public void setMathematicaString(String mathematicaString) {
+        if (StringUtils.isBlank(mathematicaString)) {
+            return;
+        }
+        this.mathematicaString = mathematicaString;
+        mathematicaStringSet = true;
+    }
+
+    public boolean isMathematicaStringSet() {
+        return mathematicaStringSet;
+    }
+
 }

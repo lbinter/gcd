@@ -90,4 +90,8 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
         }
         return false;
     }
+
+    public String toStringRaw() {
+        return getName() + assignmentSymbol + getFunction();
+    }
 }

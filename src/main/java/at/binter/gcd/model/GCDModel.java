@@ -2,6 +2,7 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.*;
+import at.binter.gcd.util.MathematicaUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -320,6 +321,22 @@ public class GCDModel extends GCDBaseModel {
 
     public void setClearGlobal(boolean clearGlobal) {
         this.clearGlobal = clearGlobal;
+    }
+
+    public void transformFunctions(MathematicaUtils utils) {
+        for (AlgebraicVariable algVar : getAlgebraicVariablesSorted()) {
+            algVar.setMathematicaFunction(utils.transformToFullForm(algVar.getFunction(), false));
+            algVar.setMathematicaString(utils.transformToFullForm(algVar.toStringRaw(), false));
+        }
+        for (Agent agent : getAgentsSorted()) {
+            agent.setMathematicaFunction(utils.transformToFullForm(agent.getFunction(), false));
+            agent.setMathematicaString(utils.transformToFullForm(agent.toStringRaw(), false));
+
+        }
+        for (Constraint constraint : getConstraints()) {
+            constraint.setMathematicaCondition(utils.transformToFullForm(constraint.getCondition(), false));
+            constraint.setMathematicaString(utils.transformToFullForm(constraint.toStringRaw(), false));
+        }
     }
 
     public void loadXmlModel(XmlModel model) {

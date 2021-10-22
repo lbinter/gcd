@@ -168,6 +168,9 @@ public class Tools {
     }
 
     public static String transformMathematicaGreekToGreekHtmlLetters(String text) {
+        if (text == null) {
+            return null;
+        }
         for (String l : greekLetters) {
             text = text.replace("\\[" + l + "]", "&" + l.toLowerCase() + ";");
         }

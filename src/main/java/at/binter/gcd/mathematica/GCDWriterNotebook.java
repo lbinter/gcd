@@ -55,6 +55,7 @@ public class GCDWriterNotebook implements GCDMathematica {
     public boolean writeToFile() {
         log.info("Generating {}", outputFile.getAbsolutePath());
         try {
+            model.transformToMathematica();
             generate();
             closeCurrentCell();
             writeNotebook();
@@ -73,6 +74,20 @@ public class GCDWriterNotebook implements GCDMathematica {
     public void generate() {
         nb = new Notebook();
         nb.add(new Cell(new RowBox(new MClearAll("\"\\\"\\<Global`*\\>\\\"\""))));
+        switch (mode) {
+            case NDSOLVE -> {
+                generateGL();
+                generateManipulate();
+            }
+            case MODELICA -> {
+                generateGL();
+                generateModelica();
+            }
+            case CONTROL -> generateControl();
+        }
+    }
+
+    private void generateGL() {
         generatePlotStyles();
         generateVariableDefinition();
         generateAgentDefinition();
@@ -86,7 +101,14 @@ public class GCDWriterNotebook implements GCDMathematica {
         generateBehavioralEquation();
         generateInitialConditions();
         generateSystemOfEquation();
-        generateManipulate();
+    }
+
+    public void generateControl() {
+        addToCurrentCell(model.getRowBoxControlAlgebraicVariables());
+        closeCurrentCell();
+        addToCurrentCell(model.getRowBoxControlAgents());
+        closeCurrentCell();
+        addToCurrentCell(model.getRowBoxControlConstraints());
     }
 
     @Override
@@ -238,6 +260,11 @@ public class GCDWriterNotebook implements GCDMathematica {
     public void generateManipulate() {
         closeCurrentCell();
         addNewRowBox(model.getManipulate());
+    }
+
+    public void generateModelica() {
+        closeCurrentCell();
+        // TODO
     }
 
     @Override

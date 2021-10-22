@@ -311,6 +311,14 @@ public class MathematicaModel {
         return new RowBox(false, new MSet(substitute, list, true));
     }
 
+    public List<RowBox> getRowBoxControlAlgebraicVariables() {
+        List<RowBox> list = new ArrayList<>();
+        for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
+            list.add(new RowBox(true, new MExpression(aV.getMathematicaString(), false)));
+        }
+        return list;
+    }
+
     public List<MSetDelayed> getSetDelayedDefalgvar() {
         List<MSetDelayed> list = new ArrayList<>(model.getAlgebraicVariables().size());
         int ii = 1;
@@ -326,6 +334,10 @@ public class MathematicaModel {
             ii++;
         }
         return list;
+    }
+
+    public void transformToMathematica() {
+        model.transformFunctions(utils);
     }
 
     private MParameter getDefalgVar(int ii) {
@@ -417,12 +429,20 @@ public class MathematicaModel {
             }
             MSetDelayed delayed = new MSetDelayed(defuvar,
                     new MCondition(
-                            new MParentheses(new MExpression(utils.transformToFullForm(a.getFunction(), false))),
+                            new MParentheses(new MExpression(a.getMathematicaFunction())),
                             new MEqual(
                                     parameterJ,
                                     new MExpression("variable", a.getName()))),
                     true);
             list.add(new RowBox(true, delayed));
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxControlAgents() {
+        List<RowBox> list = new ArrayList<>();
+        for (Agent agent : model.getAgentsSorted()) {
+            list.add(new RowBox(true, new MExpression(agent.getMathematicaString(), false)));
         }
         return list;
     }
@@ -504,13 +524,21 @@ public class MathematicaModel {
             }
             MSetDelayed delayed = new MSetDelayed(defzvar,
                     new MCondition(
-                            new MParentheses(new MExpression(utils.transformToFullForm(c.getCondition(), false))),
+                            new MParentheses(new MExpression(c.getMathematicaCondition())),
                             new MEqual(
                                     parameterQ,
                                     new MExpression(c.getId())
                             )),
                     true);
             list.add(new RowBox(true, delayed));
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxControlConstraints() {
+        List<RowBox> list = new ArrayList<>();
+        for (Constraint constraint : model.getConstraints()) {
+            list.add(new RowBox(true, new MExpression(constraint.getMathematicaString(), false)));
         }
         return list;
     }
