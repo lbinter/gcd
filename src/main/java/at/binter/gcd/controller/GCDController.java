@@ -239,6 +239,7 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     public void clearModel() {
         model.clearModel();
+        clearPlots();
     }
 
     @FXML

@@ -46,10 +46,6 @@ public class MPlotStyle extends MBase implements IExpression {
     }
 
     public MPlotStyle(GCDModel model) {
-        name = "PLOTSTYLEalgVar";
-        model.getAlgebraicVariables().sorted().forEach(algebraicVariable -> {
-
-        });
         Iterator<AlgebraicVariable> it = model.getAlgebraicVariables().sorted().iterator();
         boolean hasMoreAlgVars, hasMoreVars;
         while (it.hasNext()) {

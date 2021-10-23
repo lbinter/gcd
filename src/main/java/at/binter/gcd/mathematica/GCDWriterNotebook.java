@@ -13,8 +13,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static at.binter.gcd.model.MathematicaModel.convertParameterToRowBoxList;
-import static at.binter.gcd.model.MathematicaModel.convertToRowBoxList;
+import static at.binter.gcd.model.MathematicaModel.*;
 
 public class GCDWriterNotebook implements GCDMathematica {
     private static final Logger log = LoggerFactory.getLogger(GCDWriterNotebook.class);
@@ -113,6 +112,8 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     @Override
     public void generatePlotStyles() {
+        addNewRowBox(model.getDefaultColor());
+        addNewRowBox(model.getDefaultThickness());
         for (GCDPlot plot : gcdModel.getPlots()) {
             addToCurrentCell(plot.createMathematicaPlotStyle());
             addToCurrentCell(linebreakExpr);
@@ -146,14 +147,14 @@ public class GCDWriterNotebook implements GCDMathematica {
     public void generateSubstitutes() {
         addNewRowBox(model.getSubstituteComment());
         addNewRowBox(model.getRowBoxSetSubstitute());
-        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefalgvar()));
-        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefAlgVarSubstitute()));
+        addToCurrentCell(convertDelayedToRowBoxList(model.getSetDelayedDefalgvar()));
+        addToCurrentCell(convertDelayedToRowBoxList(model.getSetDelayedDefAlgVarSubstitute()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefAlgVar()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefAlgVarSubstitute()));
         addToCurrentCell(linebreakExpr);
         addNewRowBox(model.getDefuvarComment());
         addToCurrentCell(model.getRowBoxDefuVar());
-        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefuVarSubstitute()));
+        addToCurrentCell(convertDelayedToRowBoxList(model.getSetDelayedDefuVarSubstitute()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefuVar()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefuVarSubstitute()));
         addToCurrentCell(linebreakExpr);
@@ -164,7 +165,7 @@ public class GCDWriterNotebook implements GCDMathematica {
         addNewRowBox(model.getnZwangBComment());
         addNewRowBox(model.getSetnZwangB());
         addToCurrentCell(model.getRowBoxDefzVar());
-        addToCurrentCell(convertToRowBoxList(model.getSetDelayedDefzVarSubstitute()));
+        addToCurrentCell(convertDelayedToRowBoxList(model.getSetDelayedDefzVarSubstitute()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVar()));
         addToCurrentCell(convertParameterToRowBoxList(model.getParameterListDefzVarSubstitute()));
         addToCurrentCell(linebreakExpr);
@@ -264,7 +265,13 @@ public class GCDWriterNotebook implements GCDMathematica {
 
     public void generateModelica() {
         closeCurrentCell();
-        // TODO
+        addNewRowBox(model.getModelica());
+        closeCurrentCell();
+        addNewRowBox(model.getModelicaDisplay());
+        closeCurrentCell();
+        addToCurrentCell(convertSetToRowBoxList(model.getModelicaSimModel()));
+        closeCurrentCell();
+        addNewRowBox(model.getModelicaManipulate());
     }
 
     @Override

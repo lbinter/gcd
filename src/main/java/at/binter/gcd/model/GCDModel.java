@@ -68,6 +68,7 @@ public class GCDModel extends GCDBaseModel {
                         }
                         updateVariables(algVar);
                         updateParameters(algVar);
+                        generateChangeMu();
                     });
                 });
             }
@@ -78,6 +79,7 @@ public class GCDModel extends GCDBaseModel {
                     algebraicVariableNameMap.remove(algVar.getName());
                     log.trace("Removed algebraic variable \"{}\"", algVar);
                 });
+                generateChangeMu();
             }
         }
     };

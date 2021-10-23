@@ -136,6 +136,7 @@ public abstract class MFunction extends MBase implements IExpression {
 
     @Override
     public String getMathematicaExpression() {
+        boolean isMThrough = this instanceof MThrough;
         RowBox box = new RowBox();
         if (this instanceof MQuietNDSolve) {
             RowBox ndSolve = new RowBox();
@@ -143,6 +144,13 @@ public abstract class MFunction extends MBase implements IExpression {
             ndSolve.add(new MVariable("@"));
             ndSolve.add(new MVariable("NDSolve"));
             box.add(ndSolve);
+        } else if (isMThrough) {
+            RowBox through = new RowBox();
+            box.add(new MExpression("\"(\""));
+            through.add(new MVariable(getFunction()));
+            through.add(new MVariable("@*"));
+            through.add(new MVariable(((MThrough) this).getTarget()));
+            box.add(through);
         } else {
             box.add(new MExpression(getFunction()));
         }
@@ -159,12 +167,21 @@ public abstract class MFunction extends MBase implements IExpression {
             } else {
                 if (addDelimiter) {
                     box.add(new MExpression("\",\""));
+                    if (linebreakAfterParameter) {
+                        box.add(linebreak);
+                    }
                 }
                 box.add(expression);
                 addDelimiter = true;
             }
         }
         box.add(new MExpression("\"]\""));
+        if (isMThrough) {
+            box.add(new MExpression("\")\""));
+            box.add(new MExpression("\"[\""));
+            box.add(new MExpression("\"t\""));
+            box.add(new MExpression("\"]\""));
+        }
         return box.getMathematicaExpression();
     }
 }

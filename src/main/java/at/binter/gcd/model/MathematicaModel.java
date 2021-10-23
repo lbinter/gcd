@@ -45,6 +45,7 @@ public class MathematicaModel {
     private final MVariable variableTMax = new MVariable("tmax");
     private final MVariable variableI = new MVariable("i");
     private final MVariable variableII = new MVariable("ii");
+    private final MVariable variableModelica = new MVariable("modelica");
     private final MExpression e0 = new MExpression(0);
     private final MExpression e2p5 = new MExpression("2.5");
     private final MExpression e20 = new MExpression(20);
@@ -243,6 +244,14 @@ public class MathematicaModel {
 
     public MComment getAfterGl() {
         return afterGl;
+    }
+
+    public MSet getDefaultColor() {
+        return new MSet(new MVariable("defaultColor"), new MExpression("Black"), true);
+    }
+
+    public MSet getDefaultThickness() {
+        return new MSet(new MVariable("defaultThickness"), new MNamedCall("AbsoluteThickness", new MExpression(1)), true);
     }
 
     public MSet getSetDiffVar() {
@@ -986,6 +995,17 @@ public class MathematicaModel {
         manipulate.setLinebreakAfterFunction(true);
         manipulate.addLinebreak();
 
+        if (addValuesToManipulate(manipulate) != 0) {
+            manipulate.addLinebreak();
+            manipulate.addLinebreak();
+        }
+        manipulate.addParameter(getVariableConfig(parameterTMax, e30, e0, e100));
+        manipulate.addParameter(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
+
+        return manipulate;
+    }
+
+    private int addValuesToManipulate(MManipulate manipulate) {
         int blockSize = 4;
         int varInit = 0;
         for (Variable v : model.getVariablesSorted()) {
@@ -1031,17 +1051,137 @@ public class MathematicaModel {
                 paramInit++;
             }
         }
-        if (paramInit != 0) {
-            manipulate.addLinebreak();
-            manipulate.addLinebreak();
+        return paramInit;
+    }
+
+    public MSet getModelica() {
+        return new MSet(variableModelica, new MCreateSystemModel(new MVariable("%"), variableT));
+    }
+
+    public MNamedCall getModelicaDisplay() {
+        return new MNamedCall("modelica", new MExpression("\"\\\"ModelicaDisplay\\\"\""));
+    }
+
+    public List<MSet> getModelicaSimModel() {
+        List<MSet> list = new ArrayList<>();
+        int i = 1;
+        for (GCDPlot p : model.getPlots()) {
+            list.add(getModelicaSimModel(p, i));
+            i++;
         }
-        manipulate.addParameter(getVariableConfig(parameterTMax, e30, e0, e100));
-        manipulate.addParameter(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
+        return list;
+    }
+
+    public MSet getModelicaSimModel(GCDPlot plot, int id) {
+        MList list1 = new MList();
+        for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
+            // list1.add(new MExpression(agent.getItem().getMathematicaFunction()));// TODO ? Agents
+        }
+        for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
+            list1.add(new MExpression("\"\\\"" + algVar.getItem().getName() + "\\\"\""));
+        }
+        for (PlotVariable pV : plot.getVariablesSorted()) {
+            list1.add(new MExpression("\"\\\"" + pV.variable.getName() + "\\\"\""));
+        }
+
+        MList list2 = new MList(); // parameter list
+        for (Parameter p : model.getParametersSorted()) {
+            list2.add(new MExpression("\"\\\"" + p.getName() + "\\\"\""));
+        }
+        for (ChangeMu mu : model.getChangeMus()) {
+            list2.add(new MExpression("\"\\\"" + mu.getIdentifier() + "\\\"\""));
+        }
+        for (Variable v : model.getVariablesSorted()) {
+            if (v.hasValidInitValues()) {
+                list2.add(new MExpression("\"\\\"" + v.getDefaultInitialCondition() + "\\\"\""));
+            }
+        }
+
+        MExpressionList method = new MExpressionList();
+        method.add(new MExpression("Method"));
+        method.add(new MArrow());
+        method.add(new MExpression("\"\\\"DASSL\\\"\""));
+
+        MSystemModelParametricSimulate sim = new MSystemModelParametricSimulate(variableModelica,
+                list1,
+                e30,
+                list2,
+                method
+        );
+        sim.setLinebreakAfterParameter(true);
+        return new MSet(new MVariable("simModelPlot" + id), sim);
+    }
+
+    public MManipulate getModelicaManipulate() {
+        MList plotList = new MList();
+        int id = 1;
+        for (GCDPlot plot : model.getPlots()) {
+            MThrough t = new MThrough("simModelPlot" + id);
+            for (Parameter p : model.getParametersSorted()) {
+                t.addParameter(new MExpression(p.getName()));
+            }
+            for (ChangeMu mu : model.getChangeMus()) {
+                t.addParameter(new MExpression(mu.getIdentifier()));
+            }
+            for (Variable v : model.getVariablesSorted()) {
+                if (v.hasValidInitValues()) {
+                    t.addParameter(new MExpression(v.getDefaultInitialCondition()));
+                }
+            }
+            MEvaluate evaluate = new MEvaluate(t);
+
+            MExpressionList plotRange = new MExpressionList();
+            plotRange.add(new MVariable("PlotRange"));
+            plotRange.add(new MArrow());
+            plotRange.add(new MExpression(utils.transformToFullForm(plot.getPlotRange(), false)));
+
+            MExpressionList plotStyle = new MExpressionList();
+            plotStyle.add(new MVariable("PlotStyle"));
+            plotStyle.add(new MArrow());
+            plotStyle.add(new MVariable(plot.getPlotStyle()));
+
+            MList legendList = new MList();
+            for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
+                // legendList.add(new MVariable(agent.getItem().getName())); // TODO ? Agent
+            }
+            for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
+                legendList.add(new MExpression("\"\\\"" + algVar.getItem().getName() + "\\\"\""));
+            }
+            for (PlotVariable pV : plot.getVariablesSorted()) {
+                legendList.add(new MExpression("\"\\\"" + pV.variable.getName() + "\\\"\""));
+            }
+
+            MExpressionList plotLegende = new MExpressionList();
+            plotLegende.add(new MVariable("PlotLegends"));
+            plotLegende.add(new MArrow());
+            plotLegende.add(legendList);
+
+            MathematicaPlot p = new MathematicaPlot();
+            p.setPlotFunction(evaluate);
+            p.setPlotParameter(new MList(variableT, new MVariable("0"), new MVariable("30")));
+            p.setPlotRange(plotRange);
+            p.setPlotStyle(plotStyle);
+            p.setPlotLegends(plotLegende);
+            plotList.add(p);
+        }
+
+        MManipulate manipulate = new MManipulate(plotList);
+        manipulate.setLinebreakAfterFunction(true);
+        manipulate.addLinebreak();
+        addValuesToManipulate(manipulate);
 
         return manipulate;
     }
 
-    public static List<RowBox> convertToRowBoxList(List<MSetDelayed> setDelayedList) {
+    public static List<RowBox> convertSetToRowBoxList(List<MSet> set) {
+        List<RowBox> list = new ArrayList<>();
+        for (MSet s : set) {
+            list.add(new RowBox(true, s));
+        }
+        return list;
+    }
+
+    public static List<RowBox> convertDelayedToRowBoxList(List<MSetDelayed> setDelayedList) {
         List<RowBox> list = new ArrayList<>();
         for (MSetDelayed setDelayed : setDelayedList) {
             list.add(new RowBox(true, setDelayed));
