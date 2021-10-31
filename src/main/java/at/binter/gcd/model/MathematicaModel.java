@@ -21,10 +21,11 @@ import java.util.List;
 public class MathematicaModel {
     private static final Logger log = LoggerFactory.getLogger(MathematicaModel.class);
     private final GCDModel model;
-    private final MathematicaUtils utils = new MathematicaUtils();
+    private final MathematicaUtils utils;
 
-    public MathematicaModel(GCDModel model) {
+    public MathematicaModel(GCDModel model, MathematicaUtils utils) {
         this.model = model;
+        this.utils = utils;
     }
 
     public MathematicaUtils getUtils() {

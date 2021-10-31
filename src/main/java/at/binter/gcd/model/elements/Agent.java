@@ -2,9 +2,12 @@ package at.binter.gcd.model.elements;
 
 import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.PlotStyle;
+import at.binter.gcd.model.Status;
 import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
 
+import static at.binter.gcd.model.Status.INVALID;
+import static at.binter.gcd.model.Status.VALID;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, Comparable<Agent> {
@@ -93,5 +96,9 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
 
     public String toStringRaw() {
         return getName() + assignmentSymbol + getFunction();
+    }
+
+    public Status getStatus() {
+        return hasValidPlotStyle() ? VALID : INVALID;
     }
 }

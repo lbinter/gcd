@@ -1,6 +1,8 @@
 package at.binter.gcd.util;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -8,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -16,6 +19,8 @@ import java.util.regex.Pattern;
 import static at.binter.gcd.GCDApplication.app;
 
 public class GuiUtils {
+    public static final Color defaultBackground = Color.pink;
+    public static final Color defaultForeground = Color.BLACK;
 
     public static void addStageCloseOnEscapeKey(Stage stage, Scene scene) {
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -100,5 +105,9 @@ public class GuiUtils {
         ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(app.getString("button.yes"));
         ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(app.getString("button.no"));
         return alert.showAndWait();
+    }
+
+    public static String getColorAsHtml(Color color) {
+        return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
     }
 }

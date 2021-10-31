@@ -1,9 +1,6 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.HasParameterStringList;
-import at.binter.gcd.model.HasVariableStringList;
-import at.binter.gcd.model.Updatable;
-import at.binter.gcd.model.VariableParameterList;
+import at.binter.gcd.model.*;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Set;
 
+import static at.binter.gcd.model.Status.INVALID;
+import static at.binter.gcd.model.Status.VALID;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class Constraint implements Updatable<Constraint>, Comparable<Constraint>, HasVariableStringList, HasParameterStringList {
@@ -181,5 +180,9 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
 
     public boolean isMathematicaStringSet() {
         return mathematicaStringSet;
+    }
+
+    public Status getStatus() {
+        return StringUtils.isNotBlank(getCondition()) ? VALID : INVALID;
     }
 }

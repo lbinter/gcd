@@ -1,13 +1,12 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.FunctionReference;
-import at.binter.gcd.model.HasMinMaxValues;
-import at.binter.gcd.model.MinMaxValues;
-import at.binter.gcd.model.Updatable;
+import at.binter.gcd.model.*;
 import at.binter.gcd.util.Tools;
 
 import java.util.Set;
 
+import static at.binter.gcd.model.Status.INVALID;
+import static at.binter.gcd.model.Status.VALID;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, HasMinMaxValues {
@@ -127,5 +126,9 @@ public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, H
             return false;
         }
         return compareTo((Parameter) obj) == 0;
+    }
+
+    public Status getStatus() {
+        return hasAllValues() ? VALID : INVALID;
     }
 }

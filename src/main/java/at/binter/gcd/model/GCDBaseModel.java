@@ -10,8 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static at.binter.gcd.model.GCDWarning.*;
+import static at.binter.gcd.model.Status.INVALID;
 
 public abstract class GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDBaseModel.class);
@@ -32,6 +37,8 @@ public abstract class GCDBaseModel {
     protected final ObservableList<ChangeMu> allChangeMu = FXCollections.observableArrayList();
     protected final ObservableList<ChangeMu> changeMus = FXCollections.observableArrayList();
     protected final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
+
+    private Map<GCDWarning, List<Object>> warnings = new HashMap<>();
 
     private boolean runGenerateChangeMu = true;
 
@@ -347,5 +354,61 @@ public abstract class GCDBaseModel {
 
     public boolean isEmpty() {
         return algebraicVariables.size() + agents.size() + constraints.size() + variables.size() + parameters.size() + allChangeMu.size() + changeMus.size() == 0;
+    }
+
+    public Map<GCDWarning, List<Object>> getWarnings() {
+        warnings = new HashMap<>();
+
+        warnings.put(DUPLICATE_VARIABLE_PARAMETER, new ArrayList<>());
+        warnings.put(MAX_VALUE_LESSER_MIN_VALUE, new ArrayList<>());
+        warnings.put(START_VALUE_LESSER_MIN_VALUE, new ArrayList<>());
+        warnings.put(START_VALUE_GREATER_MAX_VALUE, new ArrayList<>());
+        warnings.put(MISSING_START_VALUE, new ArrayList<>());
+        warnings.put(MISSING_MIN_VALUE, new ArrayList<>());
+        warnings.put(MISSING_MAX_VALUE, new ArrayList<>());
+
+        for (Variable v : variablesSorted) {
+            for (Parameter p : parametersSorted) {
+                if (v.getName().equals(p.getName())) {
+                    warnings.get(DUPLICATE_VARIABLE_PARAMETER).add(v);
+                }
+            }
+            if (v.getStatus() == INVALID) {
+                checkDoubleValues(v);
+            }
+        }
+        for (Parameter p : parametersSorted) {
+            checkDoubleValues(p);
+        }
+        for (ChangeMu mu : changeMus) {
+            checkDoubleValues(mu);
+        }
+        return warnings;
+    }
+
+    private void checkDoubleValues(HasMinMaxValues b) {
+        if (b.getMaxValue() != null && b.getMinValue() != null) {
+            if (b.getMaxValue() < b.getMinValue()) {
+                warnings.get(MAX_VALUE_LESSER_MIN_VALUE).add(b);
+            }
+        }
+        if (b.getStartValue() != null) {
+            if (b.getMinValue() != null && b.getStartValue() < b.getMinValue()) {
+                warnings.get(START_VALUE_LESSER_MIN_VALUE).add(b);
+            }
+            if (b.getMaxValue() != null && b.getStartValue() > b.getMaxValue()) {
+                warnings.get(START_VALUE_GREATER_MAX_VALUE).add(b);
+            }
+        }
+
+        if (b.getStartValue() == null) {
+            warnings.get(MISSING_START_VALUE).add(b);
+        }
+        if (b.getMinValue() == null) {
+            warnings.get(MISSING_MIN_VALUE).add(b);
+        }
+        if (b.getMaxValue() == null) {
+            warnings.get(MISSING_MAX_VALUE).add(b);
+        }
     }
 }

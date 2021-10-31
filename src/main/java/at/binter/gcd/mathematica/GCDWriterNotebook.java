@@ -26,7 +26,7 @@ public class GCDWriterNotebook implements GCDMathematica {
     private RowBox currentCell = new RowBox();
     private final IExpression linebreakExpr = new MExpression(MathematicaUtils.linebreakString);
 
-    public GCDWriterNotebook(GCDModel gcdModel, GCDMode mode) {
+    public GCDWriterNotebook(GCDModel gcdModel, GCDMode mode, MathematicaUtils utils) {
         this.gcdModel = gcdModel;
         this.mode = mode;
         FileOutputStream output;
@@ -42,7 +42,7 @@ public class GCDWriterNotebook implements GCDMathematica {
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not create GCDWriterNotebook", e);
         }
-        model = new MathematicaModel(gcdModel);
+        model = new MathematicaModel(gcdModel, utils);
     }
 
     @Override

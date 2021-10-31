@@ -206,4 +206,12 @@ public class Tools {
     public static boolean isMousePrimaryDoubleClicked(MouseEvent event) {
         return event != null && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2;
     }
+
+    public static int getMaxSize(Object[]... arrays) {
+        int maxSize = 0;
+        for (Object[] c : arrays) {
+            maxSize = Math.max(maxSize, c.length);
+        }
+        return maxSize;
+    }
 }

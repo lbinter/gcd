@@ -2,6 +2,7 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.GCDPlot;
+import at.binter.gcd.model.Status;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
@@ -88,6 +89,131 @@ public class GCDController extends BaseController implements Initializable {
         parameterListView.setItems(model.getParametersSorted());
         changeMuListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         changeMuListView.setItems(model.getChangeMus().sorted(Comparator.comparing(ChangeMu::getIdentifier)));
+
+        algVarListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(AlgebraicVariable item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting algVar status: {}", item.getStatus().pseudoClass.getPseudoClassName());
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
+
+        agentListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(Agent item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting agent status: {} -> {}", item.getName(), item.getStatus().cssClass);
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
+
+        constraintListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(Constraint item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting constraint status: {} -> {}", item.getName(), item.getStatus().cssClass);
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
+
+        variableListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(Variable item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting variable status: {} -> {}", item.getName(), item.getStatus().cssClass);
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
+
+        parameterListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(Parameter item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting parameter status: {} -> {}", item.getName(), item.getStatus().cssClass);
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
+        changeMuListView.setCellFactory(f -> new ListCell<>() {
+            @Override
+            protected void updateItem(ChangeMu item, boolean empty) {
+                super.updateItem(item, empty);
+                getStyleClass().remove(Status.VALID.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_VALUES.cssClass);
+                getStyleClass().remove(Status.VALID_HAS_FUNCTION.cssClass);
+                getStyleClass().remove(Status.VALID_AUTOMATIC.cssClass);
+                getStyleClass().remove(Status.INVALID.cssClass);
+                if (item == null || empty) {
+                    setText(null);
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Setting changemu status: {} -> {}", item.getIdentifier(), item.getStatus().cssClass);
+                    }
+                    setText(item.toString());
+                    getStyleClass().add(item.getStatus().cssClass);
+                }
+            }
+        });
 
         registerEventHandlers();
     }

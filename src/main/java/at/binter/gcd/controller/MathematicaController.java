@@ -1,7 +1,7 @@
 package at.binter.gcd.controller;
 
+import at.binter.gcd.gui.GCDErrorHTML;
 import at.binter.gcd.mathematica.GCDMode;
-import at.binter.gcd.mathematica.GCDWriterHTML;
 import at.binter.gcd.mathematica.GCDWriterNotebook;
 import at.binter.gcd.model.GCDModel;
 import javafx.concurrent.Task;
@@ -30,7 +30,7 @@ import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 public class MathematicaController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(MathematicaController.class);
     public static FileChooser.ExtensionFilter nbFileExt = new FileChooser.ExtensionFilter("Mathematica", "*.nb");
-    private GCDWriterHTML htmlWriter;
+    private GCDErrorHTML errorWriter;
     private GCDModel model;
 
     @FXML
@@ -44,7 +44,7 @@ public class MathematicaController extends BaseController implements Initializab
     @FXML
     private TextField controlFilePath;
     @FXML
-    private WebView mathematicaCode;
+    private WebView errorView;
 
     @FXML
     private VBox progressIndicator;
@@ -56,16 +56,16 @@ public class MathematicaController extends BaseController implements Initializab
 
     public void initializeGCDDepended() {
         model = gcd.gcdController.model;
-        htmlWriter = new GCDWriterHTML(model, GCDMode.NDSOLVE);
+        errorWriter = new GCDErrorHTML(model, resources);
     }
 
     public void clear() {
-        mathematicaCode.getEngine().loadContent("<html></html>");
+        errorView.getEngine().loadContent("<html></html>");
     }
 
     public void fillData() {
-        mathematicaCode.getEngine().setUserStyleSheetLocation(gcd.mathematicaCss);
-        mathematicaCode.getEngine().loadContent(htmlWriter.toString());
+        errorView.getEngine().setUserStyleSheetLocation(gcd.errorViewCss);
+        errorView.getEngine().loadContent(errorWriter.generate());
 
         gcdFilePath.setText(model.getFilePath());
         ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
@@ -201,7 +201,7 @@ public class MathematicaController extends BaseController implements Initializab
     }
 
     private boolean generateFile(GCDMode mode) {
-        GCDWriterNotebook writer = new GCDWriterNotebook(model, mode);
+        GCDWriterNotebook writer = new GCDWriterNotebook(model, mode, gcd.utils);
         return writer.writeToFile();
     }
 
@@ -209,7 +209,7 @@ public class MathematicaController extends BaseController implements Initializab
         Task<Boolean> task = new Task<>() {
             @Override
             protected Boolean call() throws Exception {
-                return new GCDWriterNotebook(model, mode).writeToFile();
+                return new GCDWriterNotebook(model, mode, gcd.utils).writeToFile();
             }
         };
         task.setOnRunning(t -> showProgress(true));

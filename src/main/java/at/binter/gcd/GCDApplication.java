@@ -2,6 +2,7 @@ package at.binter.gcd;
 
 
 import at.binter.gcd.controller.*;
+import at.binter.gcd.util.MathematicaUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,7 +28,9 @@ public class GCDApplication extends Application {
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
     public String gcdCss;
+    public String statusCss;
     public String mathematicaCss;
+    public String errorViewCss;
 
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
@@ -61,6 +64,8 @@ public class GCDApplication extends Application {
     public HelpController helpController;
     public MathematicaController mathematicaController;
 
+    public MathematicaUtils utils = new MathematicaUtils();
+
     public GCDApplication() {
         if (app == null) {
             app = this;
@@ -76,13 +81,16 @@ public class GCDApplication extends Application {
         this.primaryStage = primaryStage;
 
         gcdCss = Objects.requireNonNull(getClass().getResource("gcd.css")).toExternalForm();
+        statusCss = Objects.requireNonNull(getClass().getResource("status.css")).toExternalForm();
         mathematicaCss = Objects.requireNonNull(getClass().getResource("mathematica.css")).toExternalForm();
+        errorViewCss = Objects.requireNonNull(getClass().getResource("errorView.css")).toExternalForm();
 
         loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
         loaderGCD.setResources(resources);
 
         primaryScene = new Scene(loaderGCD.load());
+        primaryScene.getStylesheets().add(statusCss);
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle(resources.getString("main.title"));
 

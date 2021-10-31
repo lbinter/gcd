@@ -93,11 +93,11 @@
                                     </rowConstraints>
                                     <children>
                                         <Label fx:id="textValidDefValues" alignment="CENTER" maxWidth="75.0"
-                                               minWidth="75.0" prefWidth="75.0" styleClass="valid-with-default-values"
+                                               minWidth="75.0" prefWidth="75.0" styleClass="valid-has-values"
                                                text="%help.text.element.colored.text" GridPane.halignment="CENTER"
                                                GridPane.valignment="CENTER"/>
                                         <Label fx:id="selectedValidDefValues" alignment="CENTER" maxWidth="100.0"
-                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-with-default-values"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-has-values"
                                                text="%help.text.element.colored.selected" GridPane.columnIndex="1"/>
                                         <Label text="%help.text.variable.status.VALID_DEFAULT_WITH_VALUES"
                                                GridPane.columnIndex="2">
@@ -115,10 +115,10 @@
                                         <Label text="%help.text.variable.status.VALID_HAS_FUNCTION"
                                                GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                                         <Label fx:id="textAutoPlot" alignment="CENTER" maxWidth="75.0" minWidth="75.0"
-                                               prefWidth="75.0" styleClass="valid-auto-plot"
+                                               prefWidth="75.0" styleClass="valid-automatic"
                                                text="%help.text.element.colored.text" GridPane.rowIndex="2"/>
                                         <Label fx:id="selectedAutoPlot" alignment="CENTER" maxWidth="100.0"
-                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-auto-plot"
+                                               minWidth="100.0" prefWidth="100.0" styleClass="valid-automatic"
                                                text="%help.text.element.colored.selected" GridPane.columnIndex="1"
                                                GridPane.rowIndex="2"/>
                                         <Label text="%help.text.variable.status.VALID_AUTOMATIC"

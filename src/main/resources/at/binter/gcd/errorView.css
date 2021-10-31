@@ -1,0 +1,66 @@
+.DUPLICATE_VARIABLE_PARAMETER {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.MAX_VALUE_LESSER_MIN_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.START_VALUE_LESSER_MIN_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.START_VALUE_GREATER_MAX_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.MISSING_START_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.MISSING_MIN_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+.MISSING_MAX_VALUE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
+h3 {
+    padding-left: 5px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    min-width: 50px;
+}
+
+li {
+    vertical-align: middle;
+}

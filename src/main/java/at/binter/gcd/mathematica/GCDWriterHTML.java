@@ -5,6 +5,7 @@ import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.HasPlotStyle;
 import at.binter.gcd.model.MathematicaModel;
+import at.binter.gcd.util.MathematicaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,10 @@ public class GCDWriterHTML implements GCDMathematica {
     private HTMLBuilder builder = new HTMLBuilder();
     private final List<IExpression> elements = new ArrayList<>();
 
-    public GCDWriterHTML(GCDModel gcdModel, GCDMode mode) {
+    public GCDWriterHTML(GCDModel gcdModel, GCDMode mode, MathematicaUtils utils) {
         this.gcdModel = gcdModel;
         this.mode = mode;
-        model = new MathematicaModel(gcdModel);
+        model = new MathematicaModel(gcdModel, utils);
     }
 
     @Override
@@ -68,6 +69,8 @@ public class GCDWriterHTML implements GCDMathematica {
         generateInitialConditions();
         generateSystemOfEquation();
         generateManipulate();
+
+        model.getUtils().closeLink();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class MathematicaUtils {
     public MathematicaUtils() {
     }
 
-    public void openLink() {
+    public synchronized void openLink() {
         try {
             ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname 'C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe'");
             ml.discardAnswer();
@@ -33,7 +33,7 @@ public class MathematicaUtils {
         }
     }
 
-    public void closeLink() {
+    public synchronized void closeLink() {
         ml.close();
         linkOpen = false;
         log.info("Closed link to Mathematica Kernel");

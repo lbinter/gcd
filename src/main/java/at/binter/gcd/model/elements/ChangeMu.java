@@ -2,9 +2,13 @@ package at.binter.gcd.model.elements;
 
 import at.binter.gcd.model.HasMinMaxValues;
 import at.binter.gcd.model.MinMaxValues;
+import at.binter.gcd.model.Status;
 import at.binter.gcd.model.Updatable;
 import at.binter.gcd.util.Tools;
 import javafx.collections.ObservableList;
+
+import static at.binter.gcd.model.Status.INVALID;
+import static at.binter.gcd.model.Status.VALID;
 
 public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
     private final Agent agent;
@@ -119,5 +123,9 @@ public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
             }
         }
         return false;
+    }
+
+    public Status getStatus() {
+        return hasAllValues() ? VALID : INVALID;
     }
 }
