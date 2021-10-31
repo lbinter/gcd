@@ -11,6 +11,7 @@ public class MathematicaPlot implements IExpression {
     private IExpression plotParameter;
     private IExpression plotRange;
     private IExpression plotStyle;
+    private IExpression plotLabels;
     private IExpression plotLegends;
 
     public MathematicaPlot() {
@@ -56,6 +57,14 @@ public class MathematicaPlot implements IExpression {
         this.plotStyle = plotStyle;
     }
 
+    public IExpression getPlotLabels() {
+        return plotLabels;
+    }
+
+    public void setPlotLabels(IExpression plotLabels) {
+        this.plotLabels = plotLabels;
+    }
+
     public IExpression getPlotLegends() {
         return plotLegends;
     }
@@ -99,6 +108,11 @@ public class MathematicaPlot implements IExpression {
         box.add(new MVariable(","));
         box.add(linebreak);
         box.add(plotStyle);
+        if (plotLabels != null) {
+            box.add(new MVariable(","));
+            box.add(linebreak);
+            box.add(plotLabels);
+        }
         box.add(new MVariable(","));
         box.add(linebreak);
         box.add(plotLegends);

@@ -145,12 +145,15 @@ public abstract class MFunction extends MBase implements IExpression {
             ndSolve.add(new MVariable("NDSolve"));
             box.add(ndSolve);
         } else if (isMThrough) {
+            String target = ((MThrough) this).getTarget();
             RowBox through = new RowBox();
+            RowBox targetBox = new RowBox();
+            targetBox.add(new MVariable(target));
             box.add(new MExpression("\"(\""));
             through.add(new MVariable(getFunction()));
             through.add(new MVariable("@*"));
-            through.add(new MVariable(((MThrough) this).getTarget()));
             box.add(through);
+            box.add(targetBox);
         } else {
             box.add(new MExpression(getFunction()));
         }

@@ -1065,10 +1065,10 @@ public class MathematicaModel {
 
     public List<MSet> getModelicaSimModel() {
         List<MSet> list = new ArrayList<>();
-        int i = 1;
+        int id = 1;
         for (GCDPlot p : model.getPlots()) {
-            list.add(getModelicaSimModel(p, i));
-            i++;
+            list.add(getModelicaSimModel(p, id));
+            id++;
         }
         return list;
     }
@@ -1076,7 +1076,7 @@ public class MathematicaModel {
     public MSet getModelicaSimModel(GCDPlot plot, int id) {
         MList list1 = new MList();
         for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
-            // list1.add(new MExpression(agent.getItem().getMathematicaFunction()));// TODO ? Agents
+            list1.add(new MExpression("\"\\\"" + "u" + agent.getItem().getName() + "\\\"\""));
         }
         for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
             list1.add(new MExpression("\"\\\"" + algVar.getItem().getName() + "\\\"\""));
@@ -1115,6 +1115,7 @@ public class MathematicaModel {
 
     public MManipulate getModelicaManipulate() {
         MList plotList = new MList();
+        plotList.setElementsLinebreak(1);
         int id = 1;
         for (GCDPlot plot : model.getPlots()) {
             MThrough t = new MThrough("simModelPlot" + id);
@@ -1143,7 +1144,7 @@ public class MathematicaModel {
 
             MList legendList = new MList();
             for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
-                // legendList.add(new MVariable(agent.getItem().getName())); // TODO ? Agent
+                legendList.add(new MExpression("\"\\\"" + "u" + agent.getItem().getName() + "\\\"\""));
             }
             for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
                 legendList.add(new MExpression("\"\\\"" + algVar.getItem().getName() + "\\\"\""));
@@ -1151,6 +1152,11 @@ public class MathematicaModel {
             for (PlotVariable pV : plot.getVariablesSorted()) {
                 legendList.add(new MExpression("\"\\\"" + pV.variable.getName() + "\\\"\""));
             }
+
+            MExpressionList plotLabels = new MExpressionList();
+            plotLabels.add(new MVariable("PlotLabels"));
+            plotLabels.add(new MArrow());
+            plotLabels.add(legendList);
 
             MExpressionList plotLegende = new MExpressionList();
             plotLegende.add(new MVariable("PlotLegends"));
@@ -1162,14 +1168,19 @@ public class MathematicaModel {
             p.setPlotParameter(new MList(variableT, new MVariable("0"), new MVariable("30")));
             p.setPlotRange(plotRange);
             p.setPlotStyle(plotStyle);
+            p.setPlotLabels(plotLabels);
             p.setPlotLegends(plotLegende);
             plotList.add(p);
+            id++;
         }
 
         MManipulate manipulate = new MManipulate(plotList);
         manipulate.setLinebreakAfterFunction(true);
         manipulate.addLinebreak();
         addValuesToManipulate(manipulate);
+        manipulate.addLinebreak();
+        manipulate.addParameter(getVariableConfig(parameterTMax, e30, e0, e100));
+        manipulate.addParameter(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
 
         return manipulate;
     }
