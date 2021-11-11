@@ -24,6 +24,7 @@ public record EditDialog<T extends Updatable<T>>(ListView<T> listView,
         if (editor.hasData()) {
             T modified = editor.createDataObject();
             selected.update(modified);
+            gcd.gcdController.model.setSavedToFile(false);
             listView.refresh();
         }
     }

@@ -7,6 +7,7 @@ import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
 import at.binter.gcd.xml.XmlWriter;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,8 +28,7 @@ import java.net.URL;
 import java.util.*;
 
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
-import static at.binter.gcd.util.GuiUtils.sanitizeString;
-import static at.binter.gcd.util.GuiUtils.showInvalidFileError;
+import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
 
 public class GCDController extends BaseController implements Initializable {
@@ -62,6 +64,8 @@ public class GCDController extends BaseController implements Initializable {
     private ListView<ChangeMu> changeMuListView;
     @FXML
     private Label filePath;
+    @FXML
+    private Circle modelStatusIndicator;
 
     protected GCDModel model = new GCDModel();
 
@@ -264,6 +268,13 @@ public class GCDController extends BaseController implements Initializable {
                 addPlot();
             }
         });
+
+        model.savedToFileProperty().addListener((observable, oldValue, newValue) -> {
+            if (model.getFile() != null) {
+                setDataFromFilePath(model.getFile());
+                setModelIndicator(newValue);
+            }
+        });
     }
 
     @FXML
@@ -369,6 +380,11 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
+    protected void showSettings() {
+        gcd.settingsStage.showAndWait();
+    }
+
+    @FXML
     protected void undo() {
         System.out.println("undo called");
         model.generateChangeMu();
@@ -422,11 +438,7 @@ public class GCDController extends BaseController implements Initializable {
         tab.setOnCloseRequest((Event t) -> {
             String title = gcd.getString("plot.remove.question.title");
             String message = gcd.getString("plot.remove.question.message", plot.getName());
-            Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
-            alert.setTitle(title);
-            ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(gcd.getString("button.yes"));
-            ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(gcd.getString("button.no"));
-            Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = showYesNoDialog(title, message);
             if (result.isEmpty() || result.get() != ButtonType.YES) {
                 t.consume();
             } else {
@@ -492,6 +504,7 @@ public class GCDController extends BaseController implements Initializable {
             for (GCDPlot p : model.getPlots()) {
                 addPlot(p);
             }
+            setModelIndicator(true);
         }
     }
 
@@ -503,7 +516,38 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     private void setDataFromFilePath(File gcdFile) {
-        gcd.primaryStage.setTitle(gcdFile.getName() + " - " + resources.getString("main.title"));
+        String isSaved = "";
+        if (!model.isSavedToFile()) {
+            isSaved = "*";
+        }
+        gcd.primaryStage.setTitle(isSaved + gcdFile.getName() + " - " + resources.getString("main.title"));
         filePath.setText(gcdFile.getParentFile().getAbsolutePath());
+    }
+
+    public void showCloseDialog(Event event) {
+        String title = gcd.getString("main.close.question.title");
+        String message = gcd.getString("main.close.question.message");
+        if (model.getFile() != null && !model.isSavedToFile()) {
+            message = gcd.getString("main.close.question.without.saving.message");
+        }
+        Optional<ButtonType> result = showYesNoDialog(title, message);
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            Platform.exit();
+        } else {
+            if (event != null) {
+                event.consume();
+            }
+        }
+    }
+
+    private void setModelIndicator(boolean isSaved) {
+        if (modelStatusIndicator != null) {
+            modelStatusIndicator.setVisible(true);
+            if (isSaved) {
+                modelStatusIndicator.setFill(Color.LIME);
+            } else {
+                modelStatusIndicator.setFill(Color.RED);
+            }
+        }
     }
 }

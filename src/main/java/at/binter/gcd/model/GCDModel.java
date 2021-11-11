@@ -30,6 +30,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(algVar -> {
                     algebraicVariableNameMap.put(algVar.getName(), algVar);
                     if (hasVariable(algVar.getName())) {
@@ -73,6 +74,7 @@ public class GCDModel extends GCDBaseModel {
                 });
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(algVar -> {
                     removeVariables(algVar);
                     removeParameters(algVar);
@@ -87,6 +89,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<Agent> agentListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(agent -> {
                     agentNameMap.put(agent.getName(), agent);
                     addVariables(agent);
@@ -128,6 +131,7 @@ public class GCDModel extends GCDBaseModel {
                 generateChangeMu();
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(agent -> {
                     removeVariables(agent);
                     removeParameters(agent);
@@ -142,6 +146,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<Constraint> constraintListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(constraint -> {
                     addVariables(constraint);
                     addParameters(constraint);
@@ -164,6 +169,7 @@ public class GCDModel extends GCDBaseModel {
                 });
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(constraint -> {
                     removeVariables(constraint);
                     removeParameters(constraint);
@@ -179,6 +185,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<Variable> variableListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(variable -> {
                     variableNameMap.put(variable.getName(), variable);
                     if (log.isTraceEnabled()) {
@@ -187,6 +194,7 @@ public class GCDModel extends GCDBaseModel {
                 });
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(variable -> {
                     variableNameMap.remove(variable.getName());
                     if (log.isTraceEnabled()) {
@@ -200,6 +208,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<Parameter> parameterListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(parameter -> {
                     parameterNameMap.put(parameter.getName(), parameter);
                     if (log.isTraceEnabled()) {
@@ -208,6 +217,7 @@ public class GCDModel extends GCDBaseModel {
                 });
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(parameter -> {
                     parameterNameMap.remove(parameter.getName());
                     if (log.isTraceEnabled()) {
@@ -221,6 +231,7 @@ public class GCDModel extends GCDBaseModel {
     private final ListChangeListener<ChangeMu> changeMuListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
+                setSavedToFile(false);
                 c.getAddedSubList().forEach(changeMu -> {
                     changeMuNameMap.put(changeMu.getIdentifier(), changeMu);
                     if (log.isTraceEnabled()) {
@@ -229,6 +240,7 @@ public class GCDModel extends GCDBaseModel {
                 });
             }
             if (c.wasRemoved()) {
+                setSavedToFile(false);
                 c.getRemoved().forEach(changeMu -> {
                     changeMuNameMap.remove(changeMu.getIdentifier());
                     if (log.isTraceEnabled()) {
@@ -290,6 +302,7 @@ public class GCDModel extends GCDBaseModel {
         allChangeMu.clear();
         changeMus.clear();
         registerChangeListeners();
+        setSavedToFile(false);
     }
 
     public ObservableList<GCDPlot> getPlots() {
@@ -304,6 +317,7 @@ public class GCDModel extends GCDBaseModel {
         if (hasPlot(plot.getName())) {
             return false;
         }
+        setSavedToFile(false);
         plots.add(plot);
         return true;
     }
@@ -318,10 +332,15 @@ public class GCDModel extends GCDBaseModel {
     }
 
     public boolean removePlot(GCDPlot plot) {
-        return plots.remove(plot);
+        if (plots.remove(plot)) {
+            setSavedToFile(false);
+            return true;
+        }
+        return false;
     }
 
     public void setClearGlobal(boolean clearGlobal) {
+        setSavedToFile(false);
         this.clearGlobal = clearGlobal;
     }
 
@@ -463,6 +482,7 @@ public class GCDModel extends GCDBaseModel {
 
     public void setMathematicaNDSolveFile(File mathematicaNDSolveFile) {
         this.mathematicaNDSolveFile = mathematicaNDSolveFile;
+        setSavedToFile(false);
     }
 
     public File getMathematicaModelicaFile() {
@@ -487,6 +507,7 @@ public class GCDModel extends GCDBaseModel {
 
     public void setMathematicaModelicaFile(File mathematicaModelicaFile) {
         this.mathematicaModelicaFile = mathematicaModelicaFile;
+        setSavedToFile(false);
     }
 
     public File getMathematicaControlFile() {
@@ -511,6 +532,7 @@ public class GCDModel extends GCDBaseModel {
 
     public void setMathematicaControlFile(File mathematicaControlFile) {
         this.mathematicaControlFile = mathematicaControlFile;
+        setSavedToFile(false);
     }
 
     public boolean isSavedToFile() {

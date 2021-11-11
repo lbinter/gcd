@@ -3,13 +3,21 @@ package at.binter.gcd;
 
 import at.binter.gcd.controller.*;
 import at.binter.gcd.util.MathematicaUtils;
+import at.binter.gcd.xml.XmlReader;
+import at.binter.gcd.xml.XmlWriter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.Objects;
@@ -27,11 +35,15 @@ public class GCDApplication extends Application {
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
+    public Settings settings;
+    public final Settings defaultSettings = new Settings();
+
     public String gcdCss;
     public String statusCss;
     public String mathematicaCss;
     public String errorViewCss;
 
+    public FXMLLoader loaderSettings;
     public FXMLLoader loaderGCD;
     public FXMLLoader loaderAlgVarEditor;
     public FXMLLoader loaderAgentEditor;
@@ -41,6 +53,9 @@ public class GCDApplication extends Application {
     public FXMLLoader loaderChangeMuEditor;
     public FXMLLoader loaderHelp;
     public FXMLLoader loaderMathematica;
+
+    public Stage settingsStage;
+    public Scene settingsScene;
 
     public Stage primaryStage;
     public Scene primaryScene;
@@ -54,6 +69,8 @@ public class GCDApplication extends Application {
     public Scene helpScene;
     public Scene mathematicaScene;
 
+    public SettingsController settingsController;
+
     public GCDController gcdController;
     public AlgebraicVariableEditorController algebraicVariableEditorController;
     public AgentEditorController agentEditorController;
@@ -64,7 +81,7 @@ public class GCDApplication extends Application {
     public HelpController helpController;
     public MathematicaController mathematicaController;
 
-    public MathematicaUtils utils = new MathematicaUtils();
+    public MathematicaUtils utils;
 
     public GCDApplication() {
         if (app == null) {
@@ -84,6 +101,28 @@ public class GCDApplication extends Application {
         statusCss = Objects.requireNonNull(getClass().getResource("status.css")).toExternalForm();
         mathematicaCss = Objects.requireNonNull(getClass().getResource("mathematica.css")).toExternalForm();
         errorViewCss = Objects.requireNonNull(getClass().getResource("errorView.css")).toExternalForm();
+
+        defaultSettings.loadDefaultValues();
+        readOrCreateSettings();
+
+        settingsStage = new Stage();
+        loaderSettings = new FXMLLoader();
+        loaderSettings.setLocation(getClass().getResource("settings.fxml"));
+        loaderSettings.setResources(resources);
+        settingsScene = new Scene(loaderSettings.load());
+        settingsScene.getStylesheets().add(gcdCss);
+        settingsController = loaderSettings.getController();
+        settingsController.setApplication(this);
+        settingsStage.setScene(settingsScene);
+        settingsStage.setTitle(resources.getString("settings.title"));
+
+        if (!settings.verifyMathematicaPaths()) {
+            settingsStage.showAndWait();
+        }
+
+
+        MathematicaUtils.setJLinkDir(settings.jLink);
+        utils = new MathematicaUtils(settings.mathKernel);
 
         loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
@@ -169,7 +208,24 @@ public class GCDApplication extends Application {
         mathematicaController.setApplication(this);
         mathematicaController.initializeGCDDepended();
 
+        primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, windowEvent -> gcdController.showCloseDialog(windowEvent));
         primaryStage.show();
+    }
+
+    private void readOrCreateSettings() throws IOException {
+        Path settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
+        File settingsFile = settingsLocation.toFile();
+        if (!settingsFile.exists()) {
+            if (!settingsFile.getParentFile().exists()) {
+                Files.createDirectory(settingsLocation.getParent());
+                log.info("creating gcd settings folder {}", settingsLocation.getParent());
+            }
+            settings = new Settings();
+            settings.loadDefaultValues();
+            XmlWriter.write(settings, settingsFile);
+        } else {
+            settings = XmlReader.readSettings(settingsFile);
+        }
     }
 
     public String getString(String i18nKey) {

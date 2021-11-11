@@ -97,14 +97,16 @@ public class GuiUtils {
         alert.showAndWait();
     }
 
-    public static Optional<ButtonType> saveOverwriteQuestion(File file) {
-        String title = app.getString("dialog.save.overwrite.question.title");
-        String message = app.getString("dialog.save.overwrite.question.message", file.getAbsolutePath());
+    public static Optional<ButtonType> showYesNoDialog(String title, String message, String yes, String no) {
         Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.YES, ButtonType.NO);
         alert.setTitle(title);
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(app.getString("button.yes"));
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(app.getString("button.no"));
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.YES)).setText(yes);
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setText(no);
         return alert.showAndWait();
+    }
+
+    public static Optional<ButtonType> showYesNoDialog(String title, String message) {
+        return showYesNoDialog(title, message, app.getString("button.yes"), app.getString("button.no"));
     }
 
     public static String getColorAsHtml(Color color) {

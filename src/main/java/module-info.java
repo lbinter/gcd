@@ -15,7 +15,7 @@ module at.binter.gcd {
     requires JLink;
     requires java.desktop;
 
-    opens at.binter.gcd to javafx.fxml, javafx.controls;
+    opens at.binter.gcd to javafx.fxml, javafx.controls, jakarta.xml.bind;
     opens at.binter.gcd.model.xml to jakarta.xml.bind;
     opens at.binter.gcd.controller to javafx.fxml, javafx.controls;
 

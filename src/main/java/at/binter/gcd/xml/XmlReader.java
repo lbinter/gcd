@@ -1,5 +1,6 @@
 package at.binter.gcd.xml;
 
+import at.binter.gcd.Settings;
 import at.binter.gcd.model.xml.XmlModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -28,6 +29,26 @@ public class XmlReader {
             }
         } catch (JAXBException e) {
             log.error("Could not read model from file {}", file.getAbsolutePath(), e);
+        }
+        return null;
+    }
+
+    public static Settings readSettings(File file) {
+        if (file == null) {
+            return null;
+        }
+        JAXBContext jaxbContext;
+        try {
+            jaxbContext = JAXBContext.newInstance(Settings.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            Object obj = jaxbUnmarshaller.unmarshal(file);
+            if (obj instanceof Settings xml) {
+                log.info("Loaded gcd settings from {}", file.getAbsolutePath());
+                return xml;
+            }
+        } catch (JAXBException e) {
+            log.error("Could not read gcd settings from file {}", file.getAbsolutePath(), e);
         }
         return null;
     }

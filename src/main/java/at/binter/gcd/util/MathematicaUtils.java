@@ -6,25 +6,61 @@ import com.wolfram.jlink.MathLinkFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 public class MathematicaUtils {
     public static final String linebreakString = "\"\\[IndentingNewLine]\"\r\n";
     private static final Logger log = LoggerFactory.getLogger(MathematicaUtils.class);
+    public static final String jLinkLibDirProperty = "com.wolfram.jlink.libdir";
+    private static boolean jLinkDirSet = false;
+    private static String jLinkDirPath;
+    private String mathKernelPath;
     private KernelLink ml;
 
     private int pageWidth = 125;
     private boolean linkOpen = false;
 
-    static {
-        String jLinkDir = "C:/Program Files/Wolfram Research/Mathematica/12.1/SystemFiles/Links/JLink";
-        System.setProperty("com.wolfram.jlink.libdir", jLinkDir);
+    public MathematicaUtils() {
+        setMathKernelPath("C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe");
     }
 
-    public MathematicaUtils() {
+    public MathematicaUtils(String mathKernelPath) {
+        setMathKernelPath(mathKernelPath);
+    }
+
+    private void setMathKernelPath(String mathKernelPath) {
+        this.mathKernelPath = mathKernelPath;
+        File mathKernel = new File(mathKernelPath);
+        if (!mathKernel.exists()) {
+            RuntimeException e = new RuntimeException("Math kernel path does not exist " + jLinkDirPath);
+            log.error("Could not set math kernel path", e);
+            throw e;
+        }
+        log.info("using math kernel: {}", mathKernelPath);
+    }
+
+    public static synchronized void setJLinkDir(String jLinkDirPath) {
+        if (jLinkDirSet) {
+            return;
+        }
+        File jLink = new File(jLinkDirPath);
+        if (!jLink.exists()) {
+            RuntimeException e = new RuntimeException("JLink path does not exist " + jLinkDirPath);
+            log.error("Could not set jLinkDir", e);
+            throw e;
+        }
+        System.setProperty(jLinkLibDirProperty, jLinkDirPath);
+        log.info("setting system property \"{}\" - \"{}\"", jLinkLibDirProperty, jLinkDirPath);
+        jLinkDirSet = true;
+    }
+
+    public static File defaultMathematicaInstallationPath() {
+        return new File("C:/Program Files/Wolfram Research/Mathematica/");
     }
 
     public synchronized void openLink() {
         try {
-            ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname 'C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe'");
+            ml = MathLinkFactory.createKernelLink("-linkmode launch -linkname '" + mathKernelPath + "'");
             ml.discardAnswer();
             linkOpen = true;
             log.info("Opened link to Mathematica Kernel");
