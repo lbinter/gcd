@@ -6,8 +6,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import static at.binter.gcd.GCDApplication.app;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
@@ -23,7 +22,7 @@ public class Settings {
     public String defaultFolder;
     @XmlElementWrapper(name = "recentlyOpenedFiles")
     @XmlElement(name = "file")
-    public List<String> recentlyOpened = new ArrayList<>(10);
+    public LinkedList<String> recentlyOpened = new LinkedList<>();
     @XmlElement
     public String lastOpened;
 
@@ -33,6 +32,15 @@ public class Settings {
     public void loadDefaultValues() {
         jLink = "C:/Program Files/Wolfram Research/Mathematica/12.1/SystemFiles/Links/JLink";
         mathKernel = "C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe";
+    }
+
+    public void addRecentlyOpened(File f) {
+        if (recentlyOpened.size() >= 5) {
+            recentlyOpened.removeFirst();
+        }
+        String path = f.getAbsolutePath();
+        recentlyOpened.remove(path);
+        recentlyOpened.addFirst(path);
     }
 
     public boolean verifyMathematicaPaths(boolean showAlert) {
@@ -94,18 +102,6 @@ public class Settings {
             }
         }
         return errorMessage;
-    }
-
-    public void addRecentlyOpened(File f) {
-        if (recentlyOpened.size() >= 10) {
-            recentlyOpened.remove(0);
-        }
-        String path = f.getAbsolutePath();
-        int index = recentlyOpened.indexOf(path);
-        if (index != -1) {
-            recentlyOpened.remove(index);
-        }
-        recentlyOpened.add(path);
     }
 
     public static boolean isValidPath(String path) {

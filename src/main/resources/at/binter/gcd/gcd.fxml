@@ -15,7 +15,7 @@
                     <items>
                         <MenuItem fx:id="menuNew" mnemonicParsing="false" onAction="#clearModel" text="%menu.new"/>
                         <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#loadFromFile" text="%menu.open"/>
-                        <Menu mnemonicParsing="false" text="%menu.open.recent"/>
+                        <Menu fx:id="recentlyOpened" mnemonicParsing="false" text="%menu.open.recent"/>
                         <SeparatorMenuItem mnemonicParsing="false"/>
                         <MenuItem fx:id="menuSave" mnemonicParsing="false" onAction="#save" text="%menu.save">
                             <accelerator>

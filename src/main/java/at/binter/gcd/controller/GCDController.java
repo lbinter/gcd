@@ -25,16 +25,19 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
-import static at.binter.gcd.util.FileUtils.gcdFileExt;
-import static at.binter.gcd.util.FileUtils.isValidGCDFile;
+import static at.binter.gcd.util.FileUtils.*;
 import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
 
 public class GCDController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(GCDController.class);
 
+    @FXML
+    private Menu recentlyOpened;
     @FXML
     private Button buttonUndo;
     @FXML
@@ -229,6 +232,7 @@ public class GCDController extends BaseController implements Initializable {
         variableEditDialog = new EditDialog<>(variableListView, model.getVariables(), gcd.variableEditorController, gcd);
         parameterEditDialog = new EditDialog<>(parameterListView, model.getParameters(), gcd.parameterEditorController, gcd);
         changeMuEditDialog = new EditDialog<>(changeMuListView, model.getChangeMus(), gcd.changeMuEditorController, gcd);
+        populateRecentlyOpened();
     }
 
     private void registerEventHandlers() {
@@ -349,9 +353,46 @@ public class GCDController extends BaseController implements Initializable {
             }
         }
         File file = fc.showOpenDialog(gcd.primaryStage);
+        openFile(file);
+    }
+
+    private void openFile(File file) {
+        if (file == null) {
+            return;
+        }
         loadModel(file);
         gcd.settings.addRecentlyOpened(file);
         gcd.settings.lastOpened = file.getAbsolutePath();
+        gcd.settingsController.saveSettings(null);
+        populateRecentlyOpened();
+    }
+
+    void populateRecentlyOpened() {
+        recentlyOpened.getItems().clear();
+        for (String path : gcd.settings.recentlyOpened) {
+            File file = new File(path);
+            Path filePath = Paths.get(path);
+            Path driveLetter = filePath.getRoot();
+            Path parent = filePath.getParent();
+
+            StringBuilder displayText = new StringBuilder();
+            if (parent != null) {
+                if (parent.getParent() != null) {
+                    displayText.append(driveLetter.toString());
+                    displayText.append("..");
+                    displayText.append(fileSeparator);
+                    displayText.append(parent.getFileName().toString());
+                    displayText.append(fileSeparator);
+                } else {
+                    displayText.append(driveLetter.toString());
+                }
+            }
+            displayText.append(filePath.getFileName().toString());
+
+            MenuItem item = new MenuItem(displayText.toString());
+            item.setOnAction(event -> openFile(file));
+            recentlyOpened.getItems().add(item);
+        }
     }
 
     @FXML

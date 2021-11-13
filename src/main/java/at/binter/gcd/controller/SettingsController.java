@@ -57,6 +57,9 @@ public class SettingsController extends BaseController implements Initializable 
         mathKernel.setText(settings.mathKernel);
         defaultFolder.setText(settings.defaultFolder);
         lastOpened.setText(settings.lastOpened);
+        jLinkChanged = false;
+        mathKernelChanged = false;
+        defaultFolderChanged = false;
     }
 
     @FXML
@@ -102,28 +105,22 @@ public class SettingsController extends BaseController implements Initializable 
 
     @FXML
     void saveSettings(ActionEvent event) {
-        boolean settingsChanged = false;
         String jLinkPath = sanitizeString(jLink.getText());
         String mathKernelPath = sanitizeString(mathKernel.getText());
         String defaultFolderPath = sanitizeString(defaultFolder.getText());
         if (jLinkChanged) {
             settings.jLink = jLinkPath;
             log.info("Setting jLink = {}", settings.jLink);
-            settingsChanged = true;
         }
         if (mathKernelChanged) {
             settings.mathKernel = mathKernelPath;
             log.info("Setting mathKernel = {}", settings.mathKernel);
-            settingsChanged = true;
         }
         if (defaultFolderChanged) {
             settings.defaultFolder = defaultFolderPath;
             log.info("Setting defaultFolder = {}", settings.defaultFolder);
-            settingsChanged = true;
         }
-        if (settingsChanged) {
-            XmlWriter.write(settings, gcd.settingsLocation.toFile());
-        }
+        XmlWriter.write(settings, gcd.settingsLocation.toFile());
         close(event);
     }
 
