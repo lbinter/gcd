@@ -35,6 +35,9 @@ public class Settings {
     }
 
     public void addRecentlyOpened(File f) {
+        if (!f.exists()) {
+            return;
+        }
         if (recentlyOpened.size() >= 7) {
             recentlyOpened.removeFirst();
         }

@@ -66,12 +66,17 @@ public class SettingsController extends BaseController implements Initializable 
     void chooseDefaultFolder(ActionEvent event) {
         DirectoryChooser fc = new DirectoryChooser();
         fc.setTitle(gcd.getString("settings.mathematica.jlink.title"));
-        fc.setInitialDirectory(new File("C:/Program Files/Wolfram Research/Mathematica"));
         File file = fc.showDialog(gcd.settingsStage);
         if (file != null && file.exists() && file.isDirectory()) {
-            jLink.setText(file.getAbsolutePath());
+            defaultFolder.setText(file.getAbsolutePath());
             defaultFolderChanged = true;
         }
+    }
+
+    @FXML
+    void clearDefaultFolder(ActionEvent event) {
+        defaultFolder.setText("");
+        defaultFolderChanged = true;
     }
 
     @FXML

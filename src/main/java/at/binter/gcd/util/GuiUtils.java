@@ -109,7 +109,7 @@ public class GuiUtils {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(app.getString("error.invalid.file.title"));
         alert.setHeaderText(app.getString("error.invalid.file.title"));
-        alert.setContentText(file.getAbsolutePath() + ": " + app.getString("error.invalid.file.message"));
+        alert.setContentText(app.getString("error.invalid.file.message", file.getAbsolutePath()));
         alert.showAndWait();
     }
 

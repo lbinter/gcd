@@ -347,9 +347,14 @@ public class GCDController extends BaseController implements Initializable {
         fc.getExtensionFilters().add(gcdFileExt);
         fc.setSelectedExtensionFilter(gcdFileExt);
         if (gcd.settings.lastOpened != null) {
-            File lastOpened = new File(gcd.settings.lastOpened);
-            if (isValidGCDFile(lastOpened)) {
-                fc.setInitialDirectory(lastOpened.getParentFile());
+            if (gcd.settings.defaultFolder != null) {
+                File defaultFolder = new File(gcd.settings.defaultFolder);
+                fc.setInitialDirectory(defaultFolder.getParentFile());
+            } else {
+                File lastOpened = new File(gcd.settings.lastOpened);
+                if (lastOpened.exists() && isValidGCDFile(lastOpened)) {
+                    fc.setInitialDirectory(lastOpened.getParentFile());
+                }
             }
         }
         File file = fc.showOpenDialog(gcd.primaryStage);
@@ -360,11 +365,12 @@ public class GCDController extends BaseController implements Initializable {
         if (file == null) {
             return;
         }
-        loadModel(file);
-        gcd.settings.addRecentlyOpened(file);
-        gcd.settings.lastOpened = file.getAbsolutePath();
-        gcd.settingsController.saveSettings(null);
-        populateRecentlyOpened();
+        if (loadModel(file)) {
+            gcd.settings.addRecentlyOpened(file);
+            gcd.settings.lastOpened = file.getAbsolutePath();
+            gcd.settingsController.saveSettings(null);
+            populateRecentlyOpened();
+        }
     }
 
     void populateRecentlyOpened() {
@@ -467,6 +473,7 @@ public class GCDController extends BaseController implements Initializable {
                 log.trace("adding plot: {}", plotName);
             }
             addPlot(newPlot);
+            addPlotTextField.setText("");
         }
     }
 
@@ -513,6 +520,15 @@ public class GCDController extends BaseController implements Initializable {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
         fc.setSelectedExtensionFilter(gcdFileExt);
+        if (gcd.settings.defaultFolder != null) {
+            File defaultFolder = new File(gcd.settings.defaultFolder);
+            fc.setInitialDirectory(defaultFolder.getParentFile());
+        } else {
+            File lastOpened = new File(gcd.settings.lastOpened);
+            if (lastOpened.exists() && isValidGCDFile(lastOpened)) {
+                fc.setInitialDirectory(lastOpened.getParentFile());
+            }
+        }
         return fc.showSaveDialog(gcd.primaryStage);
     }
 
@@ -538,15 +554,19 @@ public class GCDController extends BaseController implements Initializable {
         }
     }
 
-    private void loadModel(File file) {
+    private boolean loadModel(File file) {
         if (file != null) {
             if (!isValidGCDFile(file)) {
                 showInvalidFileError(file);
-                return;
+                gcd.settings.recentlyOpened.remove(file.getAbsolutePath());
+                populateRecentlyOpened();
+                return false;
             }
             if (!file.exists()) {
+                gcd.settings.recentlyOpened.remove(file.getAbsolutePath());
+                populateRecentlyOpened();
                 // TODO show missing file error
-                return;
+                return false;
             }
             if (log.isInfoEnabled()) {
                 log.info("Loading gcd model from file {}", file.getAbsolutePath());
@@ -559,7 +579,9 @@ public class GCDController extends BaseController implements Initializable {
                 addPlot(p);
             }
             setModelIndicator(true);
+            return true;
         }
+        return false;
     }
 
     private void clearPlots() {
