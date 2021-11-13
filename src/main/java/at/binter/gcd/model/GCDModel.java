@@ -406,6 +406,9 @@ public class GCDModel extends GCDBaseModel {
             p.setLegendLabel(plot.legendLabel);
             p.setPlotStyle(plot.plotStyle);
             p.setPlotRange(plot.plotRange);
+            p.setPlotParameter(plot.plotParameter);
+            p.setShowPlotLabels(plot.showPlotLabels);
+            p.setShowLegendLabels(plot.showLegendLabels);
             for (XmlPlotItem item : plot.algebraicVariables) {
                 AlgebraicVariable algVar = getAlgebraicVariable(item.name);
                 if (algVar == null) {

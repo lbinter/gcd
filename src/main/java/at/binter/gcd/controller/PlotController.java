@@ -61,6 +61,12 @@ public class PlotController extends BaseController implements Initializable {
     private TextField plotStyle;
     @FXML
     private TextField plotRange;
+    @FXML
+    private TextField plotParameter;
+    @FXML
+    private CheckBox showPlotLabels;
+    @FXML
+    private CheckBox showPlotLegends;
 
     private ObjectProperty<Predicate<? super Variable>> variableFilter;
 
@@ -238,13 +244,49 @@ public class PlotController extends BaseController implements Initializable {
         plotName.setText(plot.getName());
         plotLegendLabel.setText(plot.getLegendLabel());
         plotStyle.setText(plot.getPlotStyle());
-        plotRange.setText(plot.getPlotRange());
-
-        plotName.textProperty().addListener((observable, oldValue, newValue) -> plotStyle.setText(plot.getDefaultPlotStyleForName(newValue)));
+        if (plot.getDefaultPlotRange().equals(plot.getPlotRange())) {
+            plotRange.setText("");
+        } else {
+            plotRange.setText(plot.getPlotRange());
+        }
+        if (plot.getDefaultPlotParameter().equals(plot.getPlotParameter())) {
+            plotParameter.setText("");
+        } else {
+            plotParameter.setText(plot.getPlotParameter());
+        }
+        showPlotLabels.setSelected(plot.isShowPlotLabels());
+        showPlotLegends.setSelected(plot.isShowLegendLabels());
 
         algebraicVariablesFilter.set(new SelectedMatcher<>(plot.getAlgebraicVariables()));
         agentsFilter.set(new SelectedMatcher<>(plot.getAgents()));
         filterVariable(null, null, variableListFilter.getText());
+
+        plotName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (StringUtils.isBlank(newValue)) {
+                return;
+            }
+            parentTab.setText("Plot: " + plotName.getText());
+            plot.setName(newValue);
+            plotStyle.setText(plot.getDefaultPlotStyleForName(newValue));
+        });
+        plotLegendLabel.textProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setLegendLabel(plotLegendLabel.getText());
+        });
+        showPlotLegends.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setShowLegendLabels(newValue);
+        });
+        showPlotLabels.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setShowPlotLabels(newValue);
+        });
+        plotStyle.textProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setPlotStyle(newValue);
+        });
+        plotParameter.textProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setPlotParameter(newValue);
+        });
+        plotRange.textProperty().addListener((observable, oldValue, newValue) -> {
+            plot.setPlotRange(newValue);
+        });
     }
 
     private void setVariableFilter(ObjectProperty<Predicate<? super Variable>> predicateProperty) {
@@ -258,22 +300,6 @@ public class PlotController extends BaseController implements Initializable {
     public void setPlotModel(GCDPlot plot) {
         this.plot = plot;
         initializeGCDDepended();
-    }
-
-    @FXML
-    public void saveSettings() {
-        String defaultPlotStyle = plot.getPlotStyle();
-        parentTab.setText("Plot: " + plotName.getText());
-        plot.setName(plotName.getText());
-        plot.setLegendLabel(plotLegendLabel.getText());
-        String plotStyleText = plotStyle.getText();
-        if (StringUtils.isBlank(plotStyleText)) {
-            plot.setPlotStyle(plot.getDefaultPlotStyle());
-            plotStyle.setText(plot.getPlotStyle());
-        } else {
-            plot.setPlotStyle(plotStyleText);
-        }
-        plot.setPlotRange(plotRange.getText());
     }
 
     void filterVariable(ObservableValue<? extends String> observable, String oldValue, String newValue) {

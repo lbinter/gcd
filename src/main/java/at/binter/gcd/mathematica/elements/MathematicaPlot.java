@@ -7,6 +7,8 @@ import at.binter.gcd.mathematica.syntax.RowBox;
 import static at.binter.gcd.mathematica.syntax.function.MFunction.linebreak;
 
 public class MathematicaPlot implements IExpression {
+    private static final MVariable separator = new MVariable(",");
+    private IExpression plotName;
     private IExpression plotFunction;
     private IExpression plotParameter;
     private IExpression plotRange;
@@ -17,12 +19,12 @@ public class MathematicaPlot implements IExpression {
     public MathematicaPlot() {
     }
 
-    public MathematicaPlot(IExpression plotFunction, IExpression plotParameter, IExpression plotRange, IExpression plotStyle, IExpression plotLegends) {
-        this.plotFunction = plotFunction;
-        this.plotParameter = plotParameter;
-        this.plotRange = plotRange;
-        this.plotStyle = plotStyle;
-        this.plotLegends = plotLegends;
+    public IExpression getPlotName() {
+        return plotName;
+    }
+
+    public void setPlotName(IExpression plotName) {
+        this.plotName = plotName;
     }
 
     public IExpression getPlotFunction() {
@@ -99,23 +101,32 @@ public class MathematicaPlot implements IExpression {
         box.add(new MVariable("Plot"));
         box.add(new MVariable("["));
         box.add(plotFunction);
-        box.add(new MVariable(","));
+        box.add(separator);
         box.add(linebreak);
         box.add(plotParameter);
-        box.add(new MVariable(","));
+        box.add(separator);
         box.add(linebreak);
         box.add(plotRange);
-        box.add(new MVariable(","));
-        box.add(linebreak);
-        box.add(plotStyle);
+        if (plotStyle != null) {
+            box.add(separator);
+            box.add(linebreak);
+            box.add(plotStyle);
+        }
+        if (plotName != null) {
+            box.add(separator);
+            box.add(linebreak);
+            box.add(plotName);
+        }
         if (plotLabels != null) {
-            box.add(new MVariable(","));
+            box.add(separator);
             box.add(linebreak);
             box.add(plotLabels);
         }
-        box.add(new MVariable(","));
-        box.add(linebreak);
-        box.add(plotLegends);
+        if (plotLegends != null) {
+            box.add(separator);
+            box.add(linebreak);
+            box.add(plotLegends);
+        }
         box.add(new MVariable("]"));
         return box.getMathematicaExpression();
     }

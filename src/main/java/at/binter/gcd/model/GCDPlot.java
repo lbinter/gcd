@@ -27,6 +27,8 @@ public class GCDPlot {
     private String plotRange;
     private String plotStyle;
     private String legendLabel;
+    private boolean showPlotLabels = true;
+    private boolean showLegendLabels = true;
 
     private final ObservableList<GCDPlotItem<AlgebraicVariable>> algebraicVariables = FXCollections.observableArrayList();
     private final SortedList<GCDPlotItem<AlgebraicVariable>> algebraicVariablesSorted = algebraicVariables.sorted();
@@ -38,6 +40,7 @@ public class GCDPlot {
     public GCDPlot(GCDModel model, String name) {
         this.model = model;
         this.name = name;
+        plotStyle = getDefaultPlotStyle();
     }
 
     public String getName() {
@@ -46,6 +49,7 @@ public class GCDPlot {
 
     public void setName(String name) {
         this.name = name;
+        model.setSavedToFile(false);
     }
 
     public GCDModel getModel() {
@@ -58,6 +62,7 @@ public class GCDPlot {
 
     public void setLegendLabel(String legendLabel) {
         this.legendLabel = legendLabel;
+        model.setSavedToFile(false);
     }
 
     public String getPlotStyle() {
@@ -72,33 +77,63 @@ public class GCDPlot {
     }
 
     public String getDefaultPlotStyleForName(String name) {
-        return "PLOTSTYLE" + sanitizeString(name).replace(" ", "");
+        return "PLOTSTYLE" + sanitizeString(name).replace(" ", "")
+                .replaceAll("[^A-Za-z0-9]|_", "");
     }
 
     public void setPlotStyle(String plotStyle) {
         this.plotStyle = plotStyle;
+        model.setSavedToFile(false);
     }
 
     public String getPlotRange() {
         if (StringUtils.isBlank(plotRange)) {
-            return "{-plotmax, plotmax}";
+            return getDefaultPlotRange();
         }
         return plotRange;
     }
 
+    public String getDefaultPlotRange() {
+        return "{-plotmax, plotmax}";
+    }
+
     public String getPlotParameter() {
-        if (StringUtils.isBlank(plotRange)) {
-            return "{t, 0, tmax}";
+        if (StringUtils.isBlank(plotParameter)) {
+            return getDefaultPlotParameter();
         }
         return plotParameter;
     }
 
-    public void setPlotParameter(String plotParameter) {
-        this.plotParameter = plotParameter;
+    public String getDefaultPlotParameter() {
+        return "{t, 0, tmax}";
     }
 
     public void setPlotRange(String plotRange) {
         this.plotRange = plotRange;
+        model.setSavedToFile(false);
+    }
+
+    public void setPlotParameter(String plotParameter) {
+        this.plotParameter = plotParameter;
+        model.setSavedToFile(false);
+    }
+
+    public boolean isShowPlotLabels() {
+        return showPlotLabels;
+    }
+
+    public void setShowPlotLabels(boolean showPlotLabels) {
+        this.showPlotLabels = showPlotLabels;
+        model.setSavedToFile(false);
+    }
+
+    public boolean isShowLegendLabels() {
+        return showLegendLabels;
+    }
+
+    public void setShowLegendLabels(boolean showLegendLabels) {
+        this.showLegendLabels = showLegendLabels;
+        model.setSavedToFile(false);
     }
 
     public SortedList<GCDPlotItem<AlgebraicVariable>> getAlgebraicVariablesSorted() {
@@ -193,6 +228,7 @@ public class GCDPlot {
         if (algVar == null || hasAlgebraicVariable(algVar)) {
             return getAlgebraicVariable(algVar);
         }
+        model.setSavedToFile(false);
         GCDPlotItem<AlgebraicVariable> newItem = new GCDPlotItem<>(independent, algVar);
         newItem.addDependedProperty().addListener((observable, wasSelected, isSelected) -> {
             if (isSelected) {
@@ -212,6 +248,7 @@ public class GCDPlot {
         if (algebraicVariables.remove(algVar) && algVar.isAddDepended()) {
             removeVariablesFor(algVar.getItem());
         }
+        model.setSavedToFile(false);
     }
 
     private void removeAlgebraicVariable(AlgebraicVariable algebraicVariable, boolean automaticRemove) {
@@ -230,6 +267,7 @@ public class GCDPlot {
         if (removed && algVar.isAddDepended()) {
             removeVariablesFor(algVar.getItem());
         }
+        model.setSavedToFile(false);
     }
 
     public void removeAgent(GCDPlotItem<Agent> agent) {
@@ -239,6 +277,7 @@ public class GCDPlot {
         if (agents.remove(agent) && agent.isAddDepended()) {
             removeVariablesFor(agent.getItem());
         }
+        model.setSavedToFile(false);
     }
 
 
@@ -246,6 +285,7 @@ public class GCDPlot {
         if (agent == null || hasAgent(agent)) {
             return getAgent(agent);
         }
+        model.setSavedToFile(false);
         GCDPlotItem<Agent> newItem = new GCDPlotItem<>(true, agent);
         newItem.addDependedProperty().addListener((observable, wasSelected, isSelected) -> {
             if (isSelected) {
@@ -262,6 +302,7 @@ public class GCDPlot {
         if (variable == null) {
             return;
         }
+        model.setSavedToFile(false);
         if (hasVariable(variable)) {
             if (!independent) {
                 getVariable(variable).dependentOn++;
@@ -294,6 +335,7 @@ public class GCDPlot {
         }
         if (shouldRemove) {
             variables.remove(variable);
+            model.setSavedToFile(false);
         }
     }
 

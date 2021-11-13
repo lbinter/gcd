@@ -46,10 +46,7 @@ public class MPlotStyle extends MBase implements IExpression {
     }
 
     public MPlotStyle(GCDModel model) {
-        Iterator<AlgebraicVariable> it = model.getAlgebraicVariables().sorted().iterator();
-        boolean hasMoreAlgVars, hasMoreVars;
-        while (it.hasNext()) {
-            AlgebraicVariable algVar = it.next();
+        for (AlgebraicVariable algVar : model.getAlgebraicVariables().sorted()) {
             directives.add(new MDirective(algVar, algVar.getName()));
             Iterator<String> varIt = algVar.getVariables().stream().sorted().iterator();
             while (varIt.hasNext()) {
@@ -61,7 +58,6 @@ public class MPlotStyle extends MBase implements IExpression {
                     continue;
                 }
                 directives.add(new MDirective(variable, variable.getName()));
-
             }
         }
     }

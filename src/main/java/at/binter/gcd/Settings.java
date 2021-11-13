@@ -35,7 +35,7 @@ public class Settings {
     }
 
     public void addRecentlyOpened(File f) {
-        if (recentlyOpened.size() >= 5) {
+        if (recentlyOpened.size() >= 7) {
             recentlyOpened.removeFirst();
         }
         String path = f.getAbsolutePath();

@@ -544,6 +544,10 @@ public class GCDController extends BaseController implements Initializable {
                 showInvalidFileError(file);
                 return;
             }
+            if (!file.exists()) {
+                // TODO show missing file error
+                return;
+            }
             if (log.isInfoEnabled()) {
                 log.info("Loading gcd model from file {}", file.getAbsolutePath());
             }
@@ -591,7 +595,7 @@ public class GCDController extends BaseController implements Initializable {
         }
     }
 
-    private void setModelIndicator(boolean isSaved) {
+    public void setModelIndicator(boolean isSaved) {
         if (modelStatusIndicator != null) {
             modelStatusIndicator.setVisible(true);
             if (isSaved) {

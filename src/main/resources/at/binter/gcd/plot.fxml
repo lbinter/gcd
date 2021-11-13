@@ -127,30 +127,47 @@
                         <VBox alignment="TOP_CENTER">
                            <children>
                               <Label layoutX="75.0" layoutY="20.0" text="%plot.name"/>
-                              <TextField fx:id="plotName" layoutX="20.0" layoutY="54.0" promptText="%plot.name"/>
+                              <TextField fx:id="plotName" layoutX="20.0" layoutY="54.0" promptText="%plot.name">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0"/>
+                                 </VBox.margin>
+                              </TextField>
                               <Label text="%plot.legend.label"/>
                               <TextField fx:id="plotLegendLabel" promptText="%plot.legend.label">
                                  <VBox.margin>
                                     <Insets bottom="5.0"/>
                                  </VBox.margin>
                               </TextField>
+                              <CheckBox fx:id="showPlotLabels" mnemonicParsing="false" selected="true"
+                                        text="%plot.plot.labels.show">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="5.0"/>
+                                 </VBox.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="showPlotLegends" mnemonicParsing="false" selected="true"
+                                        text="%plot.plot.legends.show">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="5.0"/>
+                                 </VBox.margin>
+                              </CheckBox>
                               <Label text="%plot.style"/>
                               <TextField fx:id="plotStyle" promptText="%plot.style">
                                  <VBox.margin>
                                     <Insets bottom="5.0"/>
                                  </VBox.margin>
                               </TextField>
-                              <Label text="%plot.range"/>
-                              <TextField fx:id="plotRange" promptText="%plot.range">
+                              <Label text="%plot.parameter"/>
+                              <TextField fx:id="plotParameter" promptText="%plot.parameter.default">
                                  <VBox.margin>
                                     <Insets bottom="5.0"/>
                                  </VBox.margin>
                               </TextField>
-                              <Button mnemonicParsing="false" onAction="#saveSettings" text="%plot.settings.save">
+                              <Label text="%plot.range"/>
+                              <TextField fx:id="plotRange" promptText="%plot.range.default">
                                  <VBox.margin>
                                     <Insets bottom="5.0"/>
                                  </VBox.margin>
-                              </Button>
+                              </TextField>
                            </children>
                         </VBox>
                      </content>

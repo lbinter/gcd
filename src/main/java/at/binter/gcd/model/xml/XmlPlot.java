@@ -21,7 +21,13 @@ public class XmlPlot {
     @XmlElement
     public String plotStyle;
     @XmlElement
+    public String plotParameter;
+    @XmlElement
     public String plotRange;
+    @XmlElement
+    public boolean showPlotLabels;
+    @XmlElement
+    public boolean showLegendLabels;
     @XmlElementWrapper(name = "algebraic-variables")
     @XmlElement(name = "algVar")
     public List<XmlPlotItem> algebraicVariables = new ArrayList<>();
@@ -39,7 +45,10 @@ public class XmlPlot {
         name = plot.getName();
         legendLabel = plot.getLegendLabel();
         plotStyle = plot.getPlotStyle();
+        plotParameter = plot.getPlotParameter();
         plotRange = plot.getPlotRange();
+        showPlotLabels = plot.isShowPlotLabels();
+        showLegendLabels = plot.isShowLegendLabels();
         for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
             if (algVar.independent || algVar.isAddDepended()) {
                 algebraicVariables.add(new XmlPlotItem(algVar));
