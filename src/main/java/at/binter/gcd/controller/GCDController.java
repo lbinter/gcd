@@ -433,6 +433,7 @@ public class GCDController extends BaseController implements Initializable {
     public void clearModel() {
         model.clearModel();
         clearPlots();
+        setDataFromFilePath(null);
     }
 
     @FXML
@@ -592,12 +593,17 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     private void setDataFromFilePath(File gcdFile) {
-        String isSaved = "";
-        if (!model.isSavedToFile()) {
-            isSaved = "*";
+        if (gcdFile == null) {
+            gcd.primaryStage.setTitle(resources.getString("main.title"));
+            filePath.setText("");
+        } else {
+            String isSaved = "";
+            if (!model.isSavedToFile()) {
+                isSaved = "*";
+            }
+            gcd.primaryStage.setTitle(isSaved + gcdFile.getName() + " - " + resources.getString("main.title"));
+            filePath.setText(gcdFile.getParentFile().getAbsolutePath());
         }
-        gcd.primaryStage.setTitle(isSaved + gcdFile.getName() + " - " + resources.getString("main.title"));
-        filePath.setText(gcdFile.getParentFile().getAbsolutePath());
     }
 
     public void showCloseDialog(Event event) {

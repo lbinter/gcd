@@ -208,8 +208,50 @@
                                         <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
                                     </VBox.margin>
                                 </HBox>
-                                <HBox alignment="CENTER">
+                                <HBox alignment="TOP_CENTER">
                                     <children>
+                                        <TitledPane animated="false" text="%help.frame.title">
+                                            <content>
+                                                <VBox spacing="5.0">
+                                                    <children>
+                                                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+                                                               styleClass="valid-has-values"
+                                                               text="%help.text.variable.status.VALID_DEFAULT_WITH_VALUES.short">
+                                                            <VBox.margin>
+                                                                <Insets/>
+                                                            </VBox.margin>
+                                                            <padding>
+                                                                <Insets left="5.0" right="5.0"/>
+                                                            </padding>
+                                                        </Label>
+                                                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+                                                               styleClass="valid-has-function"
+                                                               text="%help.text.variable.status.VALID_HAS_FUNCTION.short">
+                                                            <padding>
+                                                                <Insets left="5.0" right="5.0"/>
+                                                            </padding>
+                                                        </Label>
+                                                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+                                                               styleClass="valid-automatic"
+                                                               text="%help.text.variable.status.VALID_AUTOMATIC.short">
+                                                            <padding>
+                                                                <Insets left="5.0" right="5.0"/>
+                                                            </padding>
+                                                        </Label>
+                                                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308"
+                                                               styleClass="invalid"
+                                                               text="%help.text.variable.status.INVALID.short">
+                                                            <padding>
+                                                                <Insets left="5.0" right="5.0"/>
+                                                            </padding>
+                                                        </Label>
+                                                    </children>
+                                                </VBox>
+                                            </content>
+                                            <padding>
+                                                <Insets right="5.0"/>
+                                            </padding>
+                                        </TitledPane>
                                         <TitledPane collapsible="false" text="%list.title.variables" textOverrun="CLIP">
                                             <content>
                                                 <HBox>
@@ -232,7 +274,7 @@
                                                 </HBox>
                                             </content>
                                             <HBox.margin>
-                                                <Insets right="5.0"/>
+                                                <Insets left="5.0" right="5.0"/>
                                             </HBox.margin>
                                         </TitledPane>
                                         <TitledPane collapsible="false" text="%list.title.parameters"
