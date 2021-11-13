@@ -18,6 +18,7 @@ public class GCDErrorHTML {
     private final ResourceBundle resources;
     private StringBuilder b;
     private Map<GCDWarning, List<Object>> warnings = new HashMap<>();
+    private int warningCount = 0;
 
     public GCDErrorHTML(GCDModel model, ResourceBundle resources) {
         this.model = model;
@@ -26,6 +27,7 @@ public class GCDErrorHTML {
 
     public String generate() {
         warnings = model.getWarnings();
+        warningCount = 0;
         b = new StringBuilder();
         b.append("<html>");
         b.append("<body>");
@@ -151,6 +153,7 @@ public class GCDErrorHTML {
 
         b.append("</table>");
         b.append("</li>");
+        warningCount++;
     }
 
     private void appendValue(Object[] array, int index) {
@@ -221,7 +224,20 @@ public class GCDErrorHTML {
                 b.append(name);
             }
             b.append("</li>");
+            warningCount++;
         }
         b.append("</ul>");
+    }
+
+    public Map<GCDWarning, List<Object>> getWarnings() {
+        return warnings;
+    }
+
+    public int getWarningCount() {
+        return warningCount;
+    }
+
+    public boolean hasWarnings() {
+        return warningCount != 0;
     }
 }

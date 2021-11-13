@@ -11,13 +11,13 @@
         <TabPane fx:id="tabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                  minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE">
             <tabs>
-                <Tab text="%mathematica.error.view.title">
+                <Tab fx:id="warningTab" text="%mathematica.error.view.title">
                     <content>
                         <WebView fx:id="errorView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
                                  prefWidth="200.0"/>
                     </content>
                 </Tab>
-                <Tab text="%mathematica.settings.title">
+                <Tab fx:id="mathematicaTab" text="%mathematica.settings.title">
                     <content>
                         <VBox>
                             <children>

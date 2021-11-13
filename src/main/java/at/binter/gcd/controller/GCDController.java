@@ -557,15 +557,15 @@ public class GCDController extends BaseController implements Initializable {
     private boolean loadModel(File file) {
         if (file != null) {
             if (!isValidGCDFile(file)) {
-                showInvalidFileError(file);
                 gcd.settings.recentlyOpened.remove(file.getAbsolutePath());
                 populateRecentlyOpened();
+                showInvalidFileError(file);
                 return false;
             }
             if (!file.exists()) {
                 gcd.settings.recentlyOpened.remove(file.getAbsolutePath());
                 populateRecentlyOpened();
-                // TODO show missing file error
+                showMissingFileError(file);
                 return false;
             }
             if (log.isInfoEnabled()) {

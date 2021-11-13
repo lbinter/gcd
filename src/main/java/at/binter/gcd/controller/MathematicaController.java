@@ -7,6 +7,7 @@ import at.binter.gcd.model.GCDModel;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -35,6 +36,10 @@ public class MathematicaController extends BaseController implements Initializab
 
     @FXML
     private TabPane tabPane;
+    @FXML
+    private Tab warningTab;
+    @FXML
+    private Tab mathematicaTab;
     @FXML
     private TextField gcdFilePath;
     @FXML
@@ -71,6 +76,12 @@ public class MathematicaController extends BaseController implements Initializab
         ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
         modelicaFilePath.setText(model.getFileMathematicaModelicaPath());
         controlFilePath.setText(model.getFileMathematicaControlPath());
+
+        if (errorWriter.hasWarnings()) {
+            tabPane.getSelectionModel().select(warningTab);
+        } else {
+            tabPane.getSelectionModel().select(mathematicaTab);
+        }
     }
 
     public void showMathematicaWindow() {

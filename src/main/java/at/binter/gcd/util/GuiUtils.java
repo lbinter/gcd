@@ -113,6 +113,14 @@ public class GuiUtils {
         alert.showAndWait();
     }
 
+    public static void showMissingFileError(File file) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(app.getString("error.missing.file.title"));
+        alert.setHeaderText(app.getString("error.missing.file.title"));
+        alert.setContentText(app.getString("error.missing.file.message", file.getAbsolutePath()));
+        alert.showAndWait();
+    }
+
     public static void showError(String i18nTitle, String i18nMessage, Object... params) {
         String messageText;
         if (params != null && params.length > 0) {
