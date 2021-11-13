@@ -1,11 +1,14 @@
 package at.binter.gcd.util;
 
+import javafx.css.PseudoClass;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +24,7 @@ import static at.binter.gcd.GCDApplication.app;
 public class GuiUtils {
     public static final Color defaultBackground = Color.pink;
     public static final Color defaultForeground = Color.BLACK;
+    public static final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
 
     public static void addStageCloseOnEscapeKey(Stage stage, Scene scene) {
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -89,11 +93,50 @@ public class GuiUtils {
         return new TextFormatter<>(converter, null, filter);
     }
 
+    public static void showWarning(String title, String message, Object... params) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(app.getString(title));
+        alert.setHeaderText(app.getString(title));
+        if (params != null && params.length > 0) {
+            alert.setContentText(app.getString(message, params));
+        } else {
+            alert.setContentText(app.getString(message));
+        }
+        alert.showAndWait();
+    }
+
     public static void showInvalidFileError(File file) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(app.getString("error.invalid.file.title"));
         alert.setHeaderText(app.getString("error.invalid.file.title"));
         alert.setContentText(file.getAbsolutePath() + ": " + app.getString("error.invalid.file.message"));
+        alert.showAndWait();
+    }
+
+    public static void showError(String i18nTitle, String i18nMessage, Object... params) {
+        String messageText;
+        if (params != null && params.length > 0) {
+            messageText = app.getString(i18nMessage, params);
+        } else {
+            messageText = app.getString(i18nMessage);
+        }
+        showErrorMessage(app.getString(i18nTitle), messageText);
+    }
+
+    public static void showErrorMessage(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        if (message.contains("\n")) {
+            String[] messageArray = message.split("\n");
+            VBox box = new VBox();
+            for (String text : messageArray) {
+                box.getChildren().add(new Text(text));
+            }
+            alert.getDialogPane().setContent(box);
+        } else {
+            alert.setContentText(message);
+        }
         alert.showAndWait();
     }
 

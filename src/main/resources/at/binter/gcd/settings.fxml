@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -28,7 +27,8 @@
                         <Insets/>
                      </GridPane.margin>
                   </Label>
-                  <Button mnemonicParsing="false" text="%settings.mathematica.jlink.button" GridPane.columnIndex="2"
+                  <Button mnemonicParsing="false" onAction="#chooseJLinkFolder"
+                          text="%settings.mathematica.jlink.button" GridPane.columnIndex="2"
                           GridPane.halignment="RIGHT">
                      <GridPane.margin>
                         <Insets/>
@@ -36,13 +36,14 @@
                   </Button>
                   <TextField fx:id="jLink" editable="false" GridPane.columnSpan="3" GridPane.rowIndex="1"/>
                   <Separator minHeight="10.0" GridPane.columnSpan="3" GridPane.rowIndex="2"/>
-                  <Label text="%settings.mathematica.mathkernel" GridPane.rowIndex="3">
+                  <Label text="%settings.mathematica.math.kernel" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets/>
                      </GridPane.margin>
                   </Label>
-                  <Button mnemonicParsing="false" text="%settings.mathematica.mathkernel.button"
-                          GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                  <Button mnemonicParsing="false" onAction="#chooseMathKernel"
+                          text="%settings.mathematica.math.kernel.button" GridPane.columnIndex="2"
+                          GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets/>
                      </GridPane.margin>
@@ -76,7 +77,8 @@
                         <Insets/>
                      </GridPane.margin>
                   </Label>
-                  <Button mnemonicParsing="false" text="%settings.mathematica.jlink.button" GridPane.columnIndex="2"
+                  <Button mnemonicParsing="false" onAction="#chooseDefaultFolder"
+                          text="%settings.mathematica.jlink.button" GridPane.columnIndex="2"
                           GridPane.halignment="RIGHT">
                      <GridPane.margin>
                         <Insets/>
@@ -94,5 +96,19 @@
             </GridPane>
          </content>
       </TitledPane>
+      <HBox alignment="CENTER" prefHeight="50.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#saveSettings" text="%settings.save">
+               <HBox.margin>
+                  <Insets right="5.0"/>
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#close" text="%settings.cancel">
+               <HBox.margin>
+                  <Insets left="5.0"/>
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
    </children>
 </VBox>

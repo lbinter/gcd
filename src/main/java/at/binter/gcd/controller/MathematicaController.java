@@ -24,12 +24,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static at.binter.gcd.util.FileUtils.nbFileExt;
 import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
 
 
 public class MathematicaController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(MathematicaController.class);
-    public static FileChooser.ExtensionFilter nbFileExt = new FileChooser.ExtensionFilter("Mathematica", "*.nb");
     private GCDErrorHTML errorWriter;
     private GCDModel model;
 
@@ -87,7 +87,11 @@ public class MathematicaController extends BaseController implements Initializab
 
     @FXML
     void gcdSaveAs() {
-        // TODO implement me
+        gcd.gcdController.saveAs();
+        gcdFilePath.setText(model.getFilePath());
+        ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
+        modelicaFilePath.setText(model.getFileMathematicaModelicaPath());
+        controlFilePath.setText(model.getFileMathematicaControlPath());
     }
 
     @FXML
@@ -152,15 +156,9 @@ public class MathematicaController extends BaseController implements Initializab
 
     @FXML
     void generateAllNBFiles() {
-        showProgress(true);
-        try {
-            generateFile(GCDMode.NDSOLVE);
-            generateFile(GCDMode.MODELICA);
-            generateFile(GCDMode.CONTROL);
-        } catch (Exception e) {
-            log.error("Could not generate mathematica files", e);
-        }
-        showProgress(false);
+        generateNDSolveFile();
+        generateModelicaFile();
+        generateControlFile();
     }
 
     private File showFileChooser(File currentFile) {
@@ -200,11 +198,6 @@ public class MathematicaController extends BaseController implements Initializab
         tabPane.setDisable(showProgressIndicator);
     }
 
-    private boolean generateFile(GCDMode mode) {
-        GCDWriterNotebook writer = new GCDWriterNotebook(model, mode, gcd.utils);
-        return writer.writeToFile();
-    }
-
     private Task<Boolean> createFileGenerationTask(GCDMode mode, File file) {
         Task<Boolean> task = new Task<>() {
             @Override
@@ -220,7 +213,14 @@ public class MathematicaController extends BaseController implements Initializab
             }
         });
         task.setOnCancelled(t -> showProgress(false));
-        task.setOnFailed(t -> showProgress(false));
+        task.setOnFailed(t -> {
+            showProgress(false);
+            Throwable e = t.getSource().getException();
+            if (e.getMessage().contains("The process cannot access the file because it is being used by another process")) {
+                log.error("File already opened");
+            }
+            log.error("Could not create file {}", file.getName(), t.getSource().getException());
+        });
         return task;
     }
 }

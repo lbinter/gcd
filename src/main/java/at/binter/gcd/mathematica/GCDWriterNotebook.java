@@ -9,7 +9,10 @@ import at.binter.gcd.util.MathematicaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class GCDWriterNotebook implements GCDMathematica {
     private final GCDModel gcdModel;
     private final GCDMode mode;
     private final File outputFile;
-    private final OutputStreamWriter writer;
+    private OutputStreamWriter writer;
     private final MathematicaModel model;
     private Notebook nb;
     private RowBox currentCell = new RowBox();
@@ -29,18 +32,11 @@ public class GCDWriterNotebook implements GCDMathematica {
     public GCDWriterNotebook(GCDModel gcdModel, GCDMode mode, MathematicaUtils utils) {
         this.gcdModel = gcdModel;
         this.mode = mode;
-        FileOutputStream output;
-        try {
-            switch (mode) {
-                case NDSOLVE -> outputFile = gcdModel.getMathematicaNDSolveFile();
-                case MODELICA -> outputFile = gcdModel.getMathematicaModelicaFile();
-                case CONTROL -> outputFile = gcdModel.getMathematicaControlFile();
-                default -> throw new IllegalArgumentException("Found invalid GCDMode " + mode);
-            }
-            output = new FileOutputStream(outputFile);
-            writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Could not create GCDWriterNotebook", e);
+        switch (mode) {
+            case NDSOLVE -> outputFile = gcdModel.getMathematicaNDSolveFile();
+            case MODELICA -> outputFile = gcdModel.getMathematicaModelicaFile();
+            case CONTROL -> outputFile = gcdModel.getMathematicaControlFile();
+            default -> throw new IllegalArgumentException("Found invalid GCDMode " + mode);
         }
         model = new MathematicaModel(gcdModel, utils);
     }
@@ -51,7 +47,9 @@ public class GCDWriterNotebook implements GCDMathematica {
     }
 
     @Override
-    public boolean writeToFile() {
+    public boolean writeToFile() throws Exception {
+        FileOutputStream output = new FileOutputStream(outputFile);
+        writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
         log.info("Generating {}", outputFile.getAbsolutePath());
         try {
             model.transformToMathematica();

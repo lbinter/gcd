@@ -35,91 +35,95 @@
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="145.0"/>
                                             </columnConstraints>
                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                                 <RowConstraints vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                                 <RowConstraints vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                                 <RowConstraints vgrow="SOMETIMES"/>
-                                                <RowConstraints vgrow="SOMETIMES"/>
-                                                <RowConstraints vgrow="SOMETIMES"/>
-                                                <RowConstraints vgrow="SOMETIMES"/>
-                                                <RowConstraints vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                                 <RowConstraints vgrow="SOMETIMES"/>
                                                 <RowConstraints vgrow="SOMETIMES"/>
                                             </rowConstraints>
                                  <children>
-                                    <Label text="%mathematica.settings.gcd.file" GridPane.rowIndex="1">
-                                       <GridPane.margin>
-                                           <Insets left="5.0" right="5.0"/>
-                                       </GridPane.margin>
-                                    </Label>
+                                     <Label text="%mathematica.settings.gcd.file">
+                                         <GridPane.margin>
+                                             <Insets left="5.0" right="5.0"/>
+                                         </GridPane.margin>
+                                     </Label>
                                     <Label text="%mathematica.settings.nb.ndsolve.file" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                            <Insets left="5.0" right="5.0"/>
                                        </GridPane.margin>
                                     </Label>
-                                    <Label text="%mathematica.settings.nb.control.file" GridPane.rowIndex="7">
-                                       <GridPane.margin>
-                                           <Insets left="5.0" right="5.0"/>
-                                       </GridPane.margin>
-                                    </Label>
-                                    <TextField fx:id="gcdFilePath" editable="false" GridPane.columnSpan="5">
-                                       <GridPane.margin>
-                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                       </GridPane.margin>
-                                    </TextField>
+                                     <Label text="%mathematica.settings.nb.control.file" GridPane.rowIndex="9">
+                                         <GridPane.margin>
+                                             <Insets left="5.0" right="5.0"/>
+                                         </GridPane.margin>
+                                     </Label>
+                                     <TextField fx:id="gcdFilePath" editable="false" GridPane.columnSpan="5"
+                                                GridPane.rowIndex="1">
+                                         <GridPane.margin>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                         </GridPane.margin>
+                                     </TextField>
                                      <TextField fx:id="ndsolveFilePath" editable="false" minWidth="400.0"
-                                                prefWidth="400.0" GridPane.columnSpan="5" GridPane.rowIndex="2">
+                                                prefWidth="400.0" GridPane.columnSpan="5" GridPane.rowIndex="4">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                          </GridPane.margin>
                                      </TextField>
                                      <TextField fx:id="modelicaFilePath" editable="false" GridPane.columnSpan="5"
-                                                GridPane.rowIndex="4">
+                                                GridPane.rowIndex="7">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                          </GridPane.margin>
                                      </TextField>
                                      <TextField fx:id="controlFilePath" editable="false" GridPane.columnSpan="5"
-                                                GridPane.rowIndex="6">
+                                                GridPane.rowIndex="10">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                          </GridPane.margin>
                                      </TextField>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#chooseControlFile"
                                              text="%mathematica.settings.nb.control.file.set" GridPane.columnIndex="1"
-                                             GridPane.rowIndex="7">
+                                             GridPane.rowIndex="9">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#generateControlFile"
                                              text="%mathematica.settings.nb.control.file.generate"
-                                             GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                             GridPane.columnIndex="2" GridPane.rowIndex="9">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
-                                    <Label text="%mathematica.settings.nb.modelica.file" GridPane.rowIndex="5">
-                                       <GridPane.margin>
-                                           <Insets left="5.0" right="5.0"/>
-                                       </GridPane.margin>
-                                    </Label>
+                                     <Label text="%mathematica.settings.nb.modelica.file" GridPane.rowIndex="6">
+                                         <GridPane.margin>
+                                             <Insets left="5.0" right="5.0"/>
+                                         </GridPane.margin>
+                                     </Label>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#chooseModelicaFile"
                                              text="%mathematica.settings.nb.modelica.file.set" GridPane.columnIndex="1"
-                                             GridPane.rowIndex="5">
+                                             GridPane.rowIndex="6">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#generateModelicaFile"
                                              text="%mathematica.settings.nb.modelica.file.generate"
-                                             GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                             GridPane.columnIndex="2" GridPane.rowIndex="6">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
                                      <Button mnemonicParsing="false" onAction="#generateAllNBFiles"
                                              text="%mathematica.settings.generate.all" GridPane.columnSpan="5"
-                                             GridPane.halignment="CENTER" GridPane.rowIndex="8"
+                                             GridPane.halignment="CENTER" GridPane.rowIndex="11"
                                              GridPane.valignment="CENTER">
                                          <GridPane.margin>
                                              <Insets top="25.0"/>
@@ -148,26 +152,29 @@
                                      </Button>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#openModelicaFile"
                                              text="%mathematica.settings.nb.modelica.file.open" GridPane.columnIndex="3"
-                                             GridPane.rowIndex="5">
+                                             GridPane.rowIndex="6">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#openControlFile"
                                              text="%mathematica.settings.nb.control.file.open" GridPane.columnIndex="3"
-                                             GridPane.rowIndex="7">
+                                             GridPane.rowIndex="9">
                                          <GridPane.margin>
                                              <Insets bottom="5.0" left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
                                      <Button minWidth="95.0" mnemonicParsing="false" onAction="#gcdSaveAs"
-                                             text="%mathematica.settings.gcd.file.save.as" GridPane.columnIndex="1"
-                                             GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                                             text="%mathematica.settings.gcd.file.save.as" GridPane.columnIndex="3"
+                                             GridPane.columnSpan="2" GridPane.halignment="RIGHT"
                                              GridPane.valignment="CENTER">
                                          <GridPane.margin>
                                              <Insets left="5.0" right="5.0"/>
                                          </GridPane.margin>
                                      </Button>
+                                     <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="2"/>
+                                     <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="5"/>
+                                     <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="8"/>
                                  </children>
                                  <HBox.margin>
                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

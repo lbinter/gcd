@@ -365,6 +365,9 @@ public class GCDModel extends GCDBaseModel {
         setRunGenerateChangeMu(false);
         clearModel();
         setFile(model.file);
+        setMathematicaNDSolveFile(model.mathematicaNDSolveFile);
+        setMathematicaModelicaFile(model.mathematicaModelicaFile);
+        setMathematicaControlFile(model.mathematicaControlFile);
         ArrayList<AlgebraicVariable> newAlgebraicVariables = new ArrayList<>();
         for (XmlFunction algVar : model.algebraicVariables) {
             newAlgebraicVariables.add(algVar.createAlgebraicVariable());
@@ -448,7 +451,13 @@ public class GCDModel extends GCDBaseModel {
     }
 
     public void setFile(File file) {
+        boolean changeGeneratedFiles = this.file != file;
         this.file = file;
+        if (changeGeneratedFiles) {
+            setMathematicaNDSolveFile(getDefaultNDSolveFile());
+            setMathematicaModelicaFile(getDefaultModelicaFile());
+            setMathematicaControlFile(getDefaultControlFile());
+        }
     }
 
     public File getFile() {
@@ -462,7 +471,7 @@ public class GCDModel extends GCDBaseModel {
 
     public File getMathematicaNDSolveFile() {
         if (mathematicaNDSolveFile == null && file != null) {
-            return new File(file.getParentFile(), getDefaultNDSolveFileName());
+            return getDefaultNDSolveFile();
         }
         return mathematicaNDSolveFile;
     }
@@ -480,6 +489,13 @@ public class GCDModel extends GCDBaseModel {
         return ".ndsolve.nb";
     }
 
+    public File getDefaultNDSolveFile() {
+        if (file == null) {
+            return null;
+        }
+        return new File(file.getParentFile(), getDefaultNDSolveFileName());
+    }
+
     public void setMathematicaNDSolveFile(File mathematicaNDSolveFile) {
         this.mathematicaNDSolveFile = mathematicaNDSolveFile;
         setSavedToFile(false);
@@ -487,7 +503,7 @@ public class GCDModel extends GCDBaseModel {
 
     public File getMathematicaModelicaFile() {
         if (mathematicaModelicaFile == null && file != null) {
-            return new File(file.getParentFile(), getDefaultModelicaFileName());
+            return getDefaultModelicaFile();
         }
         return mathematicaModelicaFile;
     }
@@ -503,6 +519,13 @@ public class GCDModel extends GCDBaseModel {
             return file.getName().replace(".gcd", ".modelica.nb");
         }
         return ".modelica.nb";
+    }
+
+    public File getDefaultModelicaFile() {
+        if (file == null) {
+            return null;
+        }
+        return new File(file.getParentFile(), getDefaultModelicaFileName());
     }
 
     public void setMathematicaModelicaFile(File mathematicaModelicaFile) {
@@ -528,6 +551,13 @@ public class GCDModel extends GCDBaseModel {
             return file.getName().replace(".gcd", ".control.nb");
         }
         return ".control.nb";
+    }
+
+    public File getDefaultControlFile() {
+        if (file == null) {
+            return null;
+        }
+        return new File(file.getParentFile(), getDefaultControlFileName());
     }
 
     public void setMathematicaControlFile(File mathematicaControlFile) {

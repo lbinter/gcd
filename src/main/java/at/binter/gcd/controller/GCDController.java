@@ -27,13 +27,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static at.binter.gcd.util.FileUtils.gcdFileExt;
 import static at.binter.gcd.util.FileUtils.isValidGCDFile;
 import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.isMousePrimaryDoubleClicked;
 
 public class GCDController extends BaseController implements Initializable {
     private static final Logger log = LoggerFactory.getLogger(GCDController.class);
-    public static FileChooser.ExtensionFilter gcdFileExt = new FileChooser.ExtensionFilter("GCD", "*.gcd");
 
     @FXML
     private Button buttonUndo;
@@ -342,9 +342,16 @@ public class GCDController extends BaseController implements Initializable {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(gcdFileExt);
         fc.setSelectedExtensionFilter(gcdFileExt);
-        // TODO fc.setInitialDirectory(new File("path"));
+        if (gcd.settings.lastOpened != null) {
+            File lastOpened = new File(gcd.settings.lastOpened);
+            if (isValidGCDFile(lastOpened)) {
+                fc.setInitialDirectory(lastOpened.getParentFile());
+            }
+        }
         File file = fc.showOpenDialog(gcd.primaryStage);
         loadModel(file);
+        gcd.settings.addRecentlyOpened(file);
+        gcd.settings.lastOpened = file.getAbsolutePath();
     }
 
     @FXML
@@ -357,15 +364,17 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void saveAs() {
+    protected boolean saveAs() {
         File file = showSaveFileDialog();
         if (file != null) {
             if (!isValidGCDFile(file)) {
                 showInvalidFileError(file);
-                return;
+                return false;
             }
             saveModelToFile(file);
+            return true;
         }
+        return false;
     }
 
     @FXML
@@ -381,7 +390,7 @@ public class GCDController extends BaseController implements Initializable {
 
     @FXML
     protected void showSettings() {
-        gcd.settingsStage.showAndWait();
+        gcd.settingsStage.show();
     }
 
     @FXML
@@ -473,7 +482,7 @@ public class GCDController extends BaseController implements Initializable {
                 if (model.getFile() != null) {
                     old = model.getFile().getAbsolutePath();
                 }
-                log.info("Setting model.file from \"{}\" to \"{}\"", old, file.getAbsolutePath());
+                log.info("Changing model.file from \"{}\" to \"{}\"", old, file.getAbsolutePath());
             }
             model.setFile(file);
             setDataFromFilePath(file);
@@ -532,6 +541,7 @@ public class GCDController extends BaseController implements Initializable {
         }
         Optional<ButtonType> result = showYesNoDialog(title, message);
         if (result.isPresent() && result.get() == ButtonType.YES) {
+            gcd.saveSettings();
             Platform.exit();
         } else {
             if (event != null) {

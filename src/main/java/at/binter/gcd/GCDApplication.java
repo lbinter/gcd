@@ -8,6 +8,7 @@ import at.binter.gcd.xml.XmlWriter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class GCDApplication extends Application {
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
+    public Path settingsLocation;
     public Settings settings;
     public final Settings defaultSettings = new Settings();
 
@@ -115,8 +117,11 @@ public class GCDApplication extends Application {
         settingsController.setApplication(this);
         settingsStage.setScene(settingsScene);
         settingsStage.setTitle(resources.getString("settings.title"));
+        settingsController.loadSettings();
+        settingsStage.initModality(Modality.APPLICATION_MODAL);
+        settingsStage.initOwner(primaryStage);
 
-        if (!settings.verifyMathematicaPaths()) {
+        if (!settings.verifyMathematicaPaths(true)) {
             settingsStage.showAndWait();
         }
 
@@ -213,7 +218,7 @@ public class GCDApplication extends Application {
     }
 
     private void readOrCreateSettings() throws IOException {
-        Path settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
+        settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
         File settingsFile = settingsLocation.toFile();
         if (!settingsFile.exists()) {
             if (!settingsFile.getParentFile().exists()) {
@@ -222,10 +227,18 @@ public class GCDApplication extends Application {
             }
             settings = new Settings();
             settings.loadDefaultValues();
-            XmlWriter.write(settings, settingsFile);
+            saveSettings();
         } else {
-            settings = XmlReader.readSettings(settingsFile);
+            loadSettings();
         }
+    }
+
+    public void saveSettings() {
+        XmlWriter.write(settings, settingsLocation.toFile());
+    }
+
+    public void loadSettings() {
+        settings = XmlReader.readSettings(settingsLocation.toFile());
     }
 
     public String getString(String i18nKey) {

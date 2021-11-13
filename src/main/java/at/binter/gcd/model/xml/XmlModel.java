@@ -15,7 +15,6 @@ import java.util.List;
 @XmlRootElement(name = "gcd-model")
 public class XmlModel {
     public File file;
-
     @XmlElementWrapper(name = "algebraic-variables")
     @XmlElement(name = "algVar")
     public List<XmlFunction> algebraicVariables = new ArrayList<>();
@@ -39,6 +38,14 @@ public class XmlModel {
     @XmlElementWrapper(name = "plots")
     @XmlElement(name = "plot")
     public List<XmlPlot> plots = new ArrayList<>();
+
+    @XmlElement
+    public File mathematicaNDSolveFile;
+    @XmlElement
+    public File mathematicaModelicaFile;
+    @XmlElement
+    public File mathematicaControlFile;
+
 
     public XmlModel() {
     }
@@ -67,5 +74,8 @@ public class XmlModel {
         for (GCDPlot plot : gcdModel.getPlots()) {
             plots.add(new XmlPlot(plot));
         }
+        mathematicaNDSolveFile = gcdModel.getMathematicaNDSolveFile();
+        mathematicaModelicaFile = gcdModel.getMathematicaModelicaFile();
+        mathematicaControlFile = gcdModel.getMathematicaControlFile();
     }
 }
