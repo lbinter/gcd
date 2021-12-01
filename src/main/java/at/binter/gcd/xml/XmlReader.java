@@ -1,6 +1,7 @@
 package at.binter.gcd.xml;
 
 import at.binter.gcd.Settings;
+import at.binter.gcd.model.plotstyle.GCDPlotStyles;
 import at.binter.gcd.model.xml.XmlModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -49,6 +50,26 @@ public class XmlReader {
             }
         } catch (JAXBException e) {
             log.error("Could not read gcd settings from file {}", file.getAbsolutePath(), e);
+        }
+        return null;
+    }
+
+    public static GCDPlotStyles readGCDPlotStyles(File file) {
+        if (file == null) {
+            return null;
+        }
+        JAXBContext jaxbContext;
+        try {
+            jaxbContext = JAXBContext.newInstance(GCDPlotStyles.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            Object obj = jaxbUnmarshaller.unmarshal(file);
+            if (obj instanceof GCDPlotStyles plotStyles) {
+                log.info("Loaded gcd plot styles from {}", file.getAbsolutePath());
+                return plotStyles;
+            }
+        } catch (JAXBException e) {
+            log.error("Could not read gcd plot styles from file {}", file.getAbsolutePath(), e);
         }
         return null;
     }

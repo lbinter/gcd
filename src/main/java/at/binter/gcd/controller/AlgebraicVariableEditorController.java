@@ -12,8 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.doubleToString;
-import static at.binter.gcd.util.GuiUtils.readDoubleValueFrom;
+import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class AlgebraicVariableEditorController extends BaseEditorController<AlgebraicVariable> implements Initializable {
@@ -43,6 +42,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         super.initialize(location, resources);
         i18nAddTitle = "editor.algebraicVariable.add.title";
         i18nEditTitle = "editor.algebraicVariable.edit.title";
+        editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
         registerEventHandlers();
         registerValidators();
     }

@@ -40,7 +40,7 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <ToolBar prefHeight="40.0" prefWidth="200.0">
+        <ToolBar>
             <items>
                 <Button fx:id="buttonLoad" minHeight="38.0" minWidth="34.0" mnemonicParsing="false"
                         onAction="#loadFromFile" prefHeight="38.0" text="%symbols.load" textAlignment="CENTER">
@@ -55,21 +55,8 @@
                     </font>
                 </Button>
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
-                <Button fx:id="buttonUndo" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#undo"
-                        prefHeight="38.0" text="%symbols.undo" textAlignment="CENTER">
-                    <font>
-                        <Font name="Lucida Sans Unicode" size="14.0"/>
-                    </font>
-                </Button>
-                <Button fx:id="buttonRedo" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#redo"
-                        prefHeight="38.0" text="%symbols.redo" textAlignment="CENTER">
-                    <font>
-                        <Font name="Lucida Sans Unicode" size="14.0"/>
-                    </font>
-                </Button>
-                <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
-                <Button fx:id="buttonGCD" minHeight="38.0" minWidth="44.0" mnemonicParsing="false"
-                        onAction="#openMathematicaWindow" prefHeight="38.0" text="%symbols.gcd" textAlignment="CENTER"/>
+                <Button minHeight="38.0" minWidth="44.0" mnemonicParsing="false" onAction="#openMathematicaWindow"
+                        prefHeight="38.0" text="%symbols.gcd" textAlignment="CENTER"/>
                 <Separator opacity="0.0" orientation="VERTICAL" prefHeight="10.0"/>
                 <Button minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#showHelpWindow"
                         prefHeight="38.0" text="%symbols.help" textAlignment="CENTER"/>
@@ -91,13 +78,57 @@
                         <Font size="14.0"/>
                     </font>
                 </TextField>
-                <Button minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#addPlot" prefHeight="38.0"
-                        prefWidth="34.0" text="%main.addPlotPane.button" textAlignment="CENTER"/>
+                <Button alignment="CENTER" minHeight="38.0" minWidth="34.0" mnemonicParsing="false" onAction="#addPlot"
+                        prefHeight="38.0" prefWidth="34.0" text="%main.addPlotPane.button" textAlignment="CENTER"/>
             </items>
         </ToolBar>
         <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
             <tabs>
-                <Tab closable="false" text="%main.gcdTab">
+                <Tab fx:id="plotStylesTab" closable="false" text="%main.tab.plot.styles">
+                    <content>
+                        <VBox>
+                            <children>
+                                <TableView fx:id="plotStyleTable" editable="true" minHeight="600.0">
+                                    <columns>
+                                        <TableColumn fx:id="nameColumn" maxWidth="500.0" minWidth="100.0"
+                                                     prefWidth="-1.0" text="%plot.table.name.column"/>
+                                        <TableColumn fx:id="colorColumn" maxWidth="500.0" minWidth="100.0"
+                                                     prefWidth="-1.0" text="%plot.table.color.column"/>
+                                        <TableColumn fx:id="thicknessColumn" maxWidth="500.0" minWidth="100.0"
+                                                     prefWidth="-1.0" text="%plot.table.thickness.column"/>
+                                        <TableColumn fx:id="lineStyleColumn" maxWidth="500.0" minWidth="100.0"
+                                                     prefWidth="-1.0" text="%plot.table.line.style.column"/>
+                                        <TableColumn fx:id="descriptionColumn" maxWidth="1.7976931348623157E308"
+                                                     minWidth="650.0" prefWidth="-1.0"
+                                                     text="%plot.table.description.column"/>
+                                    </columns>
+                                </TableView>
+                                <ToolBar>
+                                    <items>
+                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                                onAction="#loadDefaultPlotStyles"
+                                                text="%plot.table.button.load.defaults"/>
+                                        <Pane HBox.hgrow="ALWAYS"/>
+                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                                onAction="#deleteTableEntry" text="%plot.table.button.delete"/>
+                                        <Separator layoutX="850.0" layoutY="10.0" minWidth="20.0" opacity="0.0"
+                                                   orientation="VERTICAL"/>
+                                        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="874.0"
+                                                layoutY="10.0" mnemonicParsing="false" onAction="#editTableEntry"
+                                                text="%plot.table.button.edit"/>
+                                        <Separator minWidth="20.0" opacity="0.0" orientation="VERTICAL"/>
+                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                                onAction="#addTableEntry" text="%plot.table.button.add"/>
+                                        <Separator minWidth="50.0" opacity="0.0" orientation="VERTICAL"/>
+                                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                                onAction="#saveTable" text="%plot.table.button.save"/>
+                                    </items>
+                                </ToolBar>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+                <Tab fx:id="modelTab" closable="false" text="%main.tab.gcd">
                     <content>
                         <VBox>
                             <children>

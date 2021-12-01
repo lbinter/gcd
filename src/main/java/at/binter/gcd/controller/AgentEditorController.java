@@ -12,8 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.doubleToString;
-import static at.binter.gcd.util.GuiUtils.readDoubleValueFrom;
+import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class AgentEditorController extends BaseEditorController<Agent> implements Initializable {
@@ -42,6 +41,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         super.initialize(location, resources);
         i18nAddTitle = "editor.agent.add.title";
         i18nEditTitle = "editor.agent.edit.title";
+        editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
         registerEventHandlers();
     }
 

@@ -2,6 +2,7 @@ package at.binter.gcd;
 
 
 import at.binter.gcd.controller.*;
+import at.binter.gcd.model.plotstyle.GCDPlotStyles;
 import at.binter.gcd.util.MathematicaUtils;
 import at.binter.gcd.xml.XmlReader;
 import at.binter.gcd.xml.XmlWriter;
@@ -36,31 +37,39 @@ public class GCDApplication extends Application {
 
     public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
 
-    public Path settingsLocation;
+    public Path settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
     public Settings settings;
     public final Settings defaultSettings = new Settings();
+    public Path plotStyleLocation = Paths.get(System.getProperty("user.home"), ".gcd", "plotStyles.xml");
+    public GCDPlotStyles plotStyles;
+    public Path defaultPlotStyleLocation = Paths.get(System.getProperty("user.home"), ".gcd", "defaultPlotStyles.xml");
+    public GCDPlotStyles defaultPlotStyles;
 
     public String gcdCss;
+    public String plotStyleTableCss;
     public String statusCss;
     public String mathematicaCss;
     public String errorViewCss;
 
-    public FXMLLoader loaderSettings;
-    public FXMLLoader loaderGCD;
-    public FXMLLoader loaderAlgVarEditor;
-    public FXMLLoader loaderAgentEditor;
-    public FXMLLoader loaderConstraintEditor;
-    public FXMLLoader loaderVariableEditor;
-    public FXMLLoader loaderParameterEditor;
-    public FXMLLoader loaderChangeMuEditor;
-    public FXMLLoader loaderHelp;
-    public FXMLLoader loaderMathematica;
+    public FXMLLoader loaderSettings = new FXMLLoader();
+    public FXMLLoader loaderGCD = new FXMLLoader();
+    public FXMLLoader loaderPlotStyleEntry = new FXMLLoader();
+    public FXMLLoader loaderAlgVarEditor = new FXMLLoader();
+    public FXMLLoader loaderAgentEditor = new FXMLLoader();
+    public FXMLLoader loaderConstraintEditor = new FXMLLoader();
+    public FXMLLoader loaderVariableEditor = new FXMLLoader();
+    public FXMLLoader loaderParameterEditor = new FXMLLoader();
+    public FXMLLoader loaderChangeMuEditor = new FXMLLoader();
+    public FXMLLoader loaderHelp = new FXMLLoader();
+    public FXMLLoader loaderMathematica = new FXMLLoader();
 
-    public Stage settingsStage;
+    public Stage settingsStage = new Stage();
     public Scene settingsScene;
 
     public Stage primaryStage;
     public Scene primaryScene;
+
+    public Scene plotStyleEntryScene;
 
     public Scene algebraicVariableEditorScene;
     public Scene agentEditorScene;
@@ -74,6 +83,8 @@ public class GCDApplication extends Application {
     public SettingsController settingsController;
 
     public GCDController gcdController;
+    public PlotStyleEntryEditorController plotStyleEntryEditorController;
+
     public AlgebraicVariableEditorController algebraicVariableEditorController;
     public AgentEditorController agentEditorController;
     public ConstraintEditorController constraintEditorController;
@@ -100,15 +111,17 @@ public class GCDApplication extends Application {
         this.primaryStage = primaryStage;
 
         gcdCss = Objects.requireNonNull(getClass().getResource("gcd.css")).toExternalForm();
+        plotStyleTableCss = Objects.requireNonNull(getClass().getResource("plotStyleTable.css")).toExternalForm();
         statusCss = Objects.requireNonNull(getClass().getResource("status.css")).toExternalForm();
         mathematicaCss = Objects.requireNonNull(getClass().getResource("mathematica.css")).toExternalForm();
         errorViewCss = Objects.requireNonNull(getClass().getResource("errorView.css")).toExternalForm();
 
         defaultSettings.loadDefaultValues();
-        readOrCreateSettings();
 
-        settingsStage = new Stage();
-        loaderSettings = new FXMLLoader();
+        readOrCreateSettings();
+        defaultPlotStyles = XmlReader.readGCDPlotStyles(defaultPlotStyleLocation.toFile());
+        plotStyles = XmlReader.readGCDPlotStyles(plotStyleLocation.toFile());
+
         loaderSettings.setLocation(getClass().getResource("settings.fxml"));
         loaderSettings.setResources(resources);
         settingsScene = new Scene(loaderSettings.load());
@@ -129,7 +142,6 @@ public class GCDApplication extends Application {
         MathematicaUtils.setJLinkDir(settings.jLink);
         utils = new MathematicaUtils(settings.mathKernel);
 
-        loaderGCD = new FXMLLoader();
         loaderGCD.setLocation(getClass().getResource("gcd.fxml"));
         loaderGCD.setResources(resources);
 
@@ -138,7 +150,14 @@ public class GCDApplication extends Application {
         primaryStage.setScene(primaryScene);
         primaryStage.setTitle(resources.getString("main.title"));
 
-        loaderHelp = new FXMLLoader();
+        loaderPlotStyleEntry.setLocation(getClass().getResource("editor/PlotStyleEntry.fxml"));
+        loaderPlotStyleEntry.setResources(resources);
+        plotStyleEntryScene = new Scene(loaderPlotStyleEntry.load());
+        plotStyleEntryScene.getStylesheets().add(gcdCss);
+        plotStyleEntryEditorController = loaderPlotStyleEntry.getController();
+        plotStyleEntryEditorController.setApplication(this);
+        plotStyleEntryEditorController.setScene(plotStyleEntryScene);
+
         loaderHelp.setLocation(getClass().getResource("help.fxml"));
         loaderHelp.setResources(resources);
         helpScene = new Scene(loaderHelp.load());
@@ -146,7 +165,6 @@ public class GCDApplication extends Application {
         helpController = loaderHelp.getController();
         helpController.setApplication(this);
 
-        loaderAlgVarEditor = new FXMLLoader();
         loaderAlgVarEditor.setLocation(getClass().getResource("editor/AlgebraicVariableEditor.fxml"));
         loaderAlgVarEditor.setResources(resources);
         algebraicVariableEditorScene = new Scene(loaderAlgVarEditor.load());
@@ -155,7 +173,6 @@ public class GCDApplication extends Application {
         algebraicVariableEditorController.setApplication(this);
         algebraicVariableEditorController.setScene(algebraicVariableEditorScene);
 
-        loaderAgentEditor = new FXMLLoader();
         loaderAgentEditor.setLocation(getClass().getResource("editor/AgentEditor.fxml"));
         loaderAgentEditor.setResources(resources);
         agentEditorScene = new Scene(loaderAgentEditor.load());
@@ -164,7 +181,6 @@ public class GCDApplication extends Application {
         agentEditorController.setApplication(this);
         agentEditorController.setScene(agentEditorScene);
 
-        loaderConstraintEditor = new FXMLLoader();
         loaderConstraintEditor.setLocation(getClass().getResource("editor/ConstraintEditor.fxml"));
         loaderConstraintEditor.setResources(resources);
         constraintEditorScene = new Scene(loaderConstraintEditor.load());
@@ -173,7 +189,6 @@ public class GCDApplication extends Application {
         constraintEditorController.setApplication(this);
         constraintEditorController.setScene(constraintEditorScene);
 
-        loaderVariableEditor = new FXMLLoader();
         loaderVariableEditor.setLocation(getClass().getResource("editor/VariableEditor.fxml"));
         loaderVariableEditor.setResources(resources);
         variableEditorScene = new Scene(loaderVariableEditor.load());
@@ -182,7 +197,6 @@ public class GCDApplication extends Application {
         variableEditorController.setApplication(this);
         variableEditorController.setScene(variableEditorScene);
 
-        loaderParameterEditor = new FXMLLoader();
         loaderParameterEditor.setLocation(getClass().getResource("editor/ParameterEditor.fxml"));
         loaderParameterEditor.setResources(resources);
         parameterEditorScene = new Scene(loaderParameterEditor.load());
@@ -191,7 +205,6 @@ public class GCDApplication extends Application {
         parameterEditorController.setApplication(this);
         parameterEditorController.setScene(parameterEditorScene);
 
-        loaderChangeMuEditor = new FXMLLoader();
         loaderChangeMuEditor.setLocation(getClass().getResource("editor/ChangeMuEditor.fxml"));
         loaderChangeMuEditor.setResources(resources);
         changeMuEditorScene = new Scene(loaderChangeMuEditor.load());
@@ -204,7 +217,6 @@ public class GCDApplication extends Application {
         gcdController.setApplication(this);
         gcdController.initializeGCDDepended();
 
-        loaderMathematica = new FXMLLoader();
         loaderMathematica.setLocation(getClass().getResource("mathematica.fxml"));
         loaderMathematica.setResources(resources);
         mathematicaScene = new Scene(loaderMathematica.load());
@@ -218,7 +230,6 @@ public class GCDApplication extends Application {
     }
 
     private void readOrCreateSettings() throws IOException {
-        settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
         File settingsFile = settingsLocation.toFile();
         if (!settingsFile.exists()) {
             if (!settingsFile.getParentFile().exists()) {

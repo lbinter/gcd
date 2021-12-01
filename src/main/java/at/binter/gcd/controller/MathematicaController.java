@@ -7,9 +7,8 @@ import at.binter.gcd.model.GCDModel;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -42,6 +41,12 @@ public class MathematicaController extends BaseController implements Initializab
     private Tab mathematicaTab;
     @FXML
     private TextField gcdFilePath;
+    @FXML
+    private ToggleGroup dgldiffxxxOption;
+    @FXML
+    private RadioButton dgldiffxxxOption1;
+    @FXML
+    private RadioButton dgldiffxxxOption2;
     @FXML
     private TextField ndsolveFilePath;
     @FXML
@@ -82,6 +87,15 @@ public class MathematicaController extends BaseController implements Initializab
         } else {
             tabPane.getSelectionModel().select(mathematicaTab);
         }
+        dgldiffxxxOption.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (dgldiffxxxOption1 == newValue) {
+                log.info("dgldiffxxxOption 1 selected");
+            } else if (dgldiffxxxOption2 == newValue) {
+                log.info("dgldiffxxxOption 2 selected");
+            } else {
+                log.info("dgldiffxxxOption {} selected", newValue);
+            }
+        });
     }
 
     public void showMathematicaWindow() {

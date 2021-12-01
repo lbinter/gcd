@@ -4,20 +4,27 @@ import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.GCDPlot;
 import at.binter.gcd.model.Status;
 import at.binter.gcd.model.elements.*;
+import at.binter.gcd.model.plotstyle.PlotStyleEntry;
 import at.binter.gcd.model.xml.XmlModel;
 import at.binter.gcd.xml.XmlReader;
 import at.binter.gcd.xml.XmlWriter;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.DoubleStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,16 +46,27 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     private Menu recentlyOpened;
     @FXML
-    private Button buttonUndo;
-    @FXML
-    private Button buttonRedo;
-    @FXML
-    private Button buttonGCD;
-    @FXML
     private TextField addPlotTextField;
 
     @FXML
+    private TableView<PlotStyleEntry> plotStyleTable;
+    @FXML
+    private TableColumn<PlotStyleEntry, String> nameColumn;
+    @FXML
+    private TableColumn<PlotStyleEntry, String> colorColumn;
+    @FXML
+    private TableColumn<PlotStyleEntry, Double> thicknessColumn;
+    @FXML
+    private TableColumn<PlotStyleEntry, String> lineStyleColumn;
+    @FXML
+    private TableColumn<PlotStyleEntry, String> descriptionColumn;
+
+    @FXML
     private TabPane mainTabPane;
+    @FXML
+    private Tab plotStylesTab;
+    @FXML
+    private Tab modelTab;
     private final List<Tab> plotTabs = new ArrayList<>();
 
     @FXML
@@ -72,12 +90,16 @@ public class GCDController extends BaseController implements Initializable {
 
     protected GCDModel model = new GCDModel();
 
-    private EditDialog<AlgebraicVariable> algebraicVariableEditDialog;
-    private EditDialog<Agent> agentEditDialog;
-    private EditDialog<Constraint> constraintEditDialog;
-    private EditDialog<Variable> variableEditDialog;
-    private EditDialog<Parameter> parameterEditDialog;
-    private EditDialog<ChangeMu> changeMuEditDialog;
+    private ListViewEditDialog<AlgebraicVariable> algebraicVariableEditDialog;
+    private ListViewEditDialog<Agent> agentEditDialog;
+    private ListViewEditDialog<Constraint> constraintEditDialog;
+    private ListViewEditDialog<Variable> variableEditDialog;
+    private ListViewEditDialog<Parameter> parameterEditDialog;
+    private ListViewEditDialog<ChangeMu> changeMuEditDialog;
+
+    private TableViewEditDialog<PlotStyleEntry> plotStyleEntryEditDialog;
+
+    protected BooleanProperty plotTableSaved = new SimpleBooleanProperty(false);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -222,16 +244,154 @@ public class GCDController extends BaseController implements Initializable {
             }
         });
 
+        mainTabPane.getSelectionModel().select(modelTab);
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    PlotStyleEntry row = getTableRow().getItem();
+                    if (row != null) {
+                        row.nameProperty().addListener((observable, oldValue, newValue) -> {
+                                    setStyle("-fx-background-color: #ff0000");
+                                    plotTableSaved.set(false);
+                                }
+                        );
+                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
+                            if (newValue) {
+                                setStyle(null);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        colorColumn.setCellValueFactory(new PropertyValueFactory<>("plotColor"));
+        colorColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    PlotStyleEntry row = getTableRow().getItem();
+                    if (row != null) {
+                        row.plotColorProperty().addListener((observable, oldValue, newValue) -> {
+                                    setStyle("-fx-background-color: #ff0000");
+                                    plotTableSaved.set(false);
+                                }
+                        );
+                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
+                            if (newValue) {
+                                setStyle(null);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+        thicknessColumn.setCellValueFactory(new PropertyValueFactory<>("plotThickness"));
+        thicknessColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DoubleStringConverter()) {
+            @Override
+            public void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    PlotStyleEntry row = getTableRow().getItem();
+                    if (row != null) {
+                        row.plotThicknessProperty().addListener((observable, oldValue, newValue) -> {
+                                    setStyle("-fx-background-color: #ff0000");
+                                    plotTableSaved.set(false);
+                                }
+                        );
+                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
+                            if (newValue) {
+                                setStyle(null);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        lineStyleColumn.setCellValueFactory(new PropertyValueFactory<>("plotLineStyle"));
+        lineStyleColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    PlotStyleEntry row = getTableRow().getItem();
+                    if (row != null) {
+                        row.plotLineStyleProperty().addListener((observable, oldValue, newValue) -> {
+                                    setStyle("-fx-background-color: #ff0000");
+                                    plotTableSaved.set(false);
+                                }
+                        );
+                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
+                            if (newValue) {
+                                setStyle(null);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    PlotStyleEntry row = getTableRow().getItem();
+                    row.descriptionProperty().addListener((observable, oldValue, newValue) -> {
+                                setStyle("-fx-background-color: #ff0000");
+                                plotTableSaved.set(false);
+                            }
+                    );
+                    plotTableSaved.addListener((observable, oldValue, newValue) -> {
+                        if (newValue) {
+                            setStyle(null);
+                        }
+                    });
+                }
+            }
+        });
+
         registerEventHandlers();
     }
 
     public void initializeGCDDepended() {
-        algebraicVariableEditDialog = new EditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
-        agentEditDialog = new EditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
-        constraintEditDialog = new EditDialog<>(constraintListView, model.getConstraints(), gcd.constraintEditorController, gcd);
-        variableEditDialog = new EditDialog<>(variableListView, model.getVariables(), gcd.variableEditorController, gcd);
-        parameterEditDialog = new EditDialog<>(parameterListView, model.getParameters(), gcd.parameterEditorController, gcd);
-        changeMuEditDialog = new EditDialog<>(changeMuListView, model.getChangeMus(), gcd.changeMuEditorController, gcd);
+        algebraicVariableEditDialog = new ListViewEditDialog<>(algVarListView, model.getAlgebraicVariables(), gcd.algebraicVariableEditorController, gcd);
+        agentEditDialog = new ListViewEditDialog<>(agentListView, model.getAgents(), gcd.agentEditorController, gcd);
+        constraintEditDialog = new ListViewEditDialog<>(constraintListView, model.getConstraints(), gcd.constraintEditorController, gcd);
+        variableEditDialog = new ListViewEditDialog<>(variableListView, model.getVariables(), gcd.variableEditorController, gcd);
+        parameterEditDialog = new ListViewEditDialog<>(parameterListView, model.getParameters(), gcd.parameterEditorController, gcd);
+        changeMuEditDialog = new ListViewEditDialog<>(changeMuListView, model.getChangeMus(), gcd.changeMuEditorController, gcd);
+
+        plotStyleEntryEditDialog = new TableViewEditDialog<>(plotStyleTable, gcd.plotStyles.getPlotStyles(), gcd.plotStyleEntryEditorController, gcd);
+
+        plotStyleTable.setItems(gcd.plotStyles.getPlotStyles());
+
+        plotStyleTable.getStylesheets().add(gcd.plotStyleTableCss);
+
         populateRecentlyOpened();
     }
 
@@ -442,17 +602,6 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
-    protected void undo() {
-        System.out.println("undo called");
-        model.generateChangeMu();
-    }
-
-    @FXML
-    protected void redo() {
-        System.out.println("redo called");
-    }
-
-    @FXML
     protected void openMathematicaWindow() {
         gcd.mathematicaController.showMathematicaWindow();
     }
@@ -477,6 +626,38 @@ public class GCDController extends BaseController implements Initializable {
             addPlotTextField.setText("");
         }
     }
+
+    @FXML
+    void loadDefaultPlotStyles() {
+        gcd.plotStyles.getPlotStyles().clear();
+        for (PlotStyleEntry entry : gcd.defaultPlotStyles.getPlotStyles()) {
+            gcd.plotStyles.addPlotStyle(entry.clone());
+        }
+        plotTableSaved.set(false);
+    }
+
+    @FXML
+    void editTableEntry() {
+        plotStyleEntryEditDialog.editSelectedValue();
+    }
+
+    @FXML
+    void addTableEntry() {
+        plotStyleEntryEditDialog.addNewItem();
+    }
+
+    @FXML
+    void deleteTableEntry() {
+        gcd.plotStyles.removePlotStyle(plotStyleTable.getSelectionModel().getSelectedItem());
+        plotTableSaved.set(false);
+    }
+
+    @FXML
+    void saveTable() {
+        XmlWriter.write(gcd.plotStyles, gcd.plotStyleLocation.toFile());
+        plotTableSaved.set(true);
+    }
+
 
     private void addPlot(GCDPlot plot) {
         FXMLLoader loader = new FXMLLoader();

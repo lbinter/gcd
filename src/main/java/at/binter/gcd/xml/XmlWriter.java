@@ -2,6 +2,7 @@ package at.binter.gcd.xml;
 
 import at.binter.gcd.Settings;
 import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.model.plotstyle.GCDPlotStyles;
 import at.binter.gcd.model.xml.XmlModel;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -76,6 +77,38 @@ public class XmlWriter {
                     log.info("Saving gcd settings to file {}", file.getAbsolutePath());
                     jaxbMarshaller.marshal(settings, file);
                     log.info("Settings saved!");
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (JAXBException e) {
+            if (file != null) {
+                log.error("Could not save gcd settings to file {}", file, e);
+            } else {
+                log.error("Could not create settings string", e);
+            }
+            return false;
+        }
+    }
+
+    public static boolean write(GCDPlotStyles plotStyles, File file) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(GCDPlotStyles.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            if (file == null) {
+                jaxbMarshaller.marshal(plotStyles, System.out);
+                return false;
+            } else if (file.isDirectory()) {
+                log.error("Could not save gcd plot styles to directory {} - must be a file", file.getAbsolutePath());
+                return false;
+            } else {
+                if (isValidSettingsFile(file)) {
+                    log.info("Saving gcd plot styles to file {}", file.getAbsolutePath());
+                    jaxbMarshaller.marshal(plotStyles, file);
+                    log.info("GCD plot styles saved!");
                     return true;
                 } else {
                     return false;

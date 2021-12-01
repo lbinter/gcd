@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 
-public record EditDialog<T extends Updatable<T>>(ListView<T> listView,
-                                                 ObservableList<T> list,
-                                                 Editor<T> editor, GCDApplication gcd) {
+public record ListViewEditDialog<T extends Updatable<T>>(ListView<T> listView,
+                                                         ObservableList<T> list,
+                                                         Editor<T> editor, GCDApplication gcd) {
 
     public void editSelectedValue() {
         final int selectedIndex = getGCDModelSelectedIndex();

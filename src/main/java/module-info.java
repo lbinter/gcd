@@ -17,6 +17,7 @@ module at.binter.gcd {
 
     opens at.binter.gcd to javafx.fxml, javafx.controls, jakarta.xml.bind;
     opens at.binter.gcd.model.xml to jakarta.xml.bind;
+    opens at.binter.gcd.model.plotstyle to jakarta.xml.bind;
     opens at.binter.gcd.controller to javafx.fxml, javafx.controls;
 
     exports at.binter.gcd;
@@ -32,4 +33,5 @@ module at.binter.gcd {
     exports at.binter.gcd.mathematica.syntax.function;
     exports at.binter.gcd.mathematica.syntax.group;
     exports at.binter.gcd.controller;
+    exports at.binter.gcd.model.plotstyle;
 }

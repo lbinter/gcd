@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<TitledPane fx:id="editorTitle" animated="false" collapsible="false" text="%editor.plot.style.add.title"
+            xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.binter.gcd.controller.PlotStyleEntryEditorController">
+    <content>
+        <VBox>
+            <children>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER"/>
+                        <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                    <children>
+                        <Label text="%editor.label.name" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets left="10.0" right="5.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="editorName" maxWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label text="%editor.label.plot.color" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                            <GridPane.margin>
+                                <Insets left="10.0" right="5.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="editorPlotColor" minWidth="360" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="2">
+                            <GridPane.margin>
+                                <Insets right="10.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <Label text="%editor.label.plot.thickness" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                            <GridPane.margin>
+                                <Insets left="10.0" right="5.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="editorPlotThickness" minWidth="360" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="3">
+                            <GridPane.margin>
+                                <Insets right="10.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <Label text="%editor.label.plot.line.style" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                            <GridPane.margin>
+                                <Insets left="10.0" right="5.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="editorPlotLineArt" minWidth="360" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="4">
+                            <GridPane.margin>
+                                <Insets right="10.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                        <Label text="%editor.label.description" GridPane.halignment="RIGHT">
+                            <GridPane.margin>
+                                <Insets left="10.0" right="5.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1">
+                            <GridPane.margin>
+                                <Insets right="10.0"/>
+                            </GridPane.margin>
+                        </TextField>
+                    </children>
+                </GridPane>
+                <HBox alignment="CENTER">
+                    <children>
+                        <Button fx:id="editorButtonConfirm" minWidth="100.0" mnemonicParsing="false"
+                                text="%editor.button.confirm">
+                            <HBox.margin>
+                                <Insets bottom="10.0" top="5.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <Separator opacity="0.0" orientation="VERTICAL" prefHeight="0.0">
+                            <HBox.margin>
+                                <Insets left="5.0" right="5.0"/>
+                            </HBox.margin>
+                        </Separator>
+                        <Button fx:id="editorButtonCancel" minWidth="100.0" mnemonicParsing="false"
+                                text="%editor.button.cancel">
+                            <HBox.margin>
+                                <Insets bottom="10.0" top="5.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="10.0"/>
+            </padding>
+        </VBox>
+    </content>
+</TitledPane>

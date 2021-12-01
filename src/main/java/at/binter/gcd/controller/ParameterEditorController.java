@@ -9,8 +9,7 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.doubleToString;
-import static at.binter.gcd.util.GuiUtils.readDoubleValueFrom;
+import static at.binter.gcd.util.GuiUtils.*;
 
 public class ParameterEditorController extends BaseEditorController<Parameter> implements Initializable {
     @FXML
@@ -36,6 +35,9 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
         super.initialize(location, resources);
         i18nAddTitle = "editor.parameter.edit.title";
         i18nEditTitle = "editor.parameter.edit.title";
+        editorValueStart.setTextFormatter(createDoubleTextFormatter());
+        editorValueMinimum.setTextFormatter(createDoubleTextFormatter());
+        editorValueMaximum.setTextFormatter(createDoubleTextFormatter());
         registerEventHandlers();
     }
 

@@ -249,7 +249,7 @@ public class MathematicaModel {
     }
 
     public MSet getDefaultColor() {
-        return new MSet(new MVariable("defaultColor"), new MExpression("Black"), true);
+        return new MSet(new MVariable("defaultColor"), new MExpression("Automatic"), true);
     }
 
     public MSet getDefaultThickness() {
