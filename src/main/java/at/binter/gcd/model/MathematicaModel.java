@@ -1117,7 +1117,7 @@ public class MathematicaModel {
 
         MList legendList = new MList();
         for (GCDPlotItem<Agent> agent : plot.getAgentsSorted()) {
-            legendList.add(new MExpression("\"\\\"" + agent.getItem().getName() + "\\\"\""));
+            legendList.add(new MExpression("\"\\\"u" + agent.getItem().getName() + "\\\"\""));
         }
         for (GCDPlotItem<AlgebraicVariable> algVar : plot.getAlgebraicVariablesSorted()) {
             legendList.add(new MExpression("\"\\\"" + algVar.getItem().getName() + "\\\"\""));
