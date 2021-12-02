@@ -39,10 +39,11 @@ public class MathematicaUtils {
         log.info("using math kernel: {}", mathKernelPath);
     }
 
-    public static synchronized void setJLinkDir(String jLinkDirPath) {
+    public static synchronized void setJLinkDir(String jLinkDirPathNew) {
         if (jLinkDirSet) {
             return;
         }
+        jLinkDirPath = jLinkDirPathNew;
         File jLink = new File(jLinkDirPath);
         if (!jLink.exists()) {
             RuntimeException e = new RuntimeException("JLink path does not exist " + jLinkDirPath);

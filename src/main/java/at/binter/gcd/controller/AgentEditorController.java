@@ -41,7 +41,12 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         super.initialize(location, resources);
         i18nAddTitle = "editor.agent.add.title";
         i18nEditTitle = "editor.agent.edit.title";
+        editorDescription.setTextFormatter(createStringTextFormatter());
+        editorName.setTextFormatter(createStringTextFormatter());
+        editorFunction.setTextFormatter(createStringTextFormatter());
+        editorPlotColor.setTextFormatter(createStringTextFormatter());
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
+        editorPlotLineArt.setTextFormatter(createStringTextFormatter());
         registerEventHandlers();
     }
 
@@ -65,6 +70,8 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
         setLabelTextFormatted(editorLabelDefinition, editorName.getText() + Agent.assignmentSymbol + newValue);
+
+        editorFunction.pseudoClassStateChanged(errorClass, Agent.functionContainsErrors(newValue));
     }
 
     @Override

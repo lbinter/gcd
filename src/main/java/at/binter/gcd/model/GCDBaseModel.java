@@ -359,6 +359,7 @@ public abstract class GCDBaseModel {
     public Map<GCDWarning, List<Object>> getWarnings() {
         warnings = new HashMap<>();
 
+        warnings.put(AGENT_WITH_DERIVATIVE, new ArrayList<>());
         warnings.put(ALGEBRAIC_VARIABLE_RECURSION, new ArrayList<>());
         warnings.put(DUPLICATE_VARIABLE_PARAMETER, new ArrayList<>());
         warnings.put(MAX_VALUE_LESSER_MIN_VALUE, new ArrayList<>());
@@ -378,6 +379,12 @@ public abstract class GCDBaseModel {
                 if (getAlgebraicVariable(name) != null) {
                     warnings.get(ALGEBRAIC_VARIABLE_RECURSION).add(algVar);
                 }
+            }
+        }
+
+        for (Agent agent : agentsSorted) {
+            if (Agent.functionContainsErrors(agent.getFunction())) {
+                warnings.get(AGENT_WITH_DERIVATIVE).add(agent);
             }
         }
 

@@ -99,6 +99,17 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
     }
 
     public Status getStatus() {
+        if (functionContainsErrors(getFunction())) {
+            return INVALID;
+        }
         return hasValidPlotStyle() ? VALID : INVALID;
+    }
+
+    public static boolean functionContainsErrors(String function) {
+        // In den Nutzenfunktionen dürfen keine Zeitableitungen von diff. Variablen auftreten.
+        if (function.contains("'[t]") || function.contains("\\[Prime][t]") || function.contains("Derivative[")) {
+            return true;
+        }
+        return false;
     }
 }

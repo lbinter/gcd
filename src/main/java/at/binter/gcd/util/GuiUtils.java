@@ -74,7 +74,7 @@ public class GuiUtils {
             return null;
         }
     };
-    public static final StringConverter<Double> converter = new StringConverter<>() {
+    public static final StringConverter<Double> DOUBLE_STRING_CONVERTER = new StringConverter<>() {
         @Override
         public Double fromString(String s) {
             if (s == null || s.isEmpty()) {
@@ -93,8 +93,24 @@ public class GuiUtils {
         }
     };
 
+    public static final StringConverter<String> STRING_CONVERTER = new StringConverter<>() {
+        @Override
+        public String toString(String string) {
+            return sanitizeString(string);
+        }
+
+        @Override
+        public String fromString(String string) {
+            return sanitizeString(string);
+        }
+    };
+
     public static TextFormatter<Double> createDoubleTextFormatter() {
-        return new TextFormatter<>(converter, null, filter);
+        return new TextFormatter<>(DOUBLE_STRING_CONVERTER, null, filter);
+    }
+
+    public static TextFormatter<String> createStringTextFormatter() {
+        return new TextFormatter<>(STRING_CONVERTER, null, null);
     }
 
     public static void showWarning(String title, String message, Object... params) {

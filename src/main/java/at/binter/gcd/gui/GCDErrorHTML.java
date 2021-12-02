@@ -33,7 +33,8 @@ public class GCDErrorHTML {
         b.append("<html>");
         b.append("<body>");
         generateDuplicateTable();
-        generateAlgVarRecursionTable();
+        generateAlgVarRecursionList();
+        generateAgentDerivativeList();
         appendWarningsFor(MAX_VALUE_LESSER_MIN_VALUE);
         appendWarningsFor(START_VALUE_LESSER_MIN_VALUE);
         appendWarningsFor(START_VALUE_GREATER_MAX_VALUE);
@@ -71,7 +72,7 @@ public class GCDErrorHTML {
         b.append("</div>");
     }
 
-    private void generateAlgVarRecursionTable() {
+    private void generateAlgVarRecursionList() {
         List<Object> algVars = warnings.get(ALGEBRAIC_VARIABLE_RECURSION);
         if (algVars.isEmpty()) {
             return;
@@ -91,10 +92,40 @@ public class GCDErrorHTML {
                 b.append(algVar.getClass());
                 b.append(" instead of AlgebraicVariable.class</li>");
             }
+            warningCount++;
         }
         b.append("</ul>");
         b.append("</div>");
     }
+
+    private void generateAgentDerivativeList() {
+        List<Object> agents = warnings.get(AGENT_WITH_DERIVATIVE);
+        if (agents.isEmpty()) {
+            return;
+        }
+        b.append("<div class=\"");
+        b.append(AGENT_WITH_DERIVATIVE.name());
+        b.append("\">");
+        b.append("<h3>");
+        b.append(resources.getString(AGENT_WITH_DERIVATIVE.getI18n()));
+        b.append("</h3>");
+        b.append("<ul>");
+        for (Object a : agents) {
+            if (a instanceof Agent agent) {
+                b.append("<li>");
+                b.append(agent.getName());
+                b.append("</li>");
+            } else {
+                b.append("<li>Error - found ");
+                b.append(a.getClass());
+                b.append(" instead of Agent.class</li>");
+            }
+            warningCount++;
+        }
+        b.append("</ul>");
+        b.append("</div>");
+    }
+
 
     private void createRecursionEntry(AlgebraicVariable algebraicVariable) {
         b.append("<li>");
@@ -109,7 +140,6 @@ public class GCDErrorHTML {
         }
         b.append(StringUtils.join(recursiveNames));
         b.append("</li>");
-        warningCount++;
     }
 
     private void createDuplicateEntry(Variable variable) {

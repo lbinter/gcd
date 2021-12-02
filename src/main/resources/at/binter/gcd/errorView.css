@@ -1,3 +1,10 @@
+.AGENT_WITH_DERIVATIVE {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
 .ALGEBRAIC_VARIABLE_RECURSION {
     background-color: #FFAFAF;
     color: #000;

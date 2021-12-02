@@ -43,6 +43,15 @@ public class ParsedFunction {
                 if (vars[i].contains("[t]")) {
                     String variableName = vars[i].replace("[t]", " ").replace("'", " ").trim();
                     if (StringUtils.isNotBlank(variableName) && !NumberUtils.isParsable(variableName.replace(".", "").replace(",", ""))) {
+                        if (variableName.contains("Derivative")) {
+                            int start = variableName.lastIndexOf("[") + 1;
+                            int end = variableName.endsWith("]") ? variableName.length() - 1 : variableName.length();
+                            try {
+                                variableName = variableName.substring(start, end);
+                            } catch (StringIndexOutOfBoundsException e) {
+                                log.error("Could not parse variable from Derivative Block {}", variableName, e);
+                            }
+                        }
                         variables.add(variableName);
                     }
                 } else {
