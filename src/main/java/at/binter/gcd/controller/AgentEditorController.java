@@ -2,6 +2,7 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Agent;
 import at.binter.gcd.util.ParsedFunction;
+import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,7 +36,6 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
     @FXML
     private TextField editorPlotLineArt;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
@@ -47,17 +47,29 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         editorPlotColor.setTextFormatter(createStringTextFormatter());
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
         editorPlotLineArt.setTextFormatter(createStringTextFormatter());
+    }
+
+    public void initializeGCDDepended() {
         registerEventHandlers();
     }
 
     private void registerEventHandlers() {
         editorName.textProperty().addListener(this::nameChanged);
         editorFunction.textProperty().addListener(this::functionChanged);
+        new PlotStyleIndicator(gcd.plotStyles, editorName, null, editorPlotColor, editorPlotThickness, editorPlotLineArt);
     }
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         setLabelTextFormatted(editorLabelDefinition, newValue + Agent.assignmentSymbol + editorFunction.getText());
-        editorName.pseudoClassStateChanged(errorClass, !Character.isUpperCase(newValue.charAt(0)));
+        editorName.pseudoClassStateChanged(errorClass, isNameInvalid(newValue));
+    }
+
+    private boolean isNameInvalid(String newValue) {
+        newValue = sanitizeString(newValue);
+        if (newValue == null) {
+            return true;
+        }
+        return !StringUtils.isAllUpperCase(newValue);
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {

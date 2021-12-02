@@ -2,6 +2,7 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Variable;
 import at.binter.gcd.util.ParsedFunction;
+import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -69,7 +70,11 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         rowVariables = grid.getRowConstraints().get(3);
         rowParameters = grid.getRowConstraints().get(4);
         rowAlgebraicVariables = grid.getRowConstraints().get(8);
+    }
+
+    public void initializeGCDDepended() {
         registerEventHandlers();
+        new PlotStyleIndicator(gcd.plotStyles, null, editorLabelName, editorPlotColor, editorPlotThickness, editorPlotLineArt);
     }
 
     private void registerEventHandlers() {

@@ -176,6 +176,7 @@ public class GCDApplication extends Application {
         algebraicVariableEditorController = loaderAlgVarEditor.getController();
         algebraicVariableEditorController.setApplication(this);
         algebraicVariableEditorController.setScene(algebraicVariableEditorScene);
+        algebraicVariableEditorController.initializeGCDDepended();
 
         loaderAgentEditor.setLocation(getClass().getResource("editor/AgentEditor.fxml"));
         loaderAgentEditor.setResources(resources);
@@ -184,6 +185,7 @@ public class GCDApplication extends Application {
         agentEditorController = loaderAgentEditor.getController();
         agentEditorController.setApplication(this);
         agentEditorController.setScene(agentEditorScene);
+        agentEditorController.initializeGCDDepended();
 
         loaderConstraintEditor.setLocation(getClass().getResource("editor/ConstraintEditor.fxml"));
         loaderConstraintEditor.setResources(resources);
@@ -200,6 +202,7 @@ public class GCDApplication extends Application {
         variableEditorController = loaderVariableEditor.getController();
         variableEditorController.setApplication(this);
         variableEditorController.setScene(variableEditorScene);
+        variableEditorController.initializeGCDDepended();
 
         loaderParameterEditor.setLocation(getClass().getResource("editor/ParameterEditor.fxml"));
         loaderParameterEditor.setResources(resources);

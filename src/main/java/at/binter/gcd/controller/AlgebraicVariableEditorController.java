@@ -2,6 +2,7 @@ package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.AlgebraicVariable;
 import at.binter.gcd.util.ParsedFunction;
+import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -43,8 +44,6 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         i18nAddTitle = "editor.algebraicVariable.add.title";
         i18nEditTitle = "editor.algebraicVariable.edit.title";
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
-        registerEventHandlers();
-        registerValidators();
     }
 
     private void registerEventHandlers() {
@@ -53,8 +52,9 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         editorFunction.textProperty().addListener(this::functionChanged);
     }
 
-    private void registerValidators() {
-
+    public void initializeGCDDepended() {
+        registerEventHandlers();
+        new PlotStyleIndicator(gcd.plotStyles, editorName, null, editorPlotColor, editorPlotThickness, editorPlotLineArt);
     }
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {

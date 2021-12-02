@@ -1,6 +1,8 @@
 package at.binter.gcd.model.elements;
 
+import at.binter.gcd.GCDApplication;
 import at.binter.gcd.model.*;
+import at.binter.gcd.model.plotstyle.PlotStyleEntry;
 import at.binter.gcd.util.Tools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -148,9 +150,43 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
         plotStyle.setPlotLineStyle(plotLineStyle);
     }
 
+    public String getDefaultPlotColor() {
+        if (GCDApplication.app != null) {
+            PlotStyleEntry entry = GCDApplication.app.plotStyles.getPlotStyle(getName());
+            if (entry != null) {
+                return entry.getPlotColor();
+            }
+        }
+        return null;
+    }
+
+    public Double getDefaultPlotThickness() {
+        if (GCDApplication.app != null) {
+            PlotStyleEntry entry = GCDApplication.app.plotStyles.getPlotStyle(getName());
+            if (entry != null) {
+                return entry.getPlotThickness();
+            }
+        }
+        return null;
+    }
+
+    public String getDefaultPlotLineStyle() {
+        if (GCDApplication.app != null) {
+            PlotStyleEntry entry = GCDApplication.app.plotStyles.getPlotStyle(getName());
+            if (entry != null) {
+                return entry.getPlotLineStyle();
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean hasValidPlotStyle() {
-        return plotStyle.hasValidPlotStyle();
+        if (!plotStyle.hasValidPlotStyle()) {
+            return (StringUtils.isNotBlank(getPlotColor()) || StringUtils.isNotBlank(getDefaultPlotColor()))
+                    && (getPlotThickness() != null || getDefaultPlotThickness() != null);
+        }
+        return true;
     }
 
     public Set<AlgebraicVariable> getAlgebraicVariables() {

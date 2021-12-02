@@ -25,6 +25,8 @@ public class GuiUtils {
     public static final Color defaultBackground = Color.pink;
     public static final Color defaultForeground = Color.BLACK;
     public static final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
+    public static final PseudoClass plotDefaultClass = PseudoClass.getPseudoClass("plot-default");
+    public static final PseudoClass plotDiffClass = PseudoClass.getPseudoClass("plot-diff");
 
     public static void addStageCloseOnEscapeKey(Stage stage, Scene scene) {
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -243,4 +245,6 @@ public class GuiUtils {
         }
         return true;
     }
+
+
 }

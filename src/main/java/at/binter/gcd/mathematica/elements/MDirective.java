@@ -4,6 +4,9 @@ import at.binter.gcd.mathematica.HTMLBuilder;
 import at.binter.gcd.mathematica.MBase;
 import at.binter.gcd.mathematica.syntax.IExpression;
 import at.binter.gcd.model.HasPlotStyle;
+import at.binter.gcd.model.elements.Agent;
+import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.model.elements.Variable;
 import org.apache.commons.lang3.StringUtils;
 
 public class MDirective extends MBase implements IExpression {
@@ -89,15 +92,53 @@ public class MDirective extends MBase implements IExpression {
     @Override
     public String getMathematicaExpression() {
         String color = "defaultColor";
+        String thickness = "defaultThickness";
         if (StringUtils.isNotBlank(plotStyle.getPlotColor())) {
             color = plotStyle.getPlotColor();
+        } else {
+            String defaultColor = null;
+            if (plotStyle instanceof AlgebraicVariable algVar) {
+                defaultColor = algVar.getDefaultPlotColor();
+            } else if (plotStyle instanceof Agent a) {
+                defaultColor = a.getDefaultPlotColor();
+            } else if (plotStyle instanceof Variable v) {
+                defaultColor = v.getDefaultPlotColor();
+            }
+            if (defaultColor != null) {
+                color = defaultColor;
+            }
         }
-        String thickness = "defaultThickness";
         if (plotStyle.getPlotThickness() != null) {
             thickness = "AbsoluteThickness[" + plotStyle.getPlotThickness() + "]";
+        } else {
+            Double defaultThickness = null;
+            if (plotStyle instanceof AlgebraicVariable algVar) {
+                defaultThickness = algVar.getDefaultPlotThickness();
+            } else if (plotStyle instanceof Agent a) {
+                defaultThickness = a.getDefaultPlotThickness();
+            } else if (plotStyle instanceof Variable v) {
+                defaultThickness = v.getDefaultPlotThickness();
+            }
+            if (defaultThickness != null) {
+                thickness = "AbsoluteThickness[" + defaultThickness + "]";
+            }
         }
-        if (StringUtils.isNotBlank(plotStyle.getPlotLineStyle())) {
-            return new MParameter("Directive", color, thickness, plotStyle.getPlotLineStyle()).getMathematicaExpression();
+        String lineStyle = plotStyle.getPlotLineStyle();
+        if (StringUtils.isBlank(lineStyle)) {
+            String defaultLineStyle = null;
+            if (plotStyle instanceof AlgebraicVariable algVar) {
+                defaultLineStyle = algVar.getDefaultPlotLineStyle();
+            } else if (plotStyle instanceof Agent a) {
+                defaultLineStyle = a.getDefaultPlotLineStyle();
+            } else if (plotStyle instanceof Variable v) {
+                defaultLineStyle = v.getDefaultPlotLineStyle();
+            }
+            if (defaultLineStyle != null) {
+                lineStyle = defaultLineStyle;
+            }
+        }
+        if (StringUtils.isNotBlank(lineStyle)) {
+            return new MParameter("Directive", color, thickness, lineStyle).getMathematicaExpression();
         }
         return new MParameter("Directive", color, thickness).getMathematicaExpression();
     }
