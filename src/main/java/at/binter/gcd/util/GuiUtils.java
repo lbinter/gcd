@@ -43,6 +43,10 @@ public class GuiUtils {
 
     public static Double readDoubleValueFrom(TextField textField) {
         String text = textField.getText().trim();
+        return readDoubleValueFrom(text);
+    }
+
+    public static Double readDoubleValueFrom(String text) {
         if (StringUtils.isBlank(text)) {
             return null;
         } else {
@@ -162,5 +166,65 @@ public class GuiUtils {
 
     public static String getColorAsHtml(Color color) {
         return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    public static void addValuesValidationListener(TextField editorValueStart, TextField editorValueMinimum, TextField editorValueMaximum) {
+        editorValueStart.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueStart.pseudoClassStateChanged(errorClass, !isValueStartValid(newValue, editorValueMinimum, editorValueMaximum));
+        });
+        editorValueMinimum.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueMinimum.pseudoClassStateChanged(errorClass, !isValueMinValid(newValue, editorValueStart, editorValueMaximum));
+        });
+        editorValueMaximum.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueMaximum.pseudoClassStateChanged(errorClass, !isValueMaxValid(newValue, editorValueStart, editorValueMinimum));
+        });
+    }
+
+    public static boolean isValueStartValid(String newValue, TextField editorValueMinimum, TextField editorValueMaximum) {
+        Double start = readDoubleValueFrom(newValue);
+        if (start == null) {
+            return false;
+        }
+        Double min = readDoubleValueFrom(editorValueMinimum);
+        Double max = readDoubleValueFrom(editorValueMaximum);
+        if (min != null && min > start) {
+            return false;
+        }
+        if (max != null && max < start) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValueMinValid(String newValue, TextField editorValueStart, TextField editorValueMaximum) {
+        Double min = readDoubleValueFrom(newValue);
+        if (min == null) {
+            return false;
+        }
+        Double start = readDoubleValueFrom(editorValueStart);
+        Double max = readDoubleValueFrom(editorValueMaximum);
+        if (start != null && min > start) {
+            return false;
+        }
+        if (max != null && max < min) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValueMaxValid(String newValue, TextField editorValueStart, TextField editorValueMinimum) {
+        Double max = readDoubleValueFrom(newValue);
+        if (max == null) {
+            return false;
+        }
+        Double start = readDoubleValueFrom(editorValueStart);
+        Double min = readDoubleValueFrom(editorValueMinimum);
+        if (start != null && max < start) {
+            return false;
+        }
+        if (min != null && max < min) {
+            return false;
+        }
+        return true;
     }
 }

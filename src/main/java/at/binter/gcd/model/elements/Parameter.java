@@ -3,6 +3,7 @@ package at.binter.gcd.model.elements;
 import at.binter.gcd.model.*;
 import at.binter.gcd.util.Tools;
 
+import java.util.List;
 import java.util.Set;
 
 import static at.binter.gcd.model.Status.INVALID;
@@ -73,8 +74,18 @@ public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, H
     }
 
     @Override
+    public boolean hasValidValues() {
+        return minMaxValues.hasValidValues();
+    }
+
+    @Override
     public boolean hasAllValues() {
         return minMaxValues.hasAllValues();
+    }
+
+    @Override
+    public List<GCDWarning> getWarnings() {
+        return minMaxValues.getWarnings();
     }
 
     @Override
@@ -129,6 +140,6 @@ public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, H
     }
 
     public Status getStatus() {
-        return hasAllValues() ? VALID : INVALID;
+        return hasValidValues() ? VALID : INVALID;
     }
 }

@@ -51,6 +51,7 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
     }
 
     private void registerEventHandlers() {
+        addValuesValidationListener(editorValueStart, editorValueMinimum, editorValueMaximum);
     }
 
     @Override

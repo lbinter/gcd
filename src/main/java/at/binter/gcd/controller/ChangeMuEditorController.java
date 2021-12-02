@@ -43,6 +43,7 @@ public class ChangeMuEditorController extends BaseEditorController<ChangeMu> imp
     }
 
     private void registerEventHandlers() {
+        addValuesValidationListener(editorValueStart, editorValueMinimum, editorValueMaximum);
     }
 
     @Override

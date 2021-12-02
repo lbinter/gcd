@@ -4,9 +4,9 @@ import at.binter.gcd.model.*;
 import at.binter.gcd.util.Tools;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Set;
 
-import static at.binter.gcd.model.GCDWarning.*;
 import static at.binter.gcd.model.Status.*;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
@@ -91,7 +91,12 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public boolean hasValidInitValues() {
-        return minMaxValues.hasAllValues() && getDefaultInitialCondition().equals(getInitialCondition());
+        return minMaxValues.hasValidValues() && getDefaultInitialCondition().equals(getInitialCondition());
+    }
+
+    @Override
+    public boolean hasValidValues() {
+        return minMaxValues.hasValidValues();
     }
 
     @Override
@@ -102,6 +107,11 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     @Override
     public boolean hasNoValues() {
         return minMaxValues.hasNoValues();
+    }
+
+    @Override
+    public List<GCDWarning> getWarnings() {
+        return minMaxValues.getWarnings();
     }
 
     public PlotStyle getPlotStyle() {
@@ -190,45 +200,16 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public Status getStatus() {
-        // TODO plot style extra status ?
         if (StringUtils.isBlank(initialCondition)) {
             // ==> initialConditions should be automatically calculated by mathematica => no double value allowed
             return hasNoValues() ? VALID_AUTOMATIC : INVALID;
         } else if (getDefaultInitialCondition().equals(initialCondition)) {
             // initialConditions == <name>0 => requires all double values
-            if (getWarning() != null) return INVALID;
-            return hasAllValues() ? VALID_HAS_VALUES : INVALID;
-            // TODO check false values
+            if (!getWarnings().isEmpty()) return INVALID;
+            return hasValidValues() ? VALID_HAS_VALUES : INVALID;
         } else {
             // initialConditions == function => no double value allowed
             return hasNoValues() ? VALID_HAS_FUNCTION : INVALID;
         }
-    }
-
-    public GCDWarning getWarning() {
-        if (getMaxValue() != null && getMinValue() != null) {
-            if (getMaxValue() < getMinValue()) {
-                return MAX_VALUE_LESSER_MIN_VALUE;
-            }
-        }
-        if (getStartValue() != null) {
-            if (getMinValue() != null && getStartValue() < getMinValue()) {
-                return START_VALUE_LESSER_MIN_VALUE;
-            }
-            if (getMaxValue() != null && getStartValue() > getMaxValue()) {
-                return START_VALUE_GREATER_MAX_VALUE;
-            }
-        }
-
-        if (getStartValue() == null) {
-            return MISSING_START_VALUE;
-        }
-        if (getMinValue() == null) {
-            return MISSING_MIN_VALUE;
-        }
-        if (getMaxValue() == null) {
-            return MISSING_MAX_VALUE;
-        }
-        return null;
     }
 }

@@ -401,28 +401,11 @@ public abstract class GCDBaseModel {
     }
 
     private void checkDoubleValues(HasMinMaxValues b) {
-        if (b.getMaxValue() != null && b.getMinValue() != null) {
-            if (b.getMaxValue() < b.getMinValue()) {
-                warnings.get(MAX_VALUE_LESSER_MIN_VALUE).add(b);
+        List<GCDWarning> valueWarnings = b.getWarnings();
+        if (!valueWarnings.isEmpty()) {
+            for (GCDWarning w : valueWarnings) {
+                warnings.get(w).add(b);
             }
-        }
-        if (b.getStartValue() != null) {
-            if (b.getMinValue() != null && b.getStartValue() < b.getMinValue()) {
-                warnings.get(START_VALUE_LESSER_MIN_VALUE).add(b);
-            }
-            if (b.getMaxValue() != null && b.getStartValue() > b.getMaxValue()) {
-                warnings.get(START_VALUE_GREATER_MAX_VALUE).add(b);
-            }
-        }
-
-        if (b.getStartValue() == null) {
-            warnings.get(MISSING_START_VALUE).add(b);
-        }
-        if (b.getMinValue() == null) {
-            warnings.get(MISSING_MIN_VALUE).add(b);
-        }
-        if (b.getMaxValue() == null) {
-            warnings.get(MISSING_MAX_VALUE).add(b);
         }
     }
 }

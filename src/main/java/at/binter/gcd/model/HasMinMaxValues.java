@@ -1,5 +1,7 @@
 package at.binter.gcd.model;
 
+import java.util.List;
+
 public interface HasMinMaxValues {
 
     Double getStartValue();
@@ -14,7 +16,11 @@ public interface HasMinMaxValues {
 
     void setMaxValue(Double maxValue);
 
+    boolean hasValidValues();
+
     boolean hasAllValues();
 
     boolean hasNoValues();
+
+    List<GCDWarning> getWarnings();
 }

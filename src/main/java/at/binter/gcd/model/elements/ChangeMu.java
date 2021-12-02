@@ -1,11 +1,10 @@
 package at.binter.gcd.model.elements;
 
-import at.binter.gcd.model.HasMinMaxValues;
-import at.binter.gcd.model.MinMaxValues;
-import at.binter.gcd.model.Status;
-import at.binter.gcd.model.Updatable;
+import at.binter.gcd.model.*;
 import at.binter.gcd.util.Tools;
 import javafx.collections.ObservableList;
+
+import java.util.List;
 
 import static at.binter.gcd.model.Status.INVALID;
 import static at.binter.gcd.model.Status.VALID;
@@ -101,6 +100,11 @@ public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
     }
 
     @Override
+    public boolean hasValidValues() {
+        return minMaxValues.hasValidValues();
+    }
+
+    @Override
     public boolean hasAllValues() {
         return minMaxValues.hasAllValues();
     }
@@ -110,10 +114,12 @@ public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
         return minMaxValues.hasNoValues();
     }
 
+    @Override
+    public List<GCDWarning> getWarnings() {
+        return minMaxValues.getWarnings();
+    }
+
     public boolean requireDoubleValues(ObservableList<AlgebraicVariable> algebraicVariables) {
-        if (agent.getName().equalsIgnoreCase("B") && variable.getName().equalsIgnoreCase("dG")) {
-            System.out.println();
-        }
         if (agent.getVariables().contains(variable.getName())) {
             return true;
         }
@@ -126,6 +132,6 @@ public class ChangeMu implements Updatable<ChangeMu>, HasMinMaxValues {
     }
 
     public Status getStatus() {
-        return hasAllValues() ? VALID : INVALID;
+        return hasValidValues() ? VALID : INVALID;
     }
 }

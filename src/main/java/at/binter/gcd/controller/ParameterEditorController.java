@@ -42,6 +42,7 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
     }
 
     private void registerEventHandlers() {
+        addValuesValidationListener(editorValueStart, editorValueMinimum, editorValueMaximum);
     }
 
     @Override
