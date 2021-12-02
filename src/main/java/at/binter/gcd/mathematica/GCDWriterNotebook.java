@@ -71,6 +71,8 @@ public class GCDWriterNotebook implements GCDMathematica {
     public void generate() {
         nb = new Notebook();
         nb.add(new Cell(new RowBox(new MClearAll("\"\\\"\\<Global`*\\>\\\"\""))));
+        addToCurrentCell(model.getPlotOptions());
+        closeCurrentCell();
         switch (mode) {
             case NDSOLVE -> {
                 generateGL();

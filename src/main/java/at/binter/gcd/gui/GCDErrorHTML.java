@@ -4,6 +4,7 @@ import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.model.GCDWarning;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.util.Tools;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class GCDErrorHTML {
         b.append("<html>");
         b.append("<body>");
         generateDuplicateTable();
+        generateAlgVarRecursionTable();
         appendWarningsFor(MAX_VALUE_LESSER_MIN_VALUE);
         appendWarningsFor(START_VALUE_LESSER_MIN_VALUE);
         appendWarningsFor(START_VALUE_GREATER_MAX_VALUE);
@@ -57,8 +59,8 @@ public class GCDErrorHTML {
         b.append("</h3>");
         b.append("<ul>");
         for (Object v : variables) {
-            if (v instanceof Variable) {
-                createDuplicateEntry((Variable) v);
+            if (v instanceof Variable variable) {
+                createDuplicateEntry(variable);
             } else {
                 b.append("<li>Error - found ");
                 b.append(v.getClass());
@@ -67,6 +69,47 @@ public class GCDErrorHTML {
         }
         b.append("</ul>");
         b.append("</div>");
+    }
+
+    private void generateAlgVarRecursionTable() {
+        List<Object> algVars = warnings.get(ALGEBRAIC_VARIABLE_RECURSION);
+        if (algVars.isEmpty()) {
+            return;
+        }
+        b.append("<div class=\"");
+        b.append(ALGEBRAIC_VARIABLE_RECURSION.name());
+        b.append("\">");
+        b.append("<h3>");
+        b.append(resources.getString(ALGEBRAIC_VARIABLE_RECURSION.getI18n()));
+        b.append("</h3>");
+        b.append("<ul>");
+        for (Object algVar : algVars) {
+            if (algVar instanceof AlgebraicVariable algebraicVariable) {
+                createRecursionEntry(algebraicVariable);
+            } else {
+                b.append("<li>Error - found ");
+                b.append(algVar.getClass());
+                b.append(" instead of AlgebraicVariable.class</li>");
+            }
+        }
+        b.append("</ul>");
+        b.append("</div>");
+    }
+
+    private void createRecursionEntry(AlgebraicVariable algebraicVariable) {
+        b.append("<li>");
+        b.append(algebraicVariable.getName());
+        b.append(" - ");
+        List<String> recursiveNames = new ArrayList<>();
+        for (String name : algebraicVariable.getVariables()) {
+            AlgebraicVariable algVar = model.getAlgebraicVariable(name);
+            if (algVar != null) {
+                recursiveNames.add(algVar.getName());
+            }
+        }
+        b.append(StringUtils.join(recursiveNames));
+        b.append("</li>");
+        warningCount++;
     }
 
     private void createDuplicateEntry(Variable variable) {

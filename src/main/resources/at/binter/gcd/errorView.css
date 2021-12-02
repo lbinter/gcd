@@ -1,3 +1,10 @@
+.ALGEBRAIC_VARIABLE_RECURSION {
+    background-color: #FFAFAF;
+    color: #000;
+    border: 2px outset black;
+    margin: 15px;
+}
+
 .DUPLICATE_VARIABLE_PARAMETER {
     background-color: #FFAFAF;
     color: #000;

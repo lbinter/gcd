@@ -347,6 +347,10 @@ public class MathematicaModel {
         model.transformFunctions(utils);
     }
 
+    public IExpression getPlotOptions() {
+        return new MExpression(utils.transformToFullForm("SetOptions[Plot,ImageSize->350];", true));
+    }
+
     private MParameter getDefalgVar(int ii) {
         if (ii > model.getAlgebraicVariables().size()) {
             log.error("Called getDefalgvar with ii of {}", ii);

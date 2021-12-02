@@ -46,6 +46,8 @@ public class GCDController extends BaseController implements Initializable {
     @FXML
     private Menu recentlyOpened;
     @FXML
+    public Button buttonSave;
+    @FXML
     private TextField addPlotTextField;
 
     @FXML
@@ -392,7 +394,17 @@ public class GCDController extends BaseController implements Initializable {
 
         plotStyleTable.getStylesheets().add(gcd.plotStyleTableCss);
 
+        setSaveButtonColors(true);
+
         populateRecentlyOpened();
+    }
+
+    public void setSaveButtonColors(boolean isSaved) {
+        if (isSaved) {
+            buttonSave.setStyle("-fx-background-color: lime;-fx-text-fill: black;");
+        } else {
+            buttonSave.setStyle("-fx-background-color: red;-fx-text-fill: white;");
+        }
     }
 
     private void registerEventHandlers() {
@@ -807,6 +819,7 @@ public class GCDController extends BaseController implements Initializable {
     public void setModelIndicator(boolean isSaved) {
         if (modelStatusIndicator != null) {
             modelStatusIndicator.setVisible(true);
+            setSaveButtonColors(isSaved);
             if (isSaved) {
                 modelStatusIndicator.setFill(Color.LIME);
             } else {

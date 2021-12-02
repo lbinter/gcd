@@ -7,6 +7,7 @@ import static at.binter.gcd.util.GuiUtils.defaultForeground;
 
 
 public enum GCDWarning {
+    ALGEBRAIC_VARIABLE_RECURSION("warning.model.algebraic.variable.recursion", defaultBackground, defaultForeground),
     DUPLICATE_VARIABLE_PARAMETER("warning.model.duplicate.variable.parameter", defaultBackground, defaultForeground),
     MISSING_START_VALUE("warning.model.missing.start.value", defaultBackground, defaultForeground),
     MISSING_MIN_VALUE("warning.model.missing.min.value", defaultBackground, defaultForeground),
