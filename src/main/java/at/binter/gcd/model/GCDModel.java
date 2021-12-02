@@ -209,12 +209,23 @@ public class GCDModel extends GCDBaseModel {
                     if (log.isTraceEnabled()) {
                         log.trace("Added variable \"{}\"", variable.getName());
                     }
+                    variable.initialConditionProperty().addListener((observable, oldValue, newValue) -> {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Variable \"{}\" initialCondition was changed from \"{}\" to \"{}\"", variable.getName(), oldValue, newValue);
+                            log.debug("initialCondition change: Parameters added: {} Parameters removed: {}",
+                                    variable.getParametersAdded(),
+                                    variable.getParametersRemoved());
+                        }
+                        updateParameters(variable);
+                        generateChangeMu();
+                    });
                 });
             }
             if (c.wasRemoved()) {
                 setSavedToFile(false);
                 c.getRemoved().forEach(variable -> {
                     variableNameMap.remove(variable.getName());
+                    removeParameters(variable);
                     if (log.isTraceEnabled()) {
                         log.trace("Removed variable \"{}\"", variable.getName());
                     }
@@ -262,7 +273,7 @@ public class GCDModel extends GCDBaseModel {
                 c.getRemoved().forEach(changeMu -> {
                     changeMuNameMap.remove(changeMu.getIdentifier());
                     if (log.isTraceEnabled()) {
-                        log.trace("Added removed \"{}\"", changeMu.getIdentifier());
+                        log.trace("Removed \"{}\"", changeMu.getIdentifier());
                     }
                 });
             }

@@ -3,7 +3,10 @@ package at.binter.gcd.model.elements;
 import at.binter.gcd.GCDApplication;
 import at.binter.gcd.model.*;
 import at.binter.gcd.model.plotstyle.PlotStyleEntry;
+import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.Tools;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -12,11 +15,12 @@ import java.util.Set;
 import static at.binter.gcd.model.Status.*;
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
-public class Variable implements Comparable<Variable>, Updatable<Variable>, HasPlotStyle, HasMinMaxValues {
+public class Variable implements Comparable<Variable>, Updatable<Variable>, HasPlotStyle, HasMinMaxValues, HasParameterStringList {
     private String name;
     private String description;
-    private String initialCondition;
+    private final StringProperty initialCondition = new SimpleStringProperty();
     private final MinMaxValues minMaxValues = new MinMaxValues();
+    private final VariableParameterList variableParameterList = new VariableParameterList();
     private final PlotStyle plotStyle = new PlotStyle();
     private final FunctionReference functionReference = new FunctionReference();
 
@@ -51,15 +55,21 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public String getInitialCondition() {
-        return initialCondition;
+        return initialCondition.get();
     }
 
     public String getDefaultInitialCondition() {
         return getName() + "0";
     }
 
+    public StringProperty initialConditionProperty() {
+        return initialCondition;
+    }
+
     public void setInitialCondition(String initialCondition) {
-        this.initialCondition = sanitizeString(initialCondition);
+        ParsedFunction parsedFunction = new ParsedFunction(initialCondition);
+        fillParameters(parsedFunction.parameters);
+        initialConditionProperty().set(parsedFunction.function);
     }
 
     @Override
@@ -236,10 +246,10 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public Status getStatus() {
-        if (StringUtils.isBlank(initialCondition)) {
+        if (StringUtils.isBlank(getInitialCondition())) {
             // ==> initialConditions should be automatically calculated by mathematica => no double value allowed
             return hasNoValues() ? VALID_AUTOMATIC : INVALID;
-        } else if (getDefaultInitialCondition().equals(initialCondition)) {
+        } else if (getDefaultInitialCondition().equals(getInitialCondition())) {
             // initialConditions == <name>0 => requires all double values
             if (!getWarnings().isEmpty()) return INVALID;
             return hasValidValues() ? VALID_HAS_VALUES : INVALID;
@@ -247,5 +257,28 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
             // initialConditions == function => no double value allowed
             return hasNoValues() ? VALID_HAS_FUNCTION : INVALID;
         }
+    }
+
+    public void fillParameters(Set<String> newParameters) {
+        variableParameterList.fillParameters(newParameters);
+    }
+
+    public void fillVariables(Set<String> newVariables) {
+        variableParameterList.fillVariables(newVariables);
+    }
+
+    @Override
+    public List<String> getParameters() {
+        return variableParameterList.getParameters();
+    }
+
+    @Override
+    public Set<String> getParametersRemoved() {
+        return variableParameterList.getParametersRemoved();
+    }
+
+    @Override
+    public Set<String> getParametersAdded() {
+        return variableParameterList.getParametersAdded();
     }
 }

@@ -28,6 +28,8 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
     private Label editorLabelAgents;
     @FXML
     private Label editorLabelConstraints;
+    @FXML
+    private Label editorLabelVariables;
 
 
     @Override
@@ -65,6 +67,7 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
         editorLabelAlgebraicVariables.setText("");
         editorLabelAgents.setText("");
         editorLabelConstraints.setText("");
+        editorLabelVariables.setText("");
     }
 
     @Override
@@ -77,5 +80,6 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
         editorLabelAlgebraicVariables.setText(data.getAlgebraicVariablesAsString());
         editorLabelAgents.setText(data.getAgentsAsString());
         editorLabelConstraints.setText(data.getConstraintsAsString());
+        editorLabelVariables.setText(data.getVariablesAsString());
     }
 }

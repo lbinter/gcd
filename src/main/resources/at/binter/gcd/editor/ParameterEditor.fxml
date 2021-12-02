@@ -25,6 +25,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                             </rowConstraints>
                             <children>
                                 <Label text="%editor.label.name" GridPane.rowIndex="1">
@@ -94,6 +95,17 @@
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"/>
                                 <Label fx:id="editorLabelConstraints" minWidth="360" GridPane.columnIndex="1"
                                        GridPane.rowIndex="7">
+                                    <GridPane.margin>
+                                        <Insets left="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="%editor.label.variables" GridPane.rowIndex="8">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="editorLabelVariables" minWidth="360" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="8">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>

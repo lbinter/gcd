@@ -105,7 +105,6 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
             setVariableParameterListVisible(true);
             setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
             setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
-            System.out.println(f);
         } else {
             setVariableParameterListVisible(false);
         }

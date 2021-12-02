@@ -191,12 +191,14 @@ public abstract class GCDBaseModel {
             p = new Parameter(name);
             parameters.add(p);
         }
-        if (source instanceof AlgebraicVariable) {
-            p.getAlgebraicVariables().add((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            p.getAgents().add((Agent) source);
-        } else if (source instanceof Constraint) {
-            p.getConstraints().add((Constraint) source);
+        if (source instanceof AlgebraicVariable algVar) {
+            p.getAlgebraicVariables().add(algVar);
+        } else if (source instanceof Agent a) {
+            p.getAgents().add(a);
+        } else if (source instanceof Constraint c) {
+            p.getConstraints().add(c);
+        } else if (source instanceof Variable v) {
+            p.getVariables().add(v);
         }
     }
 
@@ -212,12 +214,14 @@ public abstract class GCDBaseModel {
         } else {
             return;
         }
-        if (source instanceof AlgebraicVariable) {
-            p.getAlgebraicVariables().remove((AlgebraicVariable) source);
-        } else if (source instanceof Agent) {
-            p.getAgents().remove((Agent) source);
-        } else if (source instanceof Constraint) {
-            p.getConstraints().remove((Constraint) source);
+        if (source instanceof AlgebraicVariable algVar) {
+            p.getAlgebraicVariables().remove(algVar);
+        } else if (source instanceof Agent a) {
+            p.getAgents().remove(a);
+        } else if (source instanceof Constraint c) {
+            p.getConstraints().remove(c);
+        } else if (source instanceof Variable v) {
+            p.getVariables().remove(v);
         }
         if (!p.hasReferences()) {
             removeParameter(p);

@@ -105,6 +105,10 @@ public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, H
         return functionReference.getConstraints();
     }
 
+    public Set<Variable> getVariables() {
+        return functionReference.getVariables();
+    }
+
     public String getAlgebraicVariablesAsString() {
         return functionReference.getAlgebraicVariablesAsString();
     }
@@ -115,6 +119,10 @@ public class Parameter implements Comparable<Parameter>, Updatable<Parameter>, H
 
     public String getConstraintsAsString() {
         return functionReference.getConstraintsAsString();
+    }
+
+    public String getVariablesAsString() {
+        return functionReference.getVariablesAsString();
     }
 
     public boolean hasReferences() {
