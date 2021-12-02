@@ -151,7 +151,8 @@ public class Constraint implements Updatable<Constraint>, Comparable<Constraint>
 
     @Override
     public int compareTo(Constraint o) {
-        return getCondition().compareTo(o.getCondition());
+        int nameCompare = StringUtils.compare(getName(), o.getName());
+        return nameCompare == 0 ? Integer.compare(getId(), o.getId()) : nameCompare;
     }
 
     @Override

@@ -54,16 +54,16 @@ public class XmlModel {
         for (AlgebraicVariable algVar : gcdModel.getAlgebraicVariables().sorted()) {
             algebraicVariables.add(new XmlFunction(algVar));
         }
-        for (Agent agent : gcdModel.getAgents()) {
+        for (Agent agent : gcdModel.getAgentsSorted()) {
             agents.add(new XmlFunction(agent));
         }
-        for (Constraint constraint : gcdModel.getConstraints().sorted()) {
+        for (Constraint constraint : gcdModel.getConstraints()) {
             constraints.add(new XmlFunction(constraint));
         }
-        for (Variable variable : gcdModel.getVariables().sorted()) {
+        for (Variable variable : gcdModel.getVariablesSorted()) {
             variables.add(new XmlVariable(variable));
         }
-        for (Parameter parameter : gcdModel.getParameters().sorted()) {
+        for (Parameter parameter : gcdModel.getParametersSorted()) {
             parameters.add(new XmlBasicVariable(parameter));
         }
         for (ChangeMu mu : gcdModel.getChangeMus()) {
