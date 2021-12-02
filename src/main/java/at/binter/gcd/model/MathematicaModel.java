@@ -37,6 +37,8 @@ public class MathematicaModel {
         return model;
     }
 
+    private final String agentNamePrefix = "agent";
+
     private final MVariable variableT = new MVariable("t");
     private final MVariable variableX = new MVariable("x");
     private final MVariable variableXX = new MVariable("xx");
@@ -295,7 +297,7 @@ public class MathematicaModel {
     public MSet getSetAG() {
         MList list = new MList();
         for (Agent a : model.getAgentsSorted()) {
-            list.add(new MExpression("variable", a.getName()));
+            list.add(new MExpression("variable", agentNamePrefix + a.getName()));
         }
         return new MSet(AG, list);
     }
@@ -425,7 +427,7 @@ public class MathematicaModel {
                             new MParentheses(new MExpression(a.getFunction())),
                             new MEqual(
                                     parameterJ,
-                                    new MExpression("variable", a.getName()))),
+                                    new MExpression("variable", agentNamePrefix + a.getName()))),
                     true);
             list.add(delayed);
         }
@@ -443,7 +445,7 @@ public class MathematicaModel {
                             new MParentheses(new MExpression(a.getMathematicaFunction())),
                             new MEqual(
                                     parameterJ,
-                                    new MExpression("variable", a.getName()))),
+                                    new MExpression("variable", agentNamePrefix + a.getName()))),
                     true);
             list.add(new RowBox(true, delayed));
         }
@@ -453,13 +455,13 @@ public class MathematicaModel {
     public List<MSetDelayed> getSetDelayedDefuVarSubstitute() {
         List<MSetDelayed> list = new ArrayList<>(model.getAgents().size());
         for (Agent a : model.getAgentsSorted()) {
-            MParentheses parentheses = new MParentheses(new MReplaceAll(getDefuVar(a.getName()), substitute));
+            MParentheses parentheses = new MParentheses(new MReplaceAll(getDefuVar(agentNamePrefix + a.getName()), substitute));
             MSetDelayed delayed = new MSetDelayed(defuvarsubstitute,
                     new MCondition(
                             parentheses,
                             new MEqual(
                                     parameterJ,
-                                    new MExpression("variable", a.getName()))),
+                                    new MExpression("variable", agentNamePrefix + a.getName()))),
                     true);
             list.add(delayed);
         }
@@ -469,7 +471,7 @@ public class MathematicaModel {
     public List<MParameter> getParameterListDefuVar() {
         List<MParameter> list = new ArrayList<>();
         for (Agent a : model.getAgentsSorted()) {
-            list.add(getDefuVar(a.getName()));
+            list.add(getDefuVar(agentNamePrefix + a.getName()));
         }
         return list;
     }
@@ -477,7 +479,7 @@ public class MathematicaModel {
     public List<MParameter> getParameterListDefuVarSubstitute() {
         List<MParameter> list = new ArrayList<>();
         for (Agent a : model.getAgentsSorted()) {
-            list.add(getDefuVarSubstitute(a.getName()));
+            list.add(getDefuVarSubstitute(agentNamePrefix + a.getName()));
         }
         return list;
     }
@@ -591,7 +593,7 @@ public class MathematicaModel {
             MExpressionList l = new MExpressionList();
             l.add(new MParameter(
                     "\\[Mu]",
-                    new MExpression(mu.getAgent().getName()),
+                    new MExpression(agentNamePrefix + mu.getAgent().getName()),
                     new MExpression(mu.getIndex())
             ));
             l.add(new MArrow());
@@ -717,7 +719,7 @@ public class MathematicaModel {
     public List<MParameter> getParameterListDefUVarSubstituteXXX() {
         List<MParameter> list = new ArrayList<>();
         for (Agent a : model.getAgentsSorted()) {
-            list.add(new MParameter(defuvarsubstitutexxx.getName(), a.getName(), "t", "varxxx"));
+            list.add(new MParameter(defuvarsubstitutexxx.getName(), agentNamePrefix + a.getName(), "t", "varxxx"));
         }
         return list;
     }
@@ -854,7 +856,7 @@ public class MathematicaModel {
         list.setElementsLinebreak(1);
         for (Agent a : model.getAgentsSorted()) {
             MParameter p = new MParameter("u" + a.getName(), variableT);
-            MParameter d = new MParameter(defuvar.getName(), new MVariable(a.getName()), variableT, var);
+            MParameter d = new MParameter(defuvar.getName(), new MVariable(agentNamePrefix + a.getName()), variableT, var);
             list.add(new MEqual(p, d));
         }
         return new MSet(ugl, list);
