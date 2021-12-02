@@ -27,6 +27,8 @@ public class GCDModel extends GCDBaseModel {
 
     private boolean clearGlobal = true;
 
+    private boolean updateVariablesParameter = true;
+
     private final ListChangeListener<AlgebraicVariable> algebraicVariableListChangeListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
@@ -148,39 +150,55 @@ public class GCDModel extends GCDBaseModel {
             if (c.wasAdded()) {
                 setSavedToFile(false);
                 c.getAddedSubList().forEach(constraint -> {
-                    addVariables(constraint);
-                    addParameters(constraint);
-                    constraint.setId(c.getFrom() + 1);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Added constraint \"{}\"", constraint);
-                    }
-                    constraint.conditionProperty().addListener((observable, oldValue, newValue) -> {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Constraint \"{}\" condition was changed from \"{}\" to \"{}\"", constraint.getId(), oldValue, newValue);
-                            log.debug("Condition change: Variables added: {} Variables removed: {} Parameters added: {} Parameters removed: {}",
-                                    constraint.getVariablesAdded(),
-                                    constraint.getVariablesRemoved(),
-                                    constraint.getParametersAdded(),
-                                    constraint.getParametersRemoved());
+                    if (isUpdateVariablesParameter()) {
+                        addVariables(constraint);
+                        addParameters(constraint);
+                        constraint.setId(c.getFrom() + 1);
+                        if (log.isTraceEnabled()) {
+                            log.trace("Added constraint \"{}\"", constraint);
                         }
-                        updateVariables(constraint);
-                        updateParameters(constraint);
-                    });
+                        constraint.conditionProperty().addListener((observable, oldValue, newValue) -> {
+                            if (log.isDebugEnabled()) {
+                                log.debug("Constraint \"{}\" condition was changed from \"{}\" to \"{}\"", constraint.getId(), oldValue, newValue);
+                                log.debug("Condition change: Variables added: {} Variables removed: {} Parameters added: {} Parameters removed: {}",
+                                        constraint.getVariablesAdded(),
+                                        constraint.getVariablesRemoved(),
+                                        constraint.getParametersAdded(),
+                                        constraint.getParametersRemoved());
+                            }
+                            updateVariables(constraint);
+                            updateParameters(constraint);
+                        });
+                    }
                 });
             }
             if (c.wasRemoved()) {
                 setSavedToFile(false);
                 c.getRemoved().forEach(constraint -> {
-                    removeVariables(constraint);
-                    removeParameters(constraint);
-                    log.trace("Removed constraint {}", constraint);
-                    for (int i = c.getFrom(); i < constraints.size(); i++) {
-                        constraints.get(i).setId(i + 1);
+                    if (isUpdateVariablesParameter()) {
+                        removeVariables(constraint);
+                        removeParameters(constraint);
+                        log.trace("Removed constraint {}", constraint);
                     }
                 });
             }
         }
+        verifyAndSetConstraintIds();
     };
+
+    public boolean isUpdateVariablesParameter() {
+        return updateVariablesParameter;
+    }
+
+    public void setUpdateVariablesParameter(boolean updateVariablesParameter) {
+        this.updateVariablesParameter = updateVariablesParameter;
+    }
+
+    private void verifyAndSetConstraintIds() {
+        for (int i = 0; i < constraints.size(); i++) {
+            constraints.get(i).setId(i + 1);
+        }
+    }
 
     private final ListChangeListener<Variable> variableListChangeListener = c -> {
         while (c.next()) {

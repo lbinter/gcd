@@ -499,6 +499,32 @@ public class GCDController extends BaseController implements Initializable {
     }
 
     @FXML
+    protected void moveUpSelectedConstraint() {
+        final int selectedIndex = constraintEditDialog.getGCDModelSelectedIndex();
+        if (selectedIndex <= 0) {
+            return;
+        }
+        model.setUpdateVariablesParameter(false);
+        Constraint c = model.getConstraints().remove(selectedIndex);
+        model.getConstraints().add(selectedIndex - 1, c);
+        constraintListView.getSelectionModel().select(selectedIndex - 1);
+        model.setUpdateVariablesParameter(true);
+    }
+
+    @FXML
+    protected void moveDownSelectedConstraint() {
+        final int selectedIndex = constraintEditDialog.getGCDModelSelectedIndex();
+        if (selectedIndex == -1 || selectedIndex == model.getConstraints().size() - 1) {
+            return;
+        }
+        model.setUpdateVariablesParameter(false);
+        Constraint c = model.getConstraints().remove(selectedIndex);
+        model.getConstraints().add(selectedIndex + 1, c);
+        constraintListView.getSelectionModel().select(selectedIndex + 1);
+        model.setUpdateVariablesParameter(true);
+    }
+
+    @FXML
     protected void editSelectedVariable() {
         variableEditDialog.editSelectedValue();
     }

@@ -219,6 +219,16 @@
                                                                         mnemonicParsing="false"
                                                                         onAction="#editSelectedConstraint"
                                                                         text="%button.edit"/>
+                                                                <Button fx:id="constraintButtonMoveUp" layoutX="10.0"
+                                                                        layoutY="163.0" minWidth="80.0"
+                                                                        mnemonicParsing="false"
+                                                                        onAction="#moveUpSelectedConstraint"
+                                                                        text="%button.up"/>
+                                                                <Button fx:id="constraintButtonMoveDown" layoutX="10.0"
+                                                                        layoutY="183.0" minWidth="80.0"
+                                                                        mnemonicParsing="false"
+                                                                        onAction="#moveDownSelectedConstraint"
+                                                                        text="%button.down"/>
                                                             </children>
                                                             <padding>
                                                                 <Insets right="10.0"/>
