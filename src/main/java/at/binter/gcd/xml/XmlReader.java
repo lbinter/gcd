@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.InputStream;
 
 public class XmlReader {
     private static final Logger log = LoggerFactory.getLogger(XmlReader.class);
@@ -70,6 +71,26 @@ public class XmlReader {
             }
         } catch (JAXBException e) {
             log.error("Could not read gcd plot styles from file {}", file.getAbsolutePath(), e);
+        }
+        return null;
+    }
+
+    public static GCDPlotStyles readGCDPlotStyles(InputStream resourceAsStream) {
+        if (resourceAsStream == null) {
+            return null;
+        }
+        JAXBContext jaxbContext;
+        try {
+            jaxbContext = JAXBContext.newInstance(GCDPlotStyles.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            Object obj = jaxbUnmarshaller.unmarshal(resourceAsStream);
+            if (obj instanceof GCDPlotStyles plotStyles) {
+                log.info("Loaded gcd default plot styles");
+                return plotStyles;
+            }
+        } catch (JAXBException e) {
+            log.error("Could not read gcd plot styles from default file", e);
         }
         return null;
     }

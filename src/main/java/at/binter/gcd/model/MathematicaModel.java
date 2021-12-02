@@ -401,7 +401,7 @@ public class MathematicaModel {
     public MParameter getDefuVar(String index) {
         if (StringUtils.isBlank(index)) {
             log.error("Called getDefuVar with index of null");
-        } else if (model.getAgent(index) == null) {
+        } else if (model.getAgent(index.replace(agentNamePrefix, "")) == null) {
             log.error("Called getDefuVar with non exists agent index of {}", index);
         }
         return new MParameter(defuvar.getName(), index, "t", "var");
@@ -410,7 +410,7 @@ public class MathematicaModel {
     public MParameter getDefuVarSubstitute(String index) {
         if (StringUtils.isBlank(index)) {
             log.error("Called getDefuVarSubstitute with index of null");
-        } else if (model.getAgent(index) == null) {
+        } else if (model.getAgent(index.replace(agentNamePrefix, "")) == null) {
             log.error("Called getDefuVarSubstitute with non exists agent index of {}", index);
         }
         return new MParameter(defuvarsubstitute.getName(), index, "t", "var");

@@ -59,7 +59,9 @@ public class ParsedFunction {
                         String parameterName = vars[i].trim();
                         if (StringUtils.isNotBlank(parameterName) && !NumberUtils.isParsable(parameterName.replace(".", "").replace(",", ""))) {
                             if (parameterName.endsWith("0")) {
-                                log.info("Ignoring parameter {}", parameterName);
+                                if (log.isTraceEnabled()) {
+                                    log.trace("Ignoring parameter {}", parameterName);
+                                }
                             } else {
                                 parameters.add(parameterName);
                             }
