@@ -58,7 +58,11 @@ public class ParsedFunction {
                     if (!StringUtils.isNumeric(vars[i])) {
                         String parameterName = vars[i].trim();
                         if (StringUtils.isNotBlank(parameterName) && !NumberUtils.isParsable(parameterName.replace(".", "").replace(",", ""))) {
-                            parameters.add(parameterName);
+                            if (parameterName.endsWith("0")) {
+                                log.info("Removing parameter {} from list", parameterName);
+                            } else {
+                                parameters.add(parameterName);
+                            }
                         }
                     }
                 }

@@ -1,17 +1,21 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Variable;
+import at.binter.gcd.util.ParsedFunction;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.GuiUtils.*;
+import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class VariableEditorController extends BaseEditorController<Variable> implements Initializable {
     @FXML
@@ -39,6 +43,19 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
     @FXML
     private TextField editorPlotLineArt;
 
+    @FXML
+    private GridPane grid;
+    @FXML
+    private Label editorLabelVariable;
+    @FXML
+    private Label editorLabelVariables;
+    @FXML
+    private Label editorLabelParameter;
+    @FXML
+    private Label editorLabelParameters;
+    private RowConstraints rowVariables;
+    private RowConstraints rowParameters;
+    private RowConstraints rowAlgebraicVariables;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +66,9 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorValueMinimum.setTextFormatter(createDoubleTextFormatter());
         editorValueMaximum.setTextFormatter(createDoubleTextFormatter());
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
+        rowVariables = grid.getRowConstraints().get(3);
+        rowParameters = grid.getRowConstraints().get(4);
+        rowAlgebraicVariables = grid.getRowConstraints().get(8);
         registerEventHandlers();
     }
 
@@ -69,6 +89,43 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorValueStart.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueStartValid(editorValueStart.getText(), editorValueMinimum, editorValueMaximum), 1));
         editorValueMinimum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMinValid(editorValueMinimum.getText(), editorValueStart, editorValueMaximum), 2));
         editorValueMaximum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMaxValid(editorValueMaximum.getText(), editorValueStart, editorValueMinimum), 3));
+
+        String name = editorLabelName.getText();
+        String text = sanitizeString(newValue);
+        if (text != null) {
+            if ((name + "0").equals(text)) {
+                return;
+            }
+            ParsedFunction f = new ParsedFunction(text);
+            setVariableParameterListVisible(true);
+            setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
+            setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
+            System.out.println(f);
+        } else {
+            setVariableParameterListVisible(false);
+        }
+    }
+
+    private void setVariableParameterListVisible(boolean visible) {
+        if (visible) {
+            rowVariables.setMinHeight(rowAlgebraicVariables.getMinHeight());
+            rowVariables.setPrefHeight(rowAlgebraicVariables.getPrefHeight());
+            rowVariables.setMaxHeight(rowAlgebraicVariables.getMaxHeight());
+            rowParameters.setMinHeight(rowAlgebraicVariables.getMinHeight());
+            rowParameters.setPrefHeight(rowAlgebraicVariables.getPrefHeight());
+            rowParameters.setMaxHeight(rowAlgebraicVariables.getMaxHeight());
+        } else {
+            rowVariables.setMinHeight(0);
+            rowVariables.setPrefHeight(0);
+            rowVariables.setMaxHeight(0);
+            rowParameters.setMinHeight(0);
+            rowParameters.setPrefHeight(0);
+            rowParameters.setMaxHeight(0);
+        }
+        editorLabelVariable.setVisible(visible);
+        editorLabelVariables.setVisible(visible);
+        editorLabelParameter.setVisible(visible);
+        editorLabelParameters.setVisible(visible);
     }
 
     private boolean needsCheckValue(boolean valueCheck, int pos) {
