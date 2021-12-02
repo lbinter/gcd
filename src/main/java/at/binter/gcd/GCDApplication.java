@@ -42,7 +42,7 @@ public class GCDApplication extends Application {
     public final Settings defaultSettings = new Settings();
     public Path plotStyleLocation = Paths.get(System.getProperty("user.home"), ".gcd", "plotStyles.xml");
     public GCDPlotStyles plotStyles;
-    public Path defaultPlotStyleLocation = Paths.get(System.getProperty("user.home"), ".gcd", "defaultPlotStyles.xml");
+    public Path defaultPlotStyleLocation;
     public GCDPlotStyles defaultPlotStyles;
 
     public String gcdCss;
@@ -119,7 +119,11 @@ public class GCDApplication extends Application {
         defaultSettings.loadDefaultValues();
 
         readOrCreateSettings();
+        defaultPlotStyleLocation = Paths.get(Objects.requireNonNull(getClass().getResource("defaultPlotStyles.xml")).toURI());
         defaultPlotStyles = XmlReader.readGCDPlotStyles(defaultPlotStyleLocation.toFile());
+        if (!plotStyleLocation.toFile().exists()) {
+            XmlWriter.write(defaultPlotStyles, plotStyleLocation.toFile());
+        }
         plotStyles = XmlReader.readGCDPlotStyles(plotStyleLocation.toFile());
 
         loaderSettings.setLocation(getClass().getResource("settings.fxml"));

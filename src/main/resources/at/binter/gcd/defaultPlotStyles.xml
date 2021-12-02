@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gcd-plot-styles>
+    <styles>
+        <entry>
+            <description>BIP</description>
+            <name>y</name>
+            <color>Red</color>
+            <line-style></line-style>
+            <thickness>3.0</thickness>
+        </entry>
+        <entry>
+            <description>Investitionen</description>
+            <name>iF</name>
+            <color>Magenta</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Invest.Anteil/BIP</description>
+            <name>iFanteil</name>
+            <color>Magenta</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Inflation</description>
+            <name>inflation</name>
+            <color>Blue</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Zinsen</description>
+            <name>r</name>
+            <color>Green</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Leitzinsen</description>
+            <name>rleit</name>
+            <color>Green</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Aufschlag Sparzinsen</description>
+            <name>ra</name>
+            <color>Green</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Aufschlag Kreditzinsen</description>
+            <name>rd</name>
+            <color>Green</color>
+            <line-style>DotDashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Sparzinsen rleit+ra</description>
+            <name>rspar</name>
+            <color>Green</color>
+            <line-style>Dashed</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Kreditzinsen rleit+rd</description>
+            <name>rkredit</name>
+            <color>Green</color>
+            <line-style>Dotdashed</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Tax H</description>
+            <name>tH</name>
+            <color>Orange</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Tax F</description>
+            <name>tF</name>
+            <color>Pink</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Gewinn B</description>
+            <name>πB</name>
+            <color>Purple</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Gewinn F</description>
+            <name>πF</name>
+            <color>Purple</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Gewinn ZB</description>
+            <name>πZB</name>
+            <color>Purple</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Nutzen H</description>
+            <name>H</name>
+            <color>Purple</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Nutzen F</description>
+            <name>F</name>
+            <color>Purple</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Nutzen G</description>
+            <name>G</name>
+            <color>Purple</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Nutzen B</description>
+            <name>B</name>
+            <color>Purple</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Nutzen ZB</description>
+            <name>ZB</name>
+            <color>Purple</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Kapital</description>
+            <name>kF</name>
+            <color>Magenta</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Arbeit</description>
+            <name>lH</name>
+            <color>Green</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Konsum Haushalt</description>
+            <name>cH</name>
+            <color>Black</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Preis</description>
+            <name>p</name>
+            <color>Blue</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Preisänderung</description>
+            <name>ps</name>
+            <color>Blue</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Lohn</description>
+            <name>w</name>
+            <color>Brown</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Lagerstand</description>
+            <name>sF</name>
+            <color>Pink</color>
+            <line-style></line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Konsum Government</description>
+            <name>cG</name>
+            <color>Orange</color>
+            <line-style>Dashed</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Kreditgeld Firma</description>
+            <name>nF</name>
+            <color>Cyan</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Kreditgeld Staat</description>
+            <name>nG</name>
+            <color>Cyan</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Spargeld Haushalt</description>
+            <name>nH</name>
+            <color>Brown</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Geldschöpfung</description>
+            <name>nZB</name>
+            <color>Black</color>
+            <line-style></line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Geldmenge Bank</description>
+            <name>mB</name>
+            <color>Pink</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Geldmenge F</description>
+            <name>mF</name>
+            <color>Black</color>
+            <line-style>DotDashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Geldmenge G</description>
+            <name>mG</name>
+            <color>Black</color>
+            <line-style>Dotted</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Geldmenge H</description>
+            <name>mH</name>
+            <color>Black</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Forderungen ZB</description>
+            <name>aZB</name>
+            <color>Pink</color>
+            <line-style>DotDashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Verbindlichkeiten B</description>
+            <name>dB</name>
+            <color>Orange</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Verbindlichkeiten F</description>
+            <name>dF</name>
+            <color>Orange</color>
+            <line-style>DotDashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Verbindlichkeiten G</description>
+            <name>dG</name>
+            <color>Orange</color>
+            <line-style>Dashed</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Verbindlichkeiten ZB</description>
+            <name>dZB</name>
+            <color>Pink</color>
+            <line-style>Dotted</line-style>
+            <thickness>1.0</thickness>
+        </entry>
+        <entry>
+            <description>Forderungen B</description>
+            <name>aB</name>
+            <color>Cyan</color>
+            <line-style>Dotted</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+        <entry>
+            <description>Forderungen H</description>
+            <name>aH</name>
+            <color>Cyan</color>
+            <line-style>DotDashed</line-style>
+            <thickness>2.0</thickness>
+        </entry>
+    </styles>
+</gcd-plot-styles>
