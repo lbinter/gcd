@@ -57,6 +57,7 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
 
     private void nameChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         setLabelTextFormatted(editorLabelDefinition, newValue + Agent.assignmentSymbol + editorFunction.getText());
+        editorName.pseudoClassStateChanged(errorClass, !Character.isUpperCase(newValue.charAt(0)));
     }
 
     private void functionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {

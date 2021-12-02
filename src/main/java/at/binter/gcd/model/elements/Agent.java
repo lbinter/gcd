@@ -99,6 +99,9 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
     }
 
     public Status getStatus() {
+        if (!Character.isUpperCase(getName().charAt(0))) {
+            return INVALID;
+        }
         if (functionContainsErrors(getFunction())) {
             return INVALID;
         }

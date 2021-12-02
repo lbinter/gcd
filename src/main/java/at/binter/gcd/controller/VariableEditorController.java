@@ -1,10 +1,12 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Variable;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,7 +53,63 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
     }
 
     private void registerEventHandlers() {
-        addValuesValidationListener(editorValueStart, editorValueMinimum, editorValueMaximum);
+        editorValueStart.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueStart.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueStartValid(newValue, editorValueMinimum, editorValueMaximum), 1));
+        });
+        editorValueMinimum.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueMinimum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMinValid(newValue, editorValueStart, editorValueMaximum), 2));
+        });
+        editorValueMaximum.textProperty().addListener((observable, oldValue, newValue) -> {
+            editorValueMaximum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMaxValid(newValue, editorValueStart, editorValueMinimum), 3));
+        });
+        editorInitialCondition.textProperty().addListener(this::initialConditionChanged);
+    }
+
+    private void initialConditionChanged(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        editorValueStart.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueStartValid(editorValueStart.getText(), editorValueMinimum, editorValueMaximum), 1));
+        editorValueMinimum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMinValid(editorValueMinimum.getText(), editorValueStart, editorValueMaximum), 2));
+        editorValueMaximum.pseudoClassStateChanged(errorClass, needsCheckValue(!isValueMaxValid(editorValueMaximum.getText(), editorValueStart, editorValueMinimum), 3));
+    }
+
+    private boolean needsCheckValue(boolean valueCheck, int pos) {
+        String name = editorLabelName.getText();
+        String initialCondition = editorInitialCondition.getText();
+        Double start = readDoubleValueFrom(editorValueStart);
+        Double min = readDoubleValueFrom(editorValueStart);
+        Double max = readDoubleValueFrom(editorValueStart);
+
+        if (StringUtils.isBlank(initialCondition)) {
+            // VALID_AUTOMATIC ==> initialConditions should be automatically calculated by mathematica => no double value allowed
+            switch (pos) {
+                case 1 -> {
+                    return start != null;
+                }
+                case 2 -> {
+                    return min != null;
+                }
+                case 3 -> {
+                    return max != null;
+                }
+            }
+            return (start == null && min == null && max == null);
+        } else if ((name + "0").equals(initialCondition)) {
+            // VALID_HAS_VALUES: initialConditions == <name>0 => requires all double values
+            return valueCheck;
+        } else {
+            // VALID_HAS_FUNCTION: initialConditions == function => no double value allowed
+            switch (pos) {
+                case 1 -> {
+                    return start != null;
+                }
+                case 2 -> {
+                    return min != null;
+                }
+                case 3 -> {
+                    return max != null;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -81,6 +139,9 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorPlotColor.setText("");
         editorPlotThickness.setText("");
         editorPlotLineArt.setText("");
+        editorValueStart.pseudoClassStateChanged(errorClass, false);
+        editorValueMinimum.pseudoClassStateChanged(errorClass, false);
+        editorValueMaximum.pseudoClassStateChanged(errorClass, false);
     }
 
     @Override
