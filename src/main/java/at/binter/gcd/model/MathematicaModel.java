@@ -155,6 +155,10 @@ public class MathematicaModel {
             "man nur \"GL\" in NDSolve schreibt, das kann Manipulate nicht ",
             "verarbeiten). Dann das Lösungsprogramm gesondert gestartet werden");
 
+    private final MComment controlAlgVarComment = new MComment("Algebraische Variablen");
+    private final MComment controlAgentComment = new MComment("Agenten / Nutzenfunktionen");
+    private final MComment controlConstraintComment = new MComment("Zwangsbedingungen");
+    private final MComment controlVariableComment = new MComment("Anfangsbedingungen und Werte");
 
     public MExpression getLinebreak() {
         return linebreak;
@@ -322,14 +326,6 @@ public class MathematicaModel {
         return new RowBox(false, new MSet(substitute, list, true));
     }
 
-    public List<RowBox> getRowBoxControlAlgebraicVariables() {
-        List<RowBox> list = new ArrayList<>();
-        for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
-            list.add(new RowBox(true, new MExpression(aV.getMathematicaString(), false)));
-        }
-        return list;
-    }
-
     public List<MSetDelayed> getSetDelayedDefalgvar() {
         List<MSetDelayed> list = new ArrayList<>(model.getAlgebraicVariables().size());
         int ii = 1;
@@ -450,14 +446,6 @@ public class MathematicaModel {
         return list;
     }
 
-    public List<RowBox> getRowBoxControlAgents() {
-        List<RowBox> list = new ArrayList<>();
-        for (Agent agent : model.getAgentsSorted()) {
-            list.add(new RowBox(true, new MExpression(agent.getMathematicaString(), false)));
-        }
-        return list;
-    }
-
     public List<MSetDelayed> getSetDelayedDefuVarSubstitute() {
         List<MSetDelayed> list = new ArrayList<>(model.getAgents().size());
         for (Agent a : model.getAgentsSorted()) {
@@ -542,14 +530,6 @@ public class MathematicaModel {
                             )),
                     true);
             list.add(new RowBox(true, delayed));
-        }
-        return list;
-    }
-
-    public List<RowBox> getRowBoxControlConstraints() {
-        List<RowBox> list = new ArrayList<>();
-        for (Constraint constraint : model.getConstraints()) {
-            list.add(new RowBox(true, new MExpression(constraint.getMathematicaString(), false)));
         }
         return list;
     }
@@ -847,8 +827,13 @@ public class MathematicaModel {
     }
 
     public MSet getSetInit() {
-        MList list = new MList();
+        MList list = getInitList();
         list.setElementsLinebreak(4);
+        return new MSet(init, list, true);
+    }
+
+    public MList getInitList() {
+        MList list = new MList();
         for (Variable v : model.getVariablesSorted()) {
             MParameter p = new MParameter(v.getName(), e0);
             if (StringUtils.isNotBlank(v.getInitialCondition()) && !v.getDefaultInitialCondition().equals(v.getInitialCondition())) {
@@ -857,7 +842,7 @@ public class MathematicaModel {
                 list.add(new MEqual(p, new MVariable(v.getDefaultInitialCondition())));
             }
         }
-        return new MSet(init, list, true);
+        return list;
     }
 
     public MSet getSetUgl() {
@@ -1176,6 +1161,91 @@ public class MathematicaModel {
             mPlot.setPlotLegends(plotLegende);
         }
         return mPlot;
+    }
+
+    public MComment getControlAlgVarComment() {
+        return controlAlgVarComment;
+    }
+
+    public MComment getControlAgentComment() {
+        return controlAgentComment;
+    }
+
+    public MComment getControlConstraintComment() {
+        return controlConstraintComment;
+    }
+
+    public MComment getControlVariableComment() {
+        return controlVariableComment;
+    }
+
+    public List<RowBox> getRowBoxControlAlgebraicVariables() {
+        List<RowBox> list = new ArrayList<>();
+        for (AlgebraicVariable aV : model.getAlgebraicVariablesSorted()) {
+            list.add(new RowBox(true, new MExpression(aV.getMathematicaString(), false)));
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxControlAgents() {
+        List<RowBox> list = new ArrayList<>();
+        for (Agent agent : model.getAgentsSorted()) {
+            list.add(new RowBox(true, new MExpression(agent.getMathematicaString(), false)));
+        }
+        return list;
+    }
+
+    public List<RowBox> getRowBoxControlConstraints() {
+        List<RowBox> list = new ArrayList<>();
+        for (Constraint constraint : model.getConstraints()) {
+            list.add(new RowBox(true, new MExpression(constraint.getMathematicaString(), false)));
+        }
+        return list;
+    }
+
+    public MList getControlDiffVarStartValues() {
+        MList list = new MList();
+
+        list.setElementsLinebreak(4);
+        for (Variable v : model.getVariablesSorted()) {
+            if (v.hasValidInitValues()) {
+                list.add(getVariableConfig(v.getInitialCondition(), v.getStartValue(), v.getMinValue(), v.getMaxValue()));
+            }
+        }
+        list.add(MFunction.linebreak);
+
+        int muInit = 0;
+        Agent lastAgent = null;
+        for (ChangeMu mu : model.getChangeMus()) {
+            if (mu.hasAllValues()) {
+                if (lastAgent != mu.getAgent()) {
+                    lastAgent = mu.getAgent();
+                    if (muInit != 0) {
+                        list.add(MFunction.linebreak);
+                        muInit = 0;
+                    }
+                }
+                list.add(getVariableConfig(mu.getIdentifier(), mu.getStartValue(), mu.getMinValue(), mu.getMaxValue()));
+                muInit++;
+            }
+        }
+        list.add(MFunction.linebreak);
+        for (Parameter p : model.getParametersSorted()) {
+            if (p.hasAllValues()) {
+                list.add(getVariableConfig(p.getName(), p.getStartValue(), p.getMinValue(), p.getMaxValue()));
+            }
+        }
+        list.add(MFunction.linebreak);
+        list.add(getVariableConfig(parameterTMax, e30, e0, e100));
+        list.add(getVariableConfig(parameterPlotMax, e2p5, e0, e20));
+        return list;
+    }
+
+    public List<RowBox> getRowBoxControlDiffVars() {
+        List<RowBox> list = new ArrayList<>();
+        list.add(new RowBox(true, getSetInit()));
+        list.add(new RowBox(true, getControlDiffVarStartValues()));
+        return list;
     }
 
     public static List<RowBox> convertSetToRowBoxList(List<MSet> set) {

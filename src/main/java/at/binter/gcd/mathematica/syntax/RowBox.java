@@ -44,6 +44,10 @@ public class RowBox extends MBase implements IExpression {
         }
     }
 
+    public IExpression getLastElement() {
+        return expressions.get(expressions.size() - 1);
+    }
+
     public List<IExpression> getExpressions() {
         return expressions;
     }

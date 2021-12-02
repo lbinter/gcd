@@ -148,13 +148,18 @@ public class MList extends MGroup implements IExpression {
                 }
             }
             IExpression element = it.next();
-            inner.add(new MExpression(element.getMathematicaExpression()));
-            if (it.hasNext()) {
-                inner.add(new MExpression("\",\""));
-            } else if (addLineBreaks) {
+            if (element == linebreak) {
                 inner.add(linebreak);
+                count = 0;
+            } else {
+                inner.add(new MExpression(element.getMathematicaExpression()));
+                if (it.hasNext()) {
+                    inner.add(new MExpression("\",\""));
+                } else if (addLineBreaks) {
+                    inner.add(linebreak);
+                }
+                count++;
             }
-            count++;
         }
 
         RowBox outer = new RowBox();

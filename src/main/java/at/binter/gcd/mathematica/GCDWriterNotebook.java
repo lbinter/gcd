@@ -101,11 +101,17 @@ public class GCDWriterNotebook implements GCDMathematica {
     }
 
     public void generateControl() {
+        addNewRowBox(model.getControlAlgVarComment());
         addToCurrentCell(model.getRowBoxControlAlgebraicVariables());
         closeCurrentCell();
+        addNewRowBox(model.getControlAgentComment());
         addToCurrentCell(model.getRowBoxControlAgents());
         closeCurrentCell();
+        addNewRowBox(model.getControlConstraintComment());
         addToCurrentCell(model.getRowBoxControlConstraints());
+        closeCurrentCell();
+        addNewRowBox(model.getControlVariableComment());
+        addToCurrentCell(model.getRowBoxControlDiffVars());
     }
 
     @Override
