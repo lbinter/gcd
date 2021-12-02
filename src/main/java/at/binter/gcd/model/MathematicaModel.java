@@ -911,7 +911,11 @@ public class MathematicaModel {
         for (IExpression e : ((MList) getSetAlgVar().getExpr2()).getElements()) {
             glvarList.add(e);
         }
-        glvarList.add(lambdaF);
+
+        for (int i = 1; i <= model.getConstraints().size(); i++) {
+            glvarList.add(new MSubscript(variableLambda, new MVariable("" + i)));
+        }
+
         MQuietNDSolve ndSolve = new MQuietNDSolve();
         MVariable outputGl = new MVariable("%");
         ndSolve.addParameter(outputGl);
