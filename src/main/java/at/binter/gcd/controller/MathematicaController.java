@@ -4,6 +4,7 @@ import at.binter.gcd.gui.GCDErrorHTML;
 import at.binter.gcd.mathematica.GCDMode;
 import at.binter.gcd.mathematica.GCDWriterNotebook;
 import at.binter.gcd.model.GCDModel;
+import at.binter.gcd.util.GuiUtils;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -243,8 +244,9 @@ public class MathematicaController extends BaseController implements Initializab
             Throwable e = t.getSource().getException();
             if (e.getMessage().contains("The process cannot access the file because it is being used by another process")) {
                 log.error("File already opened");
+                GuiUtils.showError("error.generation.file.usage.title", "error.generation.file.usage.message", file.getAbsolutePath());
             }
-            log.error("Could not create file {}", file.getName(), t.getSource().getException());
+            log.error("Could not create file {}", file.getName());
         });
         return task;
     }
