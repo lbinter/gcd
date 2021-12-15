@@ -17,14 +17,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
-import javafx.util.converter.DefaultStringConverter;
-import javafx.util.converter.DoubleStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,133 +246,10 @@ public class GCDController extends BaseController implements Initializable {
         mainTabPane.getSelectionModel().select(modelTab);
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    PlotStyleEntry row = getTableRow().getItem();
-                    if (row != null) {
-                        row.nameProperty().addListener((observable, oldValue, newValue) -> {
-                                    setStyle("-fx-background-color: #ff0000");
-                                    plotTableSaved.set(false);
-                                }
-                        );
-                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
-                            if (newValue) {
-                                setStyle(null);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("plotColor"));
-        colorColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    PlotStyleEntry row = getTableRow().getItem();
-                    if (row != null) {
-                        row.plotColorProperty().addListener((observable, oldValue, newValue) -> {
-                                    setStyle("-fx-background-color: #ff0000");
-                                    plotTableSaved.set(false);
-                                }
-                        );
-                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
-                            if (newValue) {
-                                setStyle(null);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-
         thicknessColumn.setCellValueFactory(new PropertyValueFactory<>("plotThickness"));
-        thicknessColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DoubleStringConverter()) {
-            @Override
-            public void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    PlotStyleEntry row = getTableRow().getItem();
-                    if (row != null) {
-                        row.plotThicknessProperty().addListener((observable, oldValue, newValue) -> {
-                                    setStyle("-fx-background-color: #ff0000");
-                                    plotTableSaved.set(false);
-                                }
-                        );
-                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
-                            if (newValue) {
-                                setStyle(null);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
         lineStyleColumn.setCellValueFactory(new PropertyValueFactory<>("plotLineStyle"));
-        lineStyleColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    PlotStyleEntry row = getTableRow().getItem();
-                    if (row != null) {
-                        row.plotLineStyleProperty().addListener((observable, oldValue, newValue) -> {
-                                    setStyle("-fx-background-color: #ff0000");
-                                    plotTableSaved.set(false);
-                                }
-                        );
-                        plotTableSaved.addListener((observable, oldValue, newValue) -> {
-                            if (newValue) {
-                                setStyle(null);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        descriptionColumn.setCellFactory(factory -> new TextFieldTableCell<>(new DefaultStringConverter()) {
-            @Override
-            public void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    PlotStyleEntry row = getTableRow().getItem();
-                    row.descriptionProperty().addListener((observable, oldValue, newValue) -> {
-                                setStyle("-fx-background-color: #ff0000");
-                                plotTableSaved.set(false);
-                            }
-                    );
-                    plotTableSaved.addListener((observable, oldValue, newValue) -> {
-                        if (newValue) {
-                            setStyle(null);
-                        }
-                    });
-                }
-            }
-        });
 
         registerEventHandlers();
     }
@@ -568,6 +442,9 @@ public class GCDController extends BaseController implements Initializable {
             gcd.settings.lastOpened = file.getAbsolutePath();
             gcd.settingsController.saveSettings(null);
             populateRecentlyOpened();
+            if (model.getFile() != file) {
+                model.setFile(file);
+            }
         }
     }
 
@@ -734,6 +611,7 @@ public class GCDController extends BaseController implements Initializable {
         mainTabPane.getTabs().add(tab);
         plotTabs.add(tab);
         gcd.primaryStage.sizeToScene();
+        mainTabPane.getSelectionModel().select(tab);
     }
 
     private File showSaveFileDialog() {

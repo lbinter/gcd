@@ -120,6 +120,9 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
 
     @Override
     public int compareTo(Agent o) {
+        if (getName() == null) {
+            return -1;
+        }
         return getName().compareTo(o.getName());
     }
 
@@ -147,7 +150,7 @@ public class Agent extends Function implements HasPlotStyle, Updatable<Agent>, C
 
     public static boolean functionContainsErrors(String function) {
         // In den Nutzenfunktionen dürfen keine Zeitableitungen von diff. Variablen auftreten.
-        if (function.contains("'[t]") || function.contains("\\[Prime][t]") || function.contains("Derivative[")) {
+        if (function.contains("'") || function.contains("\\[Prime]") || function.contains("Derivative")) {
             return true;
         }
         return false;

@@ -112,6 +112,7 @@ public class PlotStyleEntry implements HasPlotStyle, Updatable<PlotStyleEntry>, 
         entry.setPlotColor(getPlotColor());
         entry.setPlotThickness(getPlotThickness());
         entry.setPlotLineStyle(getPlotLineStyle());
+        entry.setDescription(getDescription());
         return entry;
     }
 }

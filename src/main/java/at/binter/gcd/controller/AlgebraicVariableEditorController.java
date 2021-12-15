@@ -1,12 +1,15 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.AlgebraicVariable;
+import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +27,9 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
     @FXML
     private TextField editorParameter;
     @FXML
-    private TextField editorFunction;
+    private TextArea editorFunction;
+    @FXML
+    protected Button transformButton;
     @FXML
     private TextField editorDescription;
     @FXML
@@ -82,6 +87,11 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
 
     private void setDefinition(String name, String parameter, String function) {
         setLabelTextFormatted(editorLabelDefinition, name + "[" + parameter + "]" + AlgebraicVariable.assignmentSymbol + function);
+    }
+
+    @FXML
+    protected void transformFunction() {
+        GuiUtils.transformFunction(editorFunction, transformButton);
     }
 
     @Override

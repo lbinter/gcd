@@ -1,11 +1,14 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Constraint;
+import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +24,9 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
     @FXML
     private TextField editorName;
     @FXML
-    private TextField editorCondition;
+    private TextArea editorCondition;
+    @FXML
+    protected Button transformButton;
     @FXML
     private TextField editorDescription;
     @FXML
@@ -51,6 +56,11 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
+    }
+
+    @FXML
+    protected void transformFunction() {
+        GuiUtils.transformFunction(editorCondition, transformButton);
     }
 
     @Override

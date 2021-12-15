@@ -8,8 +8,9 @@ import at.binter.gcd.util.GuiUtils;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -27,6 +28,7 @@ import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.FileUtils.nbFileExt;
 import static at.binter.gcd.util.GuiUtils.addStageCloseOnEscapeKey;
+import static at.binter.gcd.util.GuiUtils.readIntegerValueFrom;
 
 
 public class MathematicaController extends BaseController implements Initializable {
@@ -43,11 +45,7 @@ public class MathematicaController extends BaseController implements Initializab
     @FXML
     private TextField gcdFilePath;
     @FXML
-    private ToggleGroup dgldiffxxxOption;
-    @FXML
-    private RadioButton dgldiffxxxOption1;
-    @FXML
-    private RadioButton dgldiffxxxOption2;
+    private TextField plotImageSize;
     @FXML
     private TextField ndsolveFilePath;
     @FXML
@@ -72,12 +70,14 @@ public class MathematicaController extends BaseController implements Initializab
 
     public void clear() {
         errorView.getEngine().loadContent("<html></html>");
+        plotImageSize.setText("");
     }
 
     public void fillData() {
         errorView.getEngine().setUserStyleSheetLocation(gcd.errorViewCss);
         errorView.getEngine().loadContent(errorWriter.generate());
 
+        plotImageSize.setText(Integer.toString(model.getPlotImageSize()));
         gcdFilePath.setText(model.getFilePath());
         ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
         modelicaFilePath.setText(model.getFileMathematicaModelicaPath());
@@ -88,15 +88,6 @@ public class MathematicaController extends BaseController implements Initializab
         } else {
             tabPane.getSelectionModel().select(mathematicaTab);
         }
-        dgldiffxxxOption.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            if (dgldiffxxxOption1 == newValue) {
-                log.info("dgldiffxxxOption 1 selected");
-            } else if (dgldiffxxxOption2 == newValue) {
-                log.info("dgldiffxxxOption 2 selected");
-            } else {
-                log.info("dgldiffxxxOption {} selected", newValue);
-            }
-        });
     }
 
     public void showMathematicaWindow() {
@@ -125,6 +116,7 @@ public class MathematicaController extends BaseController implements Initializab
         File f = showFileChooser(model.getMathematicaNDSolveFile());
         if (f != null) {
             model.setMathematicaNDSolveFile(f);
+            ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
         }
     }
 
@@ -133,6 +125,7 @@ public class MathematicaController extends BaseController implements Initializab
         File f = showFileChooser(model.getMathematicaModelicaFile());
         if (f != null) {
             model.setMathematicaModelicaFile(f);
+            modelicaFilePath.setText(model.getFileMathematicaModelicaPath());
         }
     }
 
@@ -141,11 +134,20 @@ public class MathematicaController extends BaseController implements Initializab
         File f = showFileChooser(model.getMathematicaControlFile());
         if (f != null) {
             model.setMathematicaControlFile(f);
+            controlFilePath.setText(model.getFileMathematicaControlPath());
+        }
+    }
+
+    private void updatePlotSize() {
+        Integer imageSize = readIntegerValueFrom(plotImageSize);
+        if (imageSize != null) {
+            model.setPlotImageSize(imageSize);
         }
     }
 
     @FXML
     synchronized void generateNDSolveFile() {
+        updatePlotSize();
         if (model.getMathematicaNDSolveFile() != null) {
             new Thread(createFileGenerationTask(GCDMode.NDSOLVE, model.getMathematicaNDSolveFile())).start();
         }
@@ -153,6 +155,7 @@ public class MathematicaController extends BaseController implements Initializab
 
     @FXML
     synchronized void generateModelicaFile() {
+        updatePlotSize();
         if (model.getMathematicaModelicaFile() != null) {
             new Thread(createFileGenerationTask(GCDMode.MODELICA, model.getMathematicaModelicaFile())).start();
         }
@@ -160,6 +163,7 @@ public class MathematicaController extends BaseController implements Initializab
 
     @FXML
     synchronized void generateControlFile() {
+        updatePlotSize();
         if (model.getMathematicaControlFile() != null) {
             new Thread(createFileGenerationTask(GCDMode.CONTROL, model.getMathematicaControlFile())).start();
         }
@@ -198,7 +202,13 @@ public class MathematicaController extends BaseController implements Initializab
     private File showFileChooser(File initialDirectory, String initialFileName) {
         FileChooser fc = new FileChooser();
         if (initialDirectory != null) {
-            fc.setInitialDirectory(initialDirectory);
+            if (initialDirectory.exists()) {
+                fc.setInitialDirectory(initialDirectory);
+            } else {
+                if (model.getFile().exists() && model.getFile().getParentFile().isDirectory()) {
+                    fc.setInitialDirectory(model.getFile().getParentFile());
+                }
+            }
         }
         if (StringUtils.isNotBlank(initialFileName)) {
             fc.setInitialFileName(initialFileName);

@@ -3,6 +3,7 @@ package at.binter.gcd.util;
 import javafx.css.PseudoClass;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -12,21 +13,31 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static at.binter.gcd.GCDApplication.app;
 
 public class GuiUtils {
+    private static final Logger log = LoggerFactory.getLogger(GuiUtils.class);
+
     public static final Color defaultBackground = Color.pink;
     public static final Color defaultForeground = Color.BLACK;
     public static final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
     public static final PseudoClass plotDefaultClass = PseudoClass.getPseudoClass("plot-default");
     public static final PseudoClass plotDiffClass = PseudoClass.getPseudoClass("plot-diff");
+
+
+    public static final String derivativeRegex = "Derivative\\s*\\[\\s*(?<d>\\d+)\\s*\\]\\[(?<var>\\w+)\\]\\[(?<p>\\w+)\\]";
 
     public static void addStageCloseOnEscapeKey(Stage stage, Scene scene) {
         scene.setOnKeyPressed((KeyEvent event) -> {
@@ -41,6 +52,48 @@ public class GuiUtils {
         String sanitized = str.trim().replaceAll(" +", " ");
         if (StringUtils.isBlank(sanitized)) return null;
         return sanitized;
+    }
+
+    public static String transformDerivative(String str) {
+        if (str == null) return null;
+        Pattern pattern = Pattern.compile(derivativeRegex);
+        Matcher matcher = pattern.matcher(str);
+        Map<String, String> replacementMap = new HashMap<>();
+        while (matcher.find()) {
+            String source = matcher.group(0);
+            StringBuilder target = new StringBuilder();
+            target.append(matcher.group("var"));
+            int d = Integer.parseInt(matcher.group("d"));
+            for (int i = 1; i <= d; i++) {
+                target.append("'");
+            }
+            target.append("[");
+            target.append(matcher.group("p"));
+            target.append("]");
+            replacementMap.put(source, target.toString());
+        }
+        for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+            str = str.replace(entry.getKey(), entry.getValue());
+        }
+        if (StringUtils.isBlank(str)) return null;
+        return str;
+    }
+
+    public static Integer readIntegerValueFrom(TextField textField) {
+        String text = textField.getText().trim();
+        return readIntegerValueFrom(text);
+    }
+
+    public static Integer readIntegerValueFrom(String text) {
+        if (StringUtils.isBlank(text)) {
+            return null;
+        } else {
+            try {
+                return Integer.valueOf(text);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
     }
 
     public static Double readDoubleValueFrom(TextField textField) {
@@ -247,4 +300,23 @@ public class GuiUtils {
     }
 
 
+    public static void transformFunction(TextArea editorFunction, Button transformButton) {
+        String function = editorFunction.getText();
+        try {
+            transformButton.setDisable(true);
+
+            String transformed = sanitizeString(app.utils.transformToStandardForm(function));
+            transformed = transformed.replace("*", " ");
+            transformed = transformDerivative(transformed);
+            transformed = transformed.replace("´", "'");
+            if (StringUtils.isBlank(transformed)) {
+                editorFunction.setText("");
+            } else {
+                editorFunction.setText(transformed);
+            }
+        } catch (Exception e) {
+            log.error("Could not transform function {}", function, e);
+        }
+        transformButton.setDisable(false);
+    }
 }

@@ -39,8 +39,8 @@ public abstract class Function implements HasVariableStringList, HasParameterStr
     }
 
     public void setName(String name) {
-        if (name == null) return;
         name = sanitizeString(name);
+        if (name == null) return;
         if (name.contains("[t]")) {
             name = name.replace("[t]", "");
             setParameter("t");

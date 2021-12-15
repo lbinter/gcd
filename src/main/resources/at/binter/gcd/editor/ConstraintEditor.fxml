@@ -14,9 +14,10 @@
                         <GridPane>
                             <columnConstraints>
                                 <ColumnConstraints halignment="RIGHT" hgrow="NEVER"/>
-                                <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
+                                <ColumnConstraints hgrow="NEVER" maxWidth="475.0" minWidth="475.0" prefWidth="475.0"/>
                             </columnConstraints>
                             <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
@@ -41,13 +42,13 @@
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                <Label text="%editor.label.variables" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label text="%editor.label.parameters" GridPane.halignment="RIGHT"
-                                       GridPane.rowIndex="5">
+                                       GridPane.rowIndex="6">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
@@ -58,18 +59,15 @@
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorCondition" minWidth="360"
-                                           promptText="%editor.constraint.example" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="3"/>
                                 <TextField fx:id="editorDescription" minWidth="360" GridPane.columnIndex="1"/>
                                 <Label fx:id="editorLabelVariables" minWidth="360" GridPane.columnIndex="1"
-                                       GridPane.rowIndex="4">
+                                       GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="editorLabelParameter" minWidth="360" GridPane.columnIndex="1"
-                                       GridPane.rowIndex="5">
+                                       GridPane.rowIndex="6">
                                     <GridPane.margin>
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
@@ -79,9 +77,18 @@
                                         <Insets right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorName" maxWidth="100.0"
+                                <TextField fx:id="editorName" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
                                            promptText="%editor.constraint.example.name" GridPane.columnIndex="1"
                                            GridPane.rowIndex="2"/>
+                                <Button fx:id="transformButton" mnemonicParsing="false" onAction="#transformFunction"
+                                        text="%editor.label.function.transform" GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets right="3.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                                <TextArea fx:id="editorCondition" minWidth="360.0" prefRowCount="2"
+                                          promptText="%editor.constraint.example" GridPane.columnIndex="1"
+                                          GridPane.rowIndex="3" GridPane.rowSpan="2"/>
                             </children>
                         </GridPane>
                         <HBox alignment="CENTER">

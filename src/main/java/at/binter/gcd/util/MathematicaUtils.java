@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 public class MathematicaUtils {
-    public static final String linebreakString = "\"\\[IndentingNewLine]\"\r\n";
     private static final Logger log = LoggerFactory.getLogger(MathematicaUtils.class);
+    public static final String linebreakString = "\"\\[IndentingNewLine]\"\r\n";
     public static final String jLinkLibDirProperty = "com.wolfram.jlink.libdir";
     private static boolean jLinkDirSet = false;
     private static String jLinkDirPath;
@@ -103,6 +103,22 @@ public class MathematicaUtils {
         }
         if (addNewLine) {
             formatted = formatted + ", \"\\[IndentingNewLine]\"\r\n";
+        }
+        return formatted;
+    }
+
+    public String transformToStandardForm(String mathExpr) {
+        if (!linkOpen) {
+            openLink();
+        }
+        String formatted = null;
+        String expr = mathExpr;
+        if (log.isTraceEnabled()) {
+            log.trace("Input:  {}", expr);
+        }
+        formatted = ml.evaluateToInputForm(expr, 0);
+        if (log.isTraceEnabled()) {
+            log.trace("Output: {}", formatted);
         }
         return formatted;
     }

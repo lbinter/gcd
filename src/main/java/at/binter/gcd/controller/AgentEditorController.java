@@ -1,12 +1,15 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Agent;
+import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,9 +25,11 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
     @FXML
     private TextField editorName;
     @FXML
-    private TextField editorFunction;
+    private TextArea editorFunction;
     @FXML
     private TextField editorDescription;
+    @FXML
+    protected Button transformButton;
     @FXML
     private Label editorLabelVariables;
     @FXML
@@ -85,6 +90,11 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         setLabelTextFormatted(editorLabelDefinition, editorName.getText() + Agent.assignmentSymbol + newValue);
 
         editorFunction.pseudoClassStateChanged(errorClass, Agent.functionContainsErrors(newValue));
+    }
+
+    @FXML
+    protected void transformFunction() {
+        GuiUtils.transformFunction(editorFunction, transformButton);
     }
 
     @Override

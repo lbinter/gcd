@@ -3,8 +3,6 @@ package at.binter.gcd.model;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.*;
 import at.binter.gcd.util.MathematicaUtils;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,7 +21,6 @@ public class GCDModel extends GCDBaseModel {
     private File mathematicaNDSolveFile;
     private File mathematicaModelicaFile;
     private File mathematicaControlFile;
-    private final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
 
     private boolean clearGlobal = true;
 
@@ -595,17 +592,5 @@ public class GCDModel extends GCDBaseModel {
     public void setMathematicaControlFile(File mathematicaControlFile) {
         this.mathematicaControlFile = mathematicaControlFile;
         setSavedToFile(false);
-    }
-
-    public boolean isSavedToFile() {
-        return savedToFile.get();
-    }
-
-    public BooleanProperty savedToFileProperty() {
-        return savedToFile;
-    }
-
-    public void setSavedToFile(boolean savedToFile) {
-        this.savedToFile.set(savedToFile);
     }
 }

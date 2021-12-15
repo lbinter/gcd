@@ -350,7 +350,7 @@ public class MathematicaModel {
     }
 
     public IExpression getPlotOptions() {
-        return new MExpression(utils.transformToFullForm("SetOptions[Plot,ImageSize->350];", true));
+        return new MExpression(utils.transformToFullForm("SetOptions[Plot,ImageSize->" + model.getPlotImageSize() + "];", true));
     }
 
     private MParameter getDefalgVar(int ii) {

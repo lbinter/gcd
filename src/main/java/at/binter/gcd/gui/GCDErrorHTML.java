@@ -107,7 +107,7 @@ public class GCDErrorHTML {
         b.append(AGENT_WITH_DERIVATIVE.name());
         b.append("\">");
         b.append("<h3>");
-        b.append(resources.getString(AGENT_WITH_DERIVATIVE.getI18n()));
+        b.append(resources.getString(AGENT_WITH_DERIVATIVE.getI18n()).replace("\n", "<br>"));
         b.append("</h3>");
         b.append("<ul>");
         for (Object a : agents) {

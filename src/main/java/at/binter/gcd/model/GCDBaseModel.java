@@ -2,6 +2,8 @@ package at.binter.gcd.model;
 
 import at.binter.gcd.model.elements.*;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,6 +22,9 @@ import static at.binter.gcd.model.Status.INVALID;
 
 public abstract class GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDBaseModel.class);
+
+    protected final BooleanProperty savedToFile = new SimpleBooleanProperty(false);
+    protected int plotImageSize = 350;
 
     protected final ObservableList<AlgebraicVariable> algebraicVariables = FXCollections.observableArrayList(algebraicVariable -> new Observable[]{algebraicVariable.nameProperty()});
     protected final SortedList<AlgebraicVariable> algebraicVariablesSorted = algebraicVariables.sorted();
@@ -94,6 +99,16 @@ public abstract class GCDBaseModel {
         if (getChangeMuListChangeListener() != null) {
             changeMus.removeListener(getChangeMuListChangeListener());
         }
+    }
+
+    public int getPlotImageSize() {
+        return plotImageSize;
+    }
+
+    public void setPlotImageSize(int plotImageSize) {
+        if (this.plotImageSize == plotImageSize) return;
+        this.plotImageSize = plotImageSize;
+        savedToFile.set(false);
     }
 
     public boolean isRunGenerateChangeMu() {
@@ -386,9 +401,12 @@ public abstract class GCDBaseModel {
             }
         }
 
+        List<Object> derivativeAgents = warnings.get(AGENT_WITH_DERIVATIVE);
         for (Agent agent : agentsSorted) {
             if (Agent.functionContainsErrors(agent.getFunction())) {
-                warnings.get(AGENT_WITH_DERIVATIVE).add(agent);
+                if (!derivativeAgents.contains(agent)) {
+                    derivativeAgents.add(agent);
+                }
             }
         }
 
@@ -409,6 +427,18 @@ public abstract class GCDBaseModel {
             checkDoubleValues(mu);
         }
         return warnings;
+    }
+
+    public boolean isSavedToFile() {
+        return savedToFile.get();
+    }
+
+    public BooleanProperty savedToFileProperty() {
+        return savedToFile;
+    }
+
+    public void setSavedToFile(boolean savedToFile) {
+        this.savedToFile.set(savedToFile);
     }
 
     private void checkDoubleValues(HasMinMaxValues b) {
