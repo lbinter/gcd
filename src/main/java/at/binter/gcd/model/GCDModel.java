@@ -1,11 +1,13 @@
 package at.binter.gcd.model;
 
+import at.binter.gcd.GCDApplication;
 import at.binter.gcd.model.elements.*;
 import at.binter.gcd.model.xml.*;
 import at.binter.gcd.util.MathematicaUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -394,6 +396,11 @@ public class GCDModel extends GCDBaseModel {
         setMathematicaNDSolveFile(model.mathematicaNDSolveFile);
         setMathematicaModelicaFile(model.mathematicaModelicaFile);
         setMathematicaControlFile(model.mathematicaControlFile);
+        if (StringUtils.isBlank(model.ndSolveMethod)) {
+            setNdSolveMethod(GCDApplication.app.settings.ndSolveMethods.get(0));
+        } else {
+            setNdSolveMethod(model.ndSolveMethod);
+        }
         ArrayList<AlgebraicVariable> newAlgebraicVariables = new ArrayList<>();
         for (XmlFunction algVar : model.algebraicVariables) {
             newAlgebraicVariables.add(algVar.createAlgebraicVariable());

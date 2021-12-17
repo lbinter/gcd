@@ -6,8 +6,10 @@ import at.binter.gcd.mathematica.GCDWriterNotebook;
 import at.binter.gcd.model.GCDModel;
 import at.binter.gcd.util.GuiUtils;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -49,6 +51,8 @@ public class MathematicaController extends BaseController implements Initializab
     @FXML
     private TextField ndsolveFilePath;
     @FXML
+    private ChoiceBox<String> ndsolveMethod;
+    @FXML
     private TextField modelicaFilePath;
     @FXML
     private TextField controlFilePath;
@@ -66,6 +70,14 @@ public class MathematicaController extends BaseController implements Initializab
     public void initializeGCDDepended() {
         model = gcd.gcdController.model;
         errorWriter = new GCDErrorHTML(model, resources);
+        ndsolveMethod.setItems(gcd.settings.ndSolveMethods);
+        ndsolveMethod.setOnAction(this::changeNdSolveMethod);
+    }
+
+    @FXML
+    private void changeNdSolveMethod(ActionEvent event) {
+        log.info("Setting ndsolve Method -> {}", ndsolveMethod.getValue());
+        model.setNdSolveMethod(ndsolveMethod.getValue());
     }
 
     public void clear() {
@@ -80,6 +92,7 @@ public class MathematicaController extends BaseController implements Initializab
         plotImageSize.setText(Integer.toString(model.getPlotImageSize()));
         gcdFilePath.setText(model.getFilePath());
         ndsolveFilePath.setText(model.getFileMathematicaNDSolvePath());
+        ndsolveMethod.getSelectionModel().select(model.getNdSolveMethod());
         modelicaFilePath.setText(model.getFileMathematicaModelicaPath());
         controlFilePath.setText(model.getFileMathematicaControlPath());
 

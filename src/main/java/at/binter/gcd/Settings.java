@@ -3,6 +3,8 @@ package at.binter.gcd;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -22,16 +24,29 @@ public class Settings {
     public String defaultFolder;
     @XmlElementWrapper(name = "recentlyOpenedFiles")
     @XmlElement(name = "file")
-    public LinkedList<String> recentlyOpened = new LinkedList<>();
+    public final LinkedList<String> recentlyOpened = new LinkedList<>();
     @XmlElement
     public String lastOpened;
+    @XmlElementWrapper(name = "ndSolveMethods")
+    @XmlElement(name = "method")
+    public final ObservableList<String> ndSolveMethods = FXCollections.observableArrayList();
 
     public Settings() {
+        if (ndSolveMethods.isEmpty()) {
+            loadDefaultNdSolveMethods();
+        }
     }
 
     public void loadDefaultValues() {
         jLink = "C:/Program Files/Wolfram Research/Mathematica/12.1/SystemFiles/Links/JLink";
         mathKernel = "C:/Program Files/Wolfram Research/Mathematica/12.1/MathKernel.exe";
+    }
+
+    public void loadDefaultNdSolveMethods() {
+        ndSolveMethods.clear();
+        addNdSolveMethod("Automatic");
+        addNdSolveMethod("{IndexReduction -> {True, ConstraintMethod -> Projection}}");
+        addNdSolveMethod("{\"EquationSimplification\" -> \"Residual\"}");
     }
 
     public void addRecentlyOpened(File f) {
@@ -110,5 +125,22 @@ public class Settings {
     public static boolean isValidPath(String path) {
         if (StringUtils.isBlank(path)) return false;
         return new File(path).exists();
+    }
+
+    public ObservableList<String> getNdSolveMethods() {
+        return ndSolveMethods;
+    }
+
+    public void addNdSolveMethod(String method) {
+        method = sanitizeString(method);
+        if (method == null || ndSolveMethods.contains(method)) {
+            return;
+        }
+        ndSolveMethods.add(method);
+    }
+
+    public void removeNdSolveMethod(String method) {
+        method = sanitizeString(method);
+        ndSolveMethods.remove(method);
     }
 }

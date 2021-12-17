@@ -45,6 +45,8 @@ public class XmlModel {
     public File mathematicaModelicaFile;
     @XmlElement
     public File mathematicaControlFile;
+    @XmlElement
+    public String ndSolveMethod;
 
 
     public XmlModel() {
@@ -77,5 +79,6 @@ public class XmlModel {
         mathematicaNDSolveFile = gcdModel.getMathematicaNDSolveFile();
         mathematicaModelicaFile = gcdModel.getMathematicaModelicaFile();
         mathematicaControlFile = gcdModel.getMathematicaControlFile();
+        ndSolveMethod = gcdModel.getNdSolveMethod();
     }
 }

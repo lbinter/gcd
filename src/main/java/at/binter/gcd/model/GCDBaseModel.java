@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static at.binter.gcd.model.GCDWarning.*;
 import static at.binter.gcd.model.Status.INVALID;
+import static at.binter.gcd.util.GuiUtils.sanitizeString;
 
 public abstract class GCDBaseModel {
     private static final Logger log = LoggerFactory.getLogger(GCDBaseModel.class);
@@ -42,6 +43,8 @@ public abstract class GCDBaseModel {
     protected final ObservableList<ChangeMu> allChangeMu = FXCollections.observableArrayList();
     protected final ObservableList<ChangeMu> changeMus = FXCollections.observableArrayList();
     protected final Map<String, ChangeMu> changeMuNameMap = new HashMap<>();
+
+    protected String ndSolveMethod = "Automatic";
 
     private Map<GCDWarning, List<Object>> warnings = new HashMap<>();
 
@@ -117,6 +120,20 @@ public abstract class GCDBaseModel {
 
     public void setRunGenerateChangeMu(boolean runGenerateChangeMu) {
         this.runGenerateChangeMu = runGenerateChangeMu;
+    }
+
+    public String getNdSolveMethod() {
+        return ndSolveMethod;
+    }
+
+    public void setNdSolveMethod(String ndSolveMethod) {
+        ndSolveMethod = sanitizeString(ndSolveMethod);
+        if (ndSolveMethod != null) {
+            if (StringUtils.compare(this.ndSolveMethod, ndSolveMethod) != 0) {
+                this.ndSolveMethod = ndSolveMethod;
+                setSavedToFile(false);
+            }
+        }
     }
 
     public boolean hasAlgebraicVariable(String name) {

@@ -82,13 +82,13 @@
                         prefHeight="38.0" prefWidth="34.0" text="%main.addPlotPane.button" textAlignment="CENTER"/>
             </items>
         </ToolBar>
-        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
             <tabs>
                 <Tab fx:id="plotStylesTab" closable="false" text="%main.tab.plot.styles">
                     <content>
-                        <VBox>
+                        <VBox VBox.vgrow="ALWAYS" minHeight="600.0">
                             <children>
-                                <TableView fx:id="plotStyleTable" editable="true" minHeight="600.0">
+                                <TableView fx:id="plotStyleTable" editable="true" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="nameColumn" maxWidth="500.0" minWidth="100.0"
                                                      prefWidth="-1.0" text="%plot.table.name.column"/>
@@ -130,7 +130,7 @@
                 </Tab>
                 <Tab fx:id="modelTab" closable="false" text="%main.tab.gcd">
                     <content>
-                        <VBox>
+                        <VBox VBox.vgrow="ALWAYS">
                             <children>
                                 <HBox alignment="CENTER">
                                     <children>
@@ -382,11 +382,11 @@
         </TabPane>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
             </rowConstraints>
             <children>
                 <Label fx:id="filePath" maxHeight="1.7976931348623157E308" maxWidth="-1.0">

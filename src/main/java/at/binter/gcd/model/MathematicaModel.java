@@ -893,18 +893,9 @@ public class MathematicaModel {
             id++;
         }
 
-        MExpressionList conMethod = new MExpressionList();
-        conMethod.add(new MExpression("\"ConstraintMethod\""));
-        conMethod.add(new MArrow());
-        conMethod.add(new MExpression("\"Projection\""));
-        MExpressionList indexReductionList = new MExpressionList();
-        indexReductionList.add(new MExpression("\"IndexReduction\""));
-        indexReductionList.add(new MArrow());
-        indexReductionList.add(new MList(new MExpression("True"), conMethod));
-        MExpressionList methodList = new MExpressionList();
-        methodList.add(new MExpression("Method"));
-        methodList.add(new MArrow());
-        methodList.add(new MList(indexReductionList));
+        IExpression ndSolveMethod = new MExpression(utils.transformToFullForm(
+                "Method -> " + model.getNdSolveMethod()
+                , false));
 
         MList glvarList = new MList();
         for (Agent a : model.getAgentsSorted()) {
@@ -928,7 +919,7 @@ public class MathematicaModel {
         ndSolve.addParameter(glvarList);
         ndSolve.addLinebreak();
         ndSolve.addParameter(new MList(parameterT, e0, e50));
-        ndSolve.addParameter(methodList);
+        ndSolve.addParameter(ndSolveMethod);
 
         MList moduleList = new MList(new MSet(parameterSol, ndSolve));
         MModule module = new MModule(moduleList, plotList);
