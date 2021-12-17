@@ -67,6 +67,10 @@ public class Variable implements Comparable<Variable>, Updatable<Variable>, HasP
     }
 
     public void setInitialCondition(String initialCondition) {
+        if (StringUtils.isBlank(initialCondition)) {
+            initialConditionProperty().set(null);
+            return;
+        }
         ParsedFunction parsedFunction = new ParsedFunction(initialCondition);
         fillParameters(parsedFunction.parameters);
         initialConditionProperty().set(parsedFunction.function);

@@ -842,7 +842,10 @@ public class MathematicaModel {
         MList list = new MList();
         for (Variable v : model.getVariablesSorted()) {
             MParameter p = new MParameter(v.getName(), e0);
-            if (StringUtils.isNotBlank(v.getInitialCondition()) && !v.getDefaultInitialCondition().equals(v.getInitialCondition())) {
+            if (StringUtils.isBlank(v.getInitialCondition())) {
+                continue;
+            }
+            if (!v.getDefaultInitialCondition().equals(v.getInitialCondition())) {
                 list.add(new MEqual(p, new MExpression(utils.transformToFullForm(v.getInitialCondition(), false))));
             } else {
                 list.add(new MEqual(p, new MVariable(v.getDefaultInitialCondition())));

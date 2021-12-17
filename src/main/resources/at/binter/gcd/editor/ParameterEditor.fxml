@@ -14,7 +14,7 @@
                         <GridPane>
                             <columnConstraints>
                                 <ColumnConstraints halignment="RIGHT" hgrow="NEVER"/>
-                                <ColumnConstraints hgrow="NEVER" minWidth="360.0"/>
+                                <ColumnConstraints hgrow="NEVER" maxWidth="475.0" minWidth="475.0" prefWidth="475.0"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
@@ -49,22 +49,22 @@
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorValueStart" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="2"/>
+                                <TextField fx:id="editorValueStart" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                                 <Label text="%editor.label.value.minimum" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorValueMinimum" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="3"/>
+                                <TextField fx:id="editorValueMinimum" maxWidth="100.0" minWidth="100.0"
+                                           prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                                 <Label text="%editor.label.value.maximum" GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <TextField fx:id="editorValueMaximum" minWidth="360" GridPane.columnIndex="1"
-                                           GridPane.rowIndex="4"/>
+                                <TextField fx:id="editorValueMaximum" maxWidth="100.0" minWidth="100.0"
+                                           prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                                 <Label text="%editor.label.algebraicVariables" GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="10.0" right="5.0"/>

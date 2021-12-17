@@ -14,7 +14,7 @@
                         <GridPane>
                             <columnConstraints>
                                 <ColumnConstraints halignment="RIGHT" hgrow="NEVER"/>
-                                <ColumnConstraints hgrow="NEVER" minWidth="150.0"/>
+                                <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>

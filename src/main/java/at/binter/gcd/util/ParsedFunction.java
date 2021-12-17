@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static at.binter.gcd.util.GuiUtils.sanitizeString;
+import static at.binter.gcd.util.Tools.transformUnicodeToMathematicaGreekLetters;
 
 public class ParsedFunction {
     private static final Logger log = LoggerFactory.getLogger(ParsedFunction.class);
@@ -43,7 +44,8 @@ public class ParsedFunction {
                 if (vars[i].contains("[t]")) {
                     String variableName = vars[i].replace("[t]", " ").replace("'", " ").trim();
                     if (StringUtils.isNotBlank(variableName) && !NumberUtils.isParsable(variableName.replace(".", "").replace(",", ""))) {
-                        variables.add(variableName);
+                        String variableNameM = transformUnicodeToMathematicaGreekLetters(variableName);
+                        variables.add(variableNameM);
                     }
                 } else {
                     if (!StringUtils.isNumeric(vars[i])) {
@@ -54,7 +56,8 @@ public class ParsedFunction {
                                     log.trace("Ignoring parameter {}", parameterName);
                                 }
                             } else {
-                                parameters.add(parameterName);
+                                String parameterNameM = transformUnicodeToMathematicaGreekLetters(parameterName);
+                                parameters.add(parameterNameM);
                             }
                         }
                     }

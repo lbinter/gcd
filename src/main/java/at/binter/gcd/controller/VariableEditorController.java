@@ -1,12 +1,15 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.elements.Variable;
+import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.PlotStyleIndicator;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -24,7 +27,9 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
     @FXML
     private TextField editorDescription;
     @FXML
-    private TextField editorInitialCondition;
+    private TextArea editorInitialCondition;
+    @FXML
+    protected Button transformButton;
     @FXML
     private TextField editorValueStart;
     @FXML
@@ -67,9 +72,9 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorValueMinimum.setTextFormatter(createDoubleTextFormatter());
         editorValueMaximum.setTextFormatter(createDoubleTextFormatter());
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
-        rowVariables = grid.getRowConstraints().get(3);
-        rowParameters = grid.getRowConstraints().get(4);
-        rowAlgebraicVariables = grid.getRowConstraints().get(8);
+        rowVariables = grid.getRowConstraints().get(4);
+        rowParameters = grid.getRowConstraints().get(5);
+        rowAlgebraicVariables = grid.getRowConstraints().get(9);
     }
 
     public void initializeGCDDepended() {
@@ -99,6 +104,7 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         String text = sanitizeString(newValue);
         if (text != null) {
             if ((name + "0").equals(text)) {
+                setVariableParameterListVisible(false);
                 return;
             }
             ParsedFunction f = new ParsedFunction(text);
@@ -130,6 +136,7 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorLabelVariables.setVisible(visible);
         editorLabelParameter.setVisible(visible);
         editorLabelParameters.setVisible(visible);
+        popup.sizeToScene();
     }
 
     private boolean needsCheckValue(boolean valueCheck, int pos) {
@@ -171,6 +178,11 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
             }
         }
         return false;
+    }
+
+    @FXML
+    protected void transformFunction() {
+        GuiUtils.transformFunction(editorInitialCondition, transformButton);
     }
 
     @Override

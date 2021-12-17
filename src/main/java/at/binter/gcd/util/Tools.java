@@ -20,17 +20,20 @@ public class Tools {
             "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho",
             "sigmaf", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega"};
 
+
     public static final String[] specialLetters = new String[]{
             "PartialD"};
 
     public static final Map<String, String> specialLettersHTMLMap = new HashMap<>();
 
     public static final Map<String, String> greekLettersUnicodeMap = new HashMap<>();
+    public static final Map<String, String> unicodeGreekLettersMap = new HashMap<>();
 
     static {
         for (int i = 0; i < greekLetters.length; i++) {
             int unicode = 0x03B1 + i;
             greekLettersUnicodeMap.put(greekLetters[i], "" + (char) unicode);
+            unicodeGreekLettersMap.put("" + (char) unicode, greekLetters[i]);
         }
         specialLettersHTMLMap.put(specialLetters[0], "&part;");
     }

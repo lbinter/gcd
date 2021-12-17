@@ -442,9 +442,8 @@ public class GCDController extends BaseController implements Initializable {
             gcd.settings.lastOpened = file.getAbsolutePath();
             gcd.settingsController.saveSettings(null);
             populateRecentlyOpened();
-            if (model.getFile() != file) {
-                model.setFile(file);
-            }
+            model.setFile(file);
+            mainTabPane.getSelectionModel().select(modelTab);
         }
     }
 
