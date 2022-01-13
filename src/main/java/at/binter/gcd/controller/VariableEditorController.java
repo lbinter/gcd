@@ -75,6 +75,7 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         rowVariables = grid.getRowConstraints().get(4);
         rowParameters = grid.getRowConstraints().get(5);
         rowAlgebraicVariables = grid.getRowConstraints().get(9);
+        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border,lime;");
     }
 
     public void initializeGCDDepended() {
@@ -231,5 +232,11 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorPlotColor.setText(data.getPlotColor());
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
+    }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        // TODO validate and display errors
+        return true;
     }
 }

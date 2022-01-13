@@ -30,7 +30,6 @@ public class ChangeMuEditorController extends BaseEditorController<ChangeMu> imp
     @FXML
     private TextField editorValueMaximum;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
@@ -79,5 +78,10 @@ public class ChangeMuEditorController extends BaseEditorController<ChangeMu> imp
         editorValueStart.setText(doubleToString(data.getStartValue()));
         editorValueMinimum.setText(doubleToString(data.getMinValue()));
         editorValueMaximum.setText(doubleToString(data.getMaxValue()));
+    }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        return true;
     }
 }

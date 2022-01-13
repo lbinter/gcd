@@ -1,11 +1,15 @@
 package at.binter.gcd.controller;
 
 import at.binter.gcd.model.plotstyle.PlotStyleEntry;
+import at.binter.gcd.util.ValidationError;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.GuiUtils.*;
@@ -21,7 +25,6 @@ public class PlotStyleEntryEditorController extends BaseEditorController<PlotSty
     private TextField editorPlotLineArt;
     @FXML
     private TextField editorDescription;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -62,5 +65,14 @@ public class PlotStyleEntryEditorController extends BaseEditorController<PlotSty
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
         editorDescription.setText(data.getDescription());
+    }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        List<ValidationError> errorList = new ArrayList<>();
+        if (StringUtils.isBlank(editorName.getText())) {
+            errorList.add(new ValidationError(false, "error.plot.style.name.missing"));
+        }
+        return showValidationAlert("error.warning", errorList);
     }
 }

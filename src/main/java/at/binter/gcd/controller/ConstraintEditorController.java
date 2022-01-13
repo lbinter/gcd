@@ -3,6 +3,7 @@ package at.binter.gcd.controller;
 import at.binter.gcd.model.elements.Constraint;
 import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
+import at.binter.gcd.util.ValidationError;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,8 +14,11 @@ import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import static at.binter.gcd.util.GuiUtils.showValidationAlert;
 import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class ConstraintEditorController extends BaseEditorController<Constraint> implements Initializable {
@@ -40,6 +44,7 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         super.initialize(location, resources);
         i18nAddTitle = "editor.constraint.add.title";
         i18nEditTitle = "editor.constraint.edit.title";
+        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border,lime;");
         registerEventHandlers();
     }
 
@@ -95,5 +100,14 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         editorName.setText(data.getName());
         editorCondition.setText(data.getCondition());
         editorDescription.setText(data.getDescription());
+    }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        List<ValidationError> errorList = new ArrayList<>();
+        if (StringUtils.isBlank(editorCondition.getText())) {
+            errorList.add(new ValidationError(false, "error.constraint.condition.missing"));
+        }
+        return showValidationAlert("error.warning", errorList);
     }
 }

@@ -82,4 +82,9 @@ public class ParameterEditorController extends BaseEditorController<Parameter> i
         editorLabelConstraints.setText(data.getConstraintsAsString());
         editorLabelVariables.setText(data.getVariablesAsString());
     }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        return true;
+    }
 }

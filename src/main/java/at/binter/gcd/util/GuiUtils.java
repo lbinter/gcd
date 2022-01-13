@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -49,7 +50,7 @@ public class GuiUtils {
 
     public static String sanitizeString(String str) {
         if (str == null) return null;
-        String sanitized = str.trim().replaceAll(" +", " ");
+        String sanitized = StringUtils.trimToEmpty(str).replaceAll(" +", " ");
         if (StringUtils.isBlank(sanitized)) return null;
         return sanitized;
     }
@@ -178,6 +179,52 @@ public class GuiUtils {
             alert.setContentText(app.getString(message));
         }
         alert.showAndWait();
+    }
+
+    public static boolean showValidationAlert(String title, List<ValidationError> errors) {
+        if (errors.isEmpty()) {
+            return true;
+        }
+
+        String i18nTitle = app.getString(title);
+        VBox box = new VBox();
+        boolean skippable = true;
+        for (ValidationError error : errors) {
+            if (!error.skippable()) {
+                skippable = false;
+            }
+            box.getChildren().add(new Text(error.getMessage()));
+        }
+        String i18nYes;
+        String i18nNo;
+        Alert alert;
+        if (skippable) {
+            alert = new Alert(Alert.AlertType.NONE, "", ButtonType.YES, ButtonType.NO);
+            i18nYes = app.getString("button.save");
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.YES);
+            i18nYes = app.getString("button.ok");
+        }
+        i18nNo = app.getString("button.cancel");
+
+        alert.setTitle(i18nTitle);
+        alert.setHeaderText(i18nTitle);
+        alert.getDialogPane().setContent(box);
+        Button buttonYes = ((Button) alert.getDialogPane().lookupButton(ButtonType.YES));
+        Button buttonNo = ((Button) alert.getDialogPane().lookupButton(ButtonType.NO));
+        if (buttonYes != null) {
+            buttonYes.setText(i18nYes);
+        }
+        if (buttonNo != null) {
+            buttonNo.setText(i18nNo);
+        }
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (!skippable) {
+            return false;
+        }
+
+        return result.isPresent() && result.get() == ButtonType.YES;
     }
 
     public static void showInvalidFileError(File file) {

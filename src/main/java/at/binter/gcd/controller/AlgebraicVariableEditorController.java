@@ -4,6 +4,7 @@ import at.binter.gcd.model.elements.AlgebraicVariable;
 import at.binter.gcd.util.GuiUtils;
 import at.binter.gcd.util.ParsedFunction;
 import at.binter.gcd.util.PlotStyleIndicator;
+import at.binter.gcd.util.ValidationError;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,6 +15,8 @@ import javafx.scene.control.TextField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static at.binter.gcd.util.GuiUtils.*;
@@ -49,6 +52,7 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         i18nAddTitle = "editor.algebraicVariable.add.title";
         i18nEditTitle = "editor.algebraicVariable.edit.title";
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
+        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border,lime;");
     }
 
     private void registerEventHandlers() {
@@ -131,5 +135,17 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         editorPlotColor.setText(data.getPlotColor());
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
+    }
+
+    @Override
+    boolean closeDependingOnValidation() {
+        List<ValidationError> errorList = new ArrayList<>();
+        if (StringUtils.isBlank(editorName.getText())) {
+            errorList.add(new ValidationError(false, "error.algebraic.variable.name.missing"));
+        }
+        if (StringUtils.isBlank(editorFunction.getText())) {
+            errorList.add(new ValidationError(true, "error.algebraic.variable.function.missing"));
+        }
+        return showValidationAlert("error.warning", errorList);
     }
 }

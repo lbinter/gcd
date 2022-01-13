@@ -275,9 +275,9 @@ public class GCDController extends BaseController implements Initializable {
 
     public void setSaveButtonColors(boolean isSaved) {
         if (isSaved) {
-            buttonSave.setStyle("-fx-background-color: lime;-fx-text-fill: black;");
+            buttonSave.setStyle("-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, lime;-fx-text-fill: black;");
         } else {
-            buttonSave.setStyle("-fx-background-color: red;-fx-text-fill: white;");
+            buttonSave.setStyle("-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, red;-fx-text-fill: white;");
         }
     }
 

@@ -38,11 +38,14 @@ public abstract class BaseEditorController<T> extends BaseController implements 
         registerEventHandlers();
     }
 
+    abstract boolean closeDependingOnValidation();
+
     private void registerEventHandlers() {
         editorButtonConfirm.setOnAction(event -> {
-            // TODO: validate formdata
-            hasData = true;
-            popup.close();
+            if (closeDependingOnValidation()) {
+                hasData = true;
+                popup.close();
+            }
         });
         editorButtonCancel.setOnAction(event -> popup.close());
     }

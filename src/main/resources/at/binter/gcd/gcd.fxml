@@ -86,7 +86,7 @@
             <tabs>
                 <Tab fx:id="plotStylesTab" closable="false" text="%main.tab.plot.styles">
                     <content>
-                        <VBox VBox.vgrow="ALWAYS" minHeight="600.0">
+                        <VBox minHeight="600.0" VBox.vgrow="ALWAYS">
                             <children>
                                 <TableView fx:id="plotStyleTable" editable="true" VBox.vgrow="ALWAYS">
                                     <columns>
@@ -360,8 +360,8 @@
                                                             </padding>
                                                         </VBox>
                                                         <ListView fx:id="changeMuListView" maxHeight="250.0"
-                                                                  maxWidth="130.0" minHeight="250.0" minWidth="130.0"
-                                                                  prefHeight="250.0" prefWidth="130.0"/>
+                                                                  maxWidth="160.0" minHeight="250.0" minWidth="160.0"
+                                                                  prefHeight="250.0" prefWidth="160.0"/>
                                                     </children>
                                                 </HBox>
                                             </content>
