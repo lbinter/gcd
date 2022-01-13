@@ -45,6 +45,7 @@ public class Settings {
     public void loadDefaultNdSolveMethods() {
         ndSolveMethods.clear();
         addNdSolveMethod("Automatic");
+        addNdSolveMethod("{IndexReduction -> Automatic}");
         addNdSolveMethod("{IndexReduction -> {True, ConstraintMethod -> Projection}}");
         addNdSolveMethod("{\"EquationSimplification\" -> \"Residual\"}");
     }
