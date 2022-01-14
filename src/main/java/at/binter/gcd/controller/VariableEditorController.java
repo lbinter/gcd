@@ -106,14 +106,17 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         if (text != null) {
             if ((name + "0").equals(text)) {
                 setVariableParameterListVisible(false);
+                showGreenTransformButton(transformButton);
                 return;
             }
+            showRedTransformButton(transformButton);
             ParsedFunction f = new ParsedFunction(text);
             setVariableParameterListVisible(true);
             setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
             setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
         } else {
             setVariableParameterListVisible(false);
+            showGreenTransformButton(transformButton);
         }
     }
 
@@ -232,6 +235,8 @@ public class VariableEditorController extends BaseEditorController<Variable> imp
         editorPlotColor.setText(data.getPlotColor());
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
+
+        showGreenTransformButton(transformButton);
     }
 
     @Override

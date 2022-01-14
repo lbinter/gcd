@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.util.GuiUtils.showValidationAlert;
+import static at.binter.gcd.util.GuiUtils.*;
 import static at.binter.gcd.util.Tools.setLabelTextFormatted;
 
 public class ConstraintEditorController extends BaseEditorController<Constraint> implements Initializable {
@@ -56,8 +56,10 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         if (StringUtils.isBlank(newValue)) {
             editorLabelVariables.setText("");
             editorLabelParameter.setText("");
+            showGreenTransformButton(transformButton);
             return;
         }
+        showRedTransformButton(transformButton);
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameter, f.sortedParameters);
@@ -100,6 +102,8 @@ public class ConstraintEditorController extends BaseEditorController<Constraint>
         editorName.setText(data.getName());
         editorCondition.setText(data.getCondition());
         editorDescription.setText(data.getDescription());
+
+        showGreenTransformButton(transformButton);
     }
 
     @Override

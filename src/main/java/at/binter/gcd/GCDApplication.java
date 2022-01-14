@@ -7,6 +7,7 @@ import at.binter.gcd.util.MathematicaUtils;
 import at.binter.gcd.xml.XmlReader;
 import at.binter.gcd.xml.XmlWriter;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -232,6 +233,11 @@ public class GCDApplication extends Application {
 
         primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, windowEvent -> gcdController.showCloseDialog(windowEvent));
         primaryStage.show();
+
+        // Open link to mathematica for transformation and generation
+        Platform.runLater(() -> {
+            utils.openLink();
+        });
     }
 
     private void readOrCreateSettings() throws IOException {
@@ -255,6 +261,7 @@ public class GCDApplication extends Application {
 
     public void loadSettings() {
         settings = XmlReader.readSettings(settingsLocation.toFile());
+        settings.loadDefaultNdSolveMethods();
     }
 
     public String getString(String i18nKey) {

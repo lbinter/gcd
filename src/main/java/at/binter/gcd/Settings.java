@@ -32,9 +32,7 @@ public class Settings {
     public final ObservableList<String> ndSolveMethods = FXCollections.observableArrayList();
 
     public Settings() {
-        if (ndSolveMethods.isEmpty()) {
-            loadDefaultNdSolveMethods();
-        }
+        loadDefaultNdSolveMethods();
     }
 
     public void loadDefaultValues() {

@@ -1,5 +1,6 @@
 package at.binter.gcd.util;
 
+import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -349,21 +350,37 @@ public class GuiUtils {
 
     public static void transformFunction(TextArea editorFunction, Button transformButton) {
         String function = editorFunction.getText();
-        try {
-            transformButton.setDisable(true);
+        Platform.runLater(() -> {
+            try {
+                transformButton.setDisable(true);
+                editorFunction.setText("working...");
+                editorFunction.setDisable(true);
 
-            String transformed = sanitizeString(app.utils.transformToStandardForm(function));
-            transformed = transformed.replace("*", " ");
-            transformed = transformDerivative(transformed);
-            transformed = transformed.replace("´", "'");
-            if (StringUtils.isBlank(transformed)) {
-                editorFunction.setText("");
-            } else {
-                editorFunction.setText(transformed);
+                String transformed = sanitizeString(app.utils.transformToStandardForm(function));
+                transformed = transformed.replace("*", " ");
+                transformed = transformDerivative(transformed);
+                transformed = transformed.replace("´", "'");
+                if (StringUtils.isBlank(transformed)) {
+                    editorFunction.setText("");
+                } else {
+                    editorFunction.setText(transformed);
+                }
+            } catch (Exception e) {
+                editorFunction.setText("Could not transform function: " + function);
+                log.error("Could not transform function {}", function, e);
             }
-        } catch (Exception e) {
-            log.error("Could not transform function {}", function, e);
-        }
-        transformButton.setDisable(false);
+            transformButton.setDisable(false);
+            editorFunction.setDisable(false);
+            showGreenTransformButton(transformButton);
+        });
+
+    }
+
+    public static void showGreenTransformButton(Button transformButton) {
+        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, lime;-fx-text-fill: black;");
+    }
+
+    public static void showRedTransformButton(Button transformButton) {
+        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, red;-fx-text-fill: white;");
     }
 }

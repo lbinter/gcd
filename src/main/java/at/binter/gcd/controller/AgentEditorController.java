@@ -55,7 +55,6 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         editorPlotColor.setTextFormatter(createStringTextFormatter());
         editorPlotThickness.setTextFormatter(createDoubleTextFormatter());
         editorPlotLineArt.setTextFormatter(createStringTextFormatter());
-        transformButton.setStyle("-fx-background-color:-fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border,lime;");
     }
 
     public void initializeGCDDepended() {
@@ -86,8 +85,10 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
             editorLabelVariables.setText("");
             editorLabelParameters.setText("");
             editorLabelDefinition.setText("");
+            showGreenTransformButton(transformButton);
             return;
         }
+        showRedTransformButton(transformButton);
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
@@ -136,6 +137,8 @@ public class AgentEditorController extends BaseEditorController<Agent> implement
         editorPlotColor.setText(data.getPlotColor());
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
+
+        showGreenTransformButton(transformButton);
     }
 
     @Override

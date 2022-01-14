@@ -81,8 +81,10 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
             editorLabelVariables.setText("");
             editorLabelParameters.setText("");
             editorLabelDefinition.setText("");
+            showGreenTransformButton(transformButton);
             return;
         }
+        showRedTransformButton(transformButton);
         ParsedFunction f = new ParsedFunction(newValue);
         setLabelTextFormatted(editorLabelVariables, f.sortedVariables);
         setLabelTextFormatted(editorLabelParameters, f.sortedParameters);
@@ -135,6 +137,8 @@ public class AlgebraicVariableEditorController extends BaseEditorController<Alge
         editorPlotColor.setText(data.getPlotColor());
         editorPlotThickness.setText(doubleToString(data.getPlotThickness()));
         editorPlotLineArt.setText(data.getPlotLineStyle());
+
+        showGreenTransformButton(transformButton);
     }
 
     @Override
