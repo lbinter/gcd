@@ -1,0 +1,26 @@
+{
+    "creators": [
+        {
+            "name": "Binter, Lucas"
+        },
+        {
+            "name": "Glötzl, Erhard",
+            "orcid": "0000-0002-3092-8243"
+        }
+    ],
+    "keywords": [
+        "general constrained dynamics",
+        "economy",
+        "modeling",
+        "mathematica"
+    ],
+    "license": {
+        "id": "GPL-3.0",
+        "title": "GNU Lesser General Public License v3.0",
+        "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+    },
+    "publication_date": "2022-02-21",
+    "title": "General Constrained Dynamics Mathematica Configurator",
+    "version": "2.0.alpha"
+}
+
