@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -237,7 +236,7 @@ public class MathematicaController extends BaseController implements Initializab
         }
         try {
             Desktop.getDesktop().open(file);
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (Exception e) {
             log.error("Could not open file {}", file, e);
         }
     }

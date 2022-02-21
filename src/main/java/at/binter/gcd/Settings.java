@@ -108,7 +108,7 @@ public class Settings {
         StringBuilder errorMessage = new StringBuilder();
         if (isValidPath(path)) {
             File f = new File(path);
-            if (!"MathKernel.exe".equals(f.getName())) {
+            if (!"MathKernel.exe".equals(f.getName()) && !"MathKernel".equals(f.getName())) {
                 errorMessage.append(app.getString("error.mathematica.math.kernel.file.invalid", f.getName()));
             }
         } else {

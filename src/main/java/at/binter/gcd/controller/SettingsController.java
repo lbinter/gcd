@@ -16,9 +16,9 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static at.binter.gcd.Settings.isValidJLinkPath;
-import static at.binter.gcd.Settings.isValidMathKernelPath;
+import static at.binter.gcd.Settings.*;
 import static at.binter.gcd.util.FileUtils.mathKernelExt;
+import static at.binter.gcd.util.FileUtils.mathKernelLinuxExt;
 import static at.binter.gcd.util.GuiUtils.*;
 
 public class SettingsController extends BaseController implements Initializable {
@@ -83,7 +83,13 @@ public class SettingsController extends BaseController implements Initializable 
     void chooseJLinkFolder(ActionEvent event) {
         DirectoryChooser fc = new DirectoryChooser();
         fc.setTitle(gcd.getString("settings.mathematica.jlink.title"));
-        fc.setInitialDirectory(new File("C:/Program Files/Wolfram Research/Mathematica"));
+        if (isValidPath("C:/Program Files/Wolfram Research/Mathematica")) {
+            fc.setInitialDirectory(new File("C:/Program Files/Wolfram Research/Mathematica"));
+        } else if (isValidPath("/usr/local/Wolfram/Mathematica/11.1/SystemFiles/Links/JLink")) {
+            fc.setInitialDirectory(new File("/usr/local/Wolfram/Mathematica/11.1/SystemFiles/Links/JLink"));
+        } else if (isValidPath("/usr/local/Wolfram/Mathematica/")) {
+            fc.setInitialDirectory(new File("/usr/local/Wolfram/Mathematica/"));
+        }
         File file = fc.showDialog(gcd.settingsStage);
         if (file != null && file.exists() && file.isDirectory()) {
             jLink.setText(file.getAbsolutePath());
@@ -99,10 +105,19 @@ public class SettingsController extends BaseController implements Initializable 
         FileChooser fc = new FileChooser();
         fc.setTitle(gcd.getString("settings.mathematica.math.kernel.title"));
         fc.getExtensionFilters().add(mathKernelExt);
-        fc.setSelectedExtensionFilter(mathKernelExt);
-        fc.setInitialDirectory(new File("C:/Program Files/Wolfram Research/Mathematica"));
+        fc.getExtensionFilters().add(mathKernelLinuxExt);
+        if (isValidPath("C:/Program Files/Wolfram Research/Mathematica")) {
+            fc.setInitialDirectory(new File("C:/Program Files/Wolfram Research/Mathematica"));
+            fc.setSelectedExtensionFilter(mathKernelExt);
+        } else if (isValidPath("/usr/local/Wolfram/Mathematica/11.1/Executables")) {
+            fc.setInitialDirectory(new File("/usr/local/Wolfram/Mathematica/11.1/Executables"));
+            fc.setSelectedExtensionFilter(mathKernelLinuxExt);
+        } else if (isValidPath("/usr/local/Wolfram/Mathematica/")) {
+            fc.setInitialDirectory(new File("/usr/local/Wolfram/Mathematica/"));
+            fc.setSelectedExtensionFilter(mathKernelLinuxExt);
+        }
         File file = fc.showOpenDialog(gcd.settingsStage);
-        if (file != null && file.exists() && "MathKernel.exe".equals(file.getName())) {
+        if (file != null && file.exists() && ("MathKernel.exe".equals(file.getName()) || "MathKernel".equals(file.getName()))) {
             mathKernel.setText(file.getAbsolutePath());
             mathKernelChanged = true;
         }
