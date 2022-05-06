@@ -1,4 +1,6 @@
 # General Constrained Dynamics Mathematica  Configurator
+https://zenodo.org/record/6207454
+
 The gcd is a helper program for the paper of Erhard Glötzl to create and easly edit GCD Models, add and modify plots and generate mathematica files from it.
 
 ![gcd-model](https://user-images.githubusercontent.com/100148373/167151521-3488c00c-5552-4919-8216-0488d42ee1b2.png)
