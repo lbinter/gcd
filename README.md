@@ -18,7 +18,12 @@ Please ensure https://github.com/lbinter/gcd/wiki/Java-Installation-&-Env.-Varia
 ./gradlew clean build
 ```
 * the program can now be found als a _zip_ and _tar_ file in _\folder\build\distributions\gcd-2.0-<timestamp>.zip_
-  
+
+## Binaries
+You can download prebuild binaries from 
+
+ * https://drive.google.com/drive/folders/1-yb33aRRC4wR-n9_XAyCBPqlmWz8hrOW?usp=sharing
+
   
 ## Starting the program
 ### Source code
