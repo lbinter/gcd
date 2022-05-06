@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -36,7 +37,7 @@ public class GCDApplication extends Application {
     private static final Logger log = LoggerFactory.getLogger(GCDApplication.class);
     public static GCDApplication app;
 
-    public final ResourceBundle resources = ResourceBundle.getBundle("gcd");
+    public final ResourceBundle resources = ResourceBundle.getBundle("gcd", Locale.ENGLISH);
 
     public Path settingsLocation = Paths.get(System.getProperty("user.home"), ".gcd", "settings.xml");
     public Settings settings;
