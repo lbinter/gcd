@@ -28,7 +28,9 @@ Unpack the downloaded binary to any location
   - Double click _path\bin\gcd.bat_
 * Linux
   - Execute _path\bin\gcd_
-<br><br><br><br><br>
+# 4. How to use the GCD Configurator
+Please see the Wiki (https://github.com/lbinter/gcd/wiki/) for further information.
+<br><br><br>
 
 # Customizing the program
 ## Starting from Source code
@@ -36,8 +38,6 @@ You can start the program via terminal
 ```
   ./gradlew run
 ```
-
-Please see the Wiki (https://github.com/lbinter/gcd/wiki/) for corecct usage.
   
 ## Self build project
 * Clone / download project
