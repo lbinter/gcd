@@ -18,6 +18,7 @@ Please ensure https://github.com/lbinter/gcd/wiki/Java-Installation-&-Env.-Varia
 
 ## Self build project
 * Clone / download project
+  - ![github_download](https://user-images.githubusercontent.com/100148373/167261394-8b081f91-cb7d-452f-ad85-5b0d9c43798c.png)
 * To build project please run the following command in a terminal
 ```
 ./gradlew clean build
