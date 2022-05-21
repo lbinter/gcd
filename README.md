@@ -1,6 +1,6 @@
 # GCD Configurator (General Constrained Dynamics Mathematica Configurator)
 
-The GCD configurator is a helper program for the paper of Erhard Glötzl ([Macroeconomic General Constrained Dynamic models (GCD models)](https://mpra.ub.uni-muenchen.de/112385/)) to create and easly edit GCD Models, add and modify plots and generate mathematica files from it.
+The GCD configurator is a helper program for General Constrained Dynamic models (GCD models). It allows to create and easily edit GCD Models, add and modify plots and generate mathematica files from it. For more information see the [introductory paper by Erhard Glötzl](https://mpra.ub.uni-muenchen.de/112385/) and the [list of examples models and there description in publications](https://github.com/lbinter/gcd-examples/blob/main/README.md) using GCD models.
 
 ### Screenshot of the GCD configurator input
 ![gcd-model](https://user-images.githubusercontent.com/100148373/167151521-3488c00c-5552-4919-8216-0488d42ee1b2.png)
